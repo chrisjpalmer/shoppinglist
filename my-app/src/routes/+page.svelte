@@ -8,9 +8,18 @@
 		return keys
 	}
 
-	let chosenMeals = new Map<string, Map<string, string>>() // day, category, meal
-	let mondayLunch = new Map
-	chosenMeals.set("Monday", new Map())
+	let chosenMeals = $state(new Map<string, Map<string, string>>()) // day, category, meal
+	
+	function getMeal(day: string, category: string): string {
+		return <string> chosenMeals.get(day)?.get(category)
+	}
+	function setMeal(day: string, category: string, meal: string) {
+		chosenMeals.get(day)?.set(category, meal)
+	}
+	
+	let monday = new Map();
+	monday.set("Lunch", "Not Spaghetti Bolognese")
+	chosenMeals.set("Monday", monday)
 
 	let days = [
 		"Monday",
@@ -40,28 +49,30 @@
 		<thead>
 			<tr>
 				<td></td>
-				<td>Monday</td>
-				<td>Tuesday</td>
-				<td>Wednesday</td>
-				<td>Thursday</td>
-				<td>Friday</td>
-				<td>Saturday</td>
-				<td>Sunday</td>
+				{#each days as day}
+				<td>{day}</td>
+				{/each}
 			</tr>
 		</thead>
 		<tbody>
 			{#each categories as category}
 			<tr>
+				{#if meals.has(category)}
+				{@const categorymeals = <string[]> meals.get(category)}
 				<td>{category}</td>
 				{#each days as day}
 				<td>
-					<select>
-						{#each meals.get(category) as meal}
+					<select bind:value={
+							()=>getMeal(day, category), 
+							(v) => setMeal(day, category, v)
+						}>
+						{#each categorymeals as meal}
 						<option>{meal}</option>
 						{/each}
 					</select>
 				</td>
 				{/each}
+				{/if}
 			</tr>
 			{/each}
 		</tbody>

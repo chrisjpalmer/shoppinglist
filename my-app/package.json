@@ -4,6 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
+		"generate-protos": "buf generate",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
@@ -12,6 +13,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
+		"@bufbuild/buf": "^1.56.0",
+		"@bufbuild/protoc-gen-es": "^2.7.0",
 		"@fontsource/fira-mono": "^5.0.0",
 		"@neoconfetti/svelte": "^2.0.0",
 		"@sveltejs/adapter-auto": "^6.0.0",
@@ -21,5 +24,10 @@
 		"svelte-check": "^4.0.0",
 		"typescript": "^5.0.0",
 		"vite": "^7.0.4"
+	},
+	"dependencies": {
+		"@bufbuild/protobuf": "^2.7.0",
+		"@connectrpc/connect": "^2.0.4",
+		"@connectrpc/connect-web": "^2.0.4"
 	}
 }
