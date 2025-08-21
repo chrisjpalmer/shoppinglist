@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+import "plan.proto";
+import "meal.proto";
+import "ingredient.proto";
+
+// plan
+
+message GetPlanRequest {
+
+}
+
+message GetPlanResponse {
+  Plan plan = 1;
+}
+
+message UpdatePlanRequest {
+  Plan plan = 1;
+}
+
+message UpdatePlanResponse {
+
+}
+
+// meals
+
+message GetMealsRequest {
+
+}
+
+message GetMealsResponse {
+  repeated Meal meals = 1;
+}
+
+message CreateMealRequest {
+  Meal meal = 1;
+}
+
+message CreateMealResponse {
+  int32 meal_id = 1;
+}
+
+message UpdateMealRequest {
+  Meal meal = 1;
+}
+
+message UpdateMealResponse {
+  
+}
+
+message DeleteMealRequest {
+  int32 meal_id = 1;
+}
+
+message DeleteMealResponse {
+
+}
+
+// ingredients
+
+message GetIngredientsRequest {
+
+}
+
+message GetIngredientsResponse {
+  repeated Ingredient ingredients = 1;
+}
+
+message CreateIngredientRequest {
+  Ingredient ingredient = 1;
+}
+
+message CreateIngredientResponse {
+  int32 ingredient_id = 1;
+}
+
+message UpdateIngredientRequest {
+  Ingredient ingredient = 1;
+}
+
+message UpdateIngredientResponse {
+  
+}
+
+message DeleteIngredientRequest {
+  int32 ingredient_id = 1;
+}
+
+message DeleteIngredientResponse {
+
+}
+
+// service
+
+service ShoppingListService {
+  // plan
+  rpc GetPlan(GetPlanRequest) returns (GetPlanResponse);
+  rpc UpdatePlan(UpdatePlanRequest) returns (UpdatePlanResponse);
+
+  // meals
+  rpc GetMeals(GetMealsRequest) returns (GetMealsResponse);
+  rpc CreateMeal(CreateMealRequest) returns (CreateMealResponse);
+  rpc UpdateMeal(UpdateMealRequest) returns (UpdateMealResponse);
+  rpc DeleteMeal(DeleteMealRequest) returns (DeleteMealResponse);
+
+  // ingredients
+
+  rpc GetIngredients(GetIngredientsRequest) returns (GetIngredientsResponse);
+  rpc CreateIngredient(CreateIngredientRequest) returns (CreateIngredientResponse);
+  rpc UpdateIngredient(UpdateIngredientRequest) returns (UpdateIngredientResponse);
+  rpc DeleteIngredient(DeleteIngredientRequest) returns (DeleteIngredientResponse);
+}

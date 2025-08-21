@@ -1,0 +1,15 @@
+
+syntax = "proto3";
+
+message Plan {
+  repeated Day days = 1;
+}
+
+message Day {
+  repeated CategoryMeal category_meals = 1;
+}
+
+message CategoryMeal {
+  int32 category_id = 1;
+  int32 meal_id = 2;
+}
