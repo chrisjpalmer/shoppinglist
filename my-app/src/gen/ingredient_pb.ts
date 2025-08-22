@@ -10,16 +10,16 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file ingredient.proto.
  */
 export const file_ingredient: GenFile = /*@__PURE__*/
-  fileDesc("ChBpbmdyZWRpZW50LnByb3RvIiYKCkluZ3JlZGllbnQSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCWIGcHJvdG8z");
+  fileDesc("ChBpbmdyZWRpZW50LnByb3RvIiYKCkluZ3JlZGllbnQSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCWIGcHJvdG8z");
 
 /**
  * @generated from message Ingredient
  */
 export type Ingredient = Message<"Ingredient"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string name = 2;

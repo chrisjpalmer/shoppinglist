@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file plan.proto.
  */
 export const file_plan: GenFile = /*@__PURE__*/
-  fileDesc("CgpwbGFuLnByb3RvIhoKBFBsYW4SEgoEZGF5cxgBIAMoCzIELkRheSIsCgNEYXkSJQoOY2F0ZWdvcnlfbWVhbHMYASADKAsyDS5DYXRlZ29yeU1lYWwiNAoMQ2F0ZWdvcnlNZWFsEhMKC2NhdGVnb3J5X2lkGAEgASgFEg8KB21lYWxfaWQYAiABKAViBnByb3RvMw");
+  fileDesc("CgpwbGFuLnByb3RvIhoKBFBsYW4SEgoEZGF5cxgBIAMoCzIELkRheSIsCgNEYXkSJQoOY2F0ZWdvcnlfbWVhbHMYASADKAsyDS5DYXRlZ29yeU1lYWwiNAoMQ2F0ZWdvcnlNZWFsEhMKC2NhdGVnb3J5X2lkGAEgASgDEg8KB21lYWxfaWQYAiABKANiBnByb3RvMw");
 
 /**
  * @generated from message Plan
@@ -51,14 +51,14 @@ export const DaySchema: GenMessage<Day> = /*@__PURE__*/
  */
 export type CategoryMeal = Message<"CategoryMeal"> & {
   /**
-   * @generated from field: int32 category_id = 1;
+   * @generated from field: int64 category_id = 1;
    */
-  categoryId: number;
+  categoryId: bigint;
 
   /**
-   * @generated from field: int32 meal_id = 2;
+   * @generated from field: int64 meal_id = 2;
    */
-  mealId: number;
+  mealId: bigint;
 };
 
 /**

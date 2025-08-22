@@ -10,16 +10,16 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file meal.proto.
  */
 export const file_meal: GenFile = /*@__PURE__*/
-  fileDesc("CgptZWFsLnByb3RvIkkKBE1lYWwSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCRInCg9pbmdyZWRpZW50X3JlZnMYAyADKAsyDi5JbmdyZWRpZW50UmVmIjYKDUluZ3JlZGllbnRSZWYSFQoNaW5ncmVkaWVudF9pZBgBIAEoBRIOCgZudW1iZXIYAiABKAViBnByb3RvMw");
+  fileDesc("CgptZWFsLnByb3RvIkkKBE1lYWwSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRInCg9pbmdyZWRpZW50X3JlZnMYAyADKAsyDi5JbmdyZWRpZW50UmVmIjYKDUluZ3JlZGllbnRSZWYSFQoNaW5ncmVkaWVudF9pZBgBIAEoAxIOCgZudW1iZXIYAiABKAViBnByb3RvMw");
 
 /**
  * @generated from message Meal
  */
 export type Meal = Message<"Meal"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string name = 2;
@@ -44,9 +44,9 @@ export const MealSchema: GenMessage<Meal> = /*@__PURE__*/
  */
 export type IngredientRef = Message<"IngredientRef"> & {
   /**
-   * @generated from field: int32 ingredient_id = 1;
+   * @generated from field: int64 ingredient_id = 1;
    */
-  ingredientId: number;
+  ingredientId: bigint;
 
   /**
    * @generated from field: int32 number = 2;

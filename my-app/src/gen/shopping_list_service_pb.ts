@@ -16,7 +16,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file shopping_list_service.proto.
  */
 export const file_shopping_list_service: GenFile = /*@__PURE__*/
-  fileDesc("ChtzaG9wcGluZ19saXN0X3NlcnZpY2UucHJvdG8iEAoOR2V0UGxhblJlcXVlc3QiJgoPR2V0UGxhblJlc3BvbnNlEhMKBHBsYW4YASABKAsyBS5QbGFuIigKEVVwZGF0ZVBsYW5SZXF1ZXN0EhMKBHBsYW4YASABKAsyBS5QbGFuIhQKElVwZGF0ZVBsYW5SZXNwb25zZSIRCg9HZXRNZWFsc1JlcXVlc3QiKAoQR2V0TWVhbHNSZXNwb25zZRIUCgVtZWFscxgBIAMoCzIFLk1lYWwiKAoRQ3JlYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiJQoSQ3JlYXRlTWVhbFJlc3BvbnNlEg8KB21lYWxfaWQYASABKAUiKAoRVXBkYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiFAoSVXBkYXRlTWVhbFJlc3BvbnNlIiQKEURlbGV0ZU1lYWxSZXF1ZXN0Eg8KB21lYWxfaWQYASABKAUiFAoSRGVsZXRlTWVhbFJlc3BvbnNlIhcKFUdldEluZ3JlZGllbnRzUmVxdWVzdCI6ChZHZXRJbmdyZWRpZW50c1Jlc3BvbnNlEiAKC2luZ3JlZGllbnRzGAEgAygLMgsuSW5ncmVkaWVudCI6ChdDcmVhdGVJbmdyZWRpZW50UmVxdWVzdBIfCgppbmdyZWRpZW50GAEgASgLMgsuSW5ncmVkaWVudCIxChhDcmVhdGVJbmdyZWRpZW50UmVzcG9uc2USFQoNaW5ncmVkaWVudF9pZBgBIAEoBSI6ChdVcGRhdGVJbmdyZWRpZW50UmVxdWVzdBIfCgppbmdyZWRpZW50GAEgASgLMgsuSW5ncmVkaWVudCIaChhVcGRhdGVJbmdyZWRpZW50UmVzcG9uc2UiMAoXRGVsZXRlSW5ncmVkaWVudFJlcXVlc3QSFQoNaW5ncmVkaWVudF9pZBgBIAEoBSIaChhEZWxldGVJbmdyZWRpZW50UmVzcG9uc2Uy7gQKE1Nob3BwaW5nTGlzdFNlcnZpY2USLAoHR2V0UGxhbhIPLkdldFBsYW5SZXF1ZXN0GhAuR2V0UGxhblJlc3BvbnNlEjUKClVwZGF0ZVBsYW4SEi5VcGRhdGVQbGFuUmVxdWVzdBoTLlVwZGF0ZVBsYW5SZXNwb25zZRIvCghHZXRNZWFscxIQLkdldE1lYWxzUmVxdWVzdBoRLkdldE1lYWxzUmVzcG9uc2USNQoKQ3JlYXRlTWVhbBISLkNyZWF0ZU1lYWxSZXF1ZXN0GhMuQ3JlYXRlTWVhbFJlc3BvbnNlEjUKClVwZGF0ZU1lYWwSEi5VcGRhdGVNZWFsUmVxdWVzdBoTLlVwZGF0ZU1lYWxSZXNwb25zZRI1CgpEZWxldGVNZWFsEhIuRGVsZXRlTWVhbFJlcXVlc3QaEy5EZWxldGVNZWFsUmVzcG9uc2USQQoOR2V0SW5ncmVkaWVudHMSFi5HZXRJbmdyZWRpZW50c1JlcXVlc3QaFy5HZXRJbmdyZWRpZW50c1Jlc3BvbnNlEkcKEENyZWF0ZUluZ3JlZGllbnQSGC5DcmVhdGVJbmdyZWRpZW50UmVxdWVzdBoZLkNyZWF0ZUluZ3JlZGllbnRSZXNwb25zZRJHChBVcGRhdGVJbmdyZWRpZW50EhguVXBkYXRlSW5ncmVkaWVudFJlcXVlc3QaGS5VcGRhdGVJbmdyZWRpZW50UmVzcG9uc2USRwoQRGVsZXRlSW5ncmVkaWVudBIYLkRlbGV0ZUluZ3JlZGllbnRSZXF1ZXN0GhkuRGVsZXRlSW5ncmVkaWVudFJlc3BvbnNlYgZwcm90bzM", [file_plan, file_meal, file_ingredient]);
+  fileDesc("ChtzaG9wcGluZ19saXN0X3NlcnZpY2UucHJvdG8iEAoOR2V0UGxhblJlcXVlc3QiJgoPR2V0UGxhblJlc3BvbnNlEhMKBHBsYW4YASABKAsyBS5QbGFuIigKEVVwZGF0ZVBsYW5SZXF1ZXN0EhMKBHBsYW4YASABKAsyBS5QbGFuIhQKElVwZGF0ZVBsYW5SZXNwb25zZSIRCg9HZXRNZWFsc1JlcXVlc3QiKAoQR2V0TWVhbHNSZXNwb25zZRIUCgVtZWFscxgBIAMoCzIFLk1lYWwiKAoRQ3JlYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiJQoSQ3JlYXRlTWVhbFJlc3BvbnNlEg8KB21lYWxfaWQYASABKAMiKAoRVXBkYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiFAoSVXBkYXRlTWVhbFJlc3BvbnNlIiQKEURlbGV0ZU1lYWxSZXF1ZXN0Eg8KB21lYWxfaWQYASABKAMiFAoSRGVsZXRlTWVhbFJlc3BvbnNlIhcKFUdldEluZ3JlZGllbnRzUmVxdWVzdCI6ChZHZXRJbmdyZWRpZW50c1Jlc3BvbnNlEiAKC2luZ3JlZGllbnRzGAEgAygLMgsuSW5ncmVkaWVudCI6ChdDcmVhdGVJbmdyZWRpZW50UmVxdWVzdBIfCgppbmdyZWRpZW50GAEgASgLMgsuSW5ncmVkaWVudCIxChhDcmVhdGVJbmdyZWRpZW50UmVzcG9uc2USFQoNaW5ncmVkaWVudF9pZBgBIAEoAyI6ChdVcGRhdGVJbmdyZWRpZW50UmVxdWVzdBIfCgppbmdyZWRpZW50GAEgASgLMgsuSW5ncmVkaWVudCIaChhVcGRhdGVJbmdyZWRpZW50UmVzcG9uc2UiMAoXRGVsZXRlSW5ncmVkaWVudFJlcXVlc3QSFQoNaW5ncmVkaWVudF9pZBgBIAEoAyIaChhEZWxldGVJbmdyZWRpZW50UmVzcG9uc2Uy7gQKE1Nob3BwaW5nTGlzdFNlcnZpY2USLAoHR2V0UGxhbhIPLkdldFBsYW5SZXF1ZXN0GhAuR2V0UGxhblJlc3BvbnNlEjUKClVwZGF0ZVBsYW4SEi5VcGRhdGVQbGFuUmVxdWVzdBoTLlVwZGF0ZVBsYW5SZXNwb25zZRIvCghHZXRNZWFscxIQLkdldE1lYWxzUmVxdWVzdBoRLkdldE1lYWxzUmVzcG9uc2USNQoKQ3JlYXRlTWVhbBISLkNyZWF0ZU1lYWxSZXF1ZXN0GhMuQ3JlYXRlTWVhbFJlc3BvbnNlEjUKClVwZGF0ZU1lYWwSEi5VcGRhdGVNZWFsUmVxdWVzdBoTLlVwZGF0ZU1lYWxSZXNwb25zZRI1CgpEZWxldGVNZWFsEhIuRGVsZXRlTWVhbFJlcXVlc3QaEy5EZWxldGVNZWFsUmVzcG9uc2USQQoOR2V0SW5ncmVkaWVudHMSFi5HZXRJbmdyZWRpZW50c1JlcXVlc3QaFy5HZXRJbmdyZWRpZW50c1Jlc3BvbnNlEkcKEENyZWF0ZUluZ3JlZGllbnQSGC5DcmVhdGVJbmdyZWRpZW50UmVxdWVzdBoZLkNyZWF0ZUluZ3JlZGllbnRSZXNwb25zZRJHChBVcGRhdGVJbmdyZWRpZW50EhguVXBkYXRlSW5ncmVkaWVudFJlcXVlc3QaGS5VcGRhdGVJbmdyZWRpZW50UmVzcG9uc2USRwoQRGVsZXRlSW5ncmVkaWVudBIYLkRlbGV0ZUluZ3JlZGllbnRSZXF1ZXN0GhkuRGVsZXRlSW5ncmVkaWVudFJlc3BvbnNlYgZwcm90bzM", [file_plan, file_meal, file_ingredient]);
 
 /**
  * @generated from message GetPlanRequest
@@ -130,9 +130,9 @@ export const CreateMealRequestSchema: GenMessage<CreateMealRequest> = /*@__PURE_
  */
 export type CreateMealResponse = Message<"CreateMealResponse"> & {
   /**
-   * @generated from field: int32 meal_id = 1;
+   * @generated from field: int64 meal_id = 1;
    */
-  mealId: number;
+  mealId: bigint;
 };
 
 /**
@@ -177,9 +177,9 @@ export const UpdateMealResponseSchema: GenMessage<UpdateMealResponse> = /*@__PUR
  */
 export type DeleteMealRequest = Message<"DeleteMealRequest"> & {
   /**
-   * @generated from field: int32 meal_id = 1;
+   * @generated from field: int64 meal_id = 1;
    */
-  mealId: number;
+  mealId: bigint;
 };
 
 /**
@@ -254,9 +254,9 @@ export const CreateIngredientRequestSchema: GenMessage<CreateIngredientRequest> 
  */
 export type CreateIngredientResponse = Message<"CreateIngredientResponse"> & {
   /**
-   * @generated from field: int32 ingredient_id = 1;
+   * @generated from field: int64 ingredient_id = 1;
    */
-  ingredientId: number;
+  ingredientId: bigint;
 };
 
 /**
@@ -301,9 +301,9 @@ export const UpdateIngredientResponseSchema: GenMessage<UpdateIngredientResponse
  */
 export type DeleteIngredientRequest = Message<"DeleteIngredientRequest"> & {
   /**
-   * @generated from field: int32 ingredient_id = 1;
+   * @generated from field: int64 ingredient_id = 1;
    */
-  ingredientId: number;
+  ingredientId: bigint;
 };
 
 /**
