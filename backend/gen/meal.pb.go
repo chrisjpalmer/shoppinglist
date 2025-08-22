@@ -23,7 +23,7 @@ const (
 
 type Meal struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	Id             int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id             int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name           string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	IngredientRefs []*IngredientRef       `protobuf:"bytes,3,rep,name=ingredient_refs,json=ingredientRefs,proto3" json:"ingredient_refs,omitempty"`
 	unknownFields  protoimpl.UnknownFields
@@ -60,7 +60,7 @@ func (*Meal) Descriptor() ([]byte, []int) {
 	return file_meal_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Meal) GetId() int32 {
+func (x *Meal) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
@@ -83,7 +83,7 @@ func (x *Meal) GetIngredientRefs() []*IngredientRef {
 
 type IngredientRef struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	IngredientId  int32                  `protobuf:"varint,1,opt,name=ingredient_id,json=ingredientId,proto3" json:"ingredient_id,omitempty"`
+	IngredientId  int64                  `protobuf:"varint,1,opt,name=ingredient_id,json=ingredientId,proto3" json:"ingredient_id,omitempty"`
 	Number        int32                  `protobuf:"varint,2,opt,name=number,proto3" json:"number,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -119,7 +119,7 @@ func (*IngredientRef) Descriptor() ([]byte, []int) {
 	return file_meal_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *IngredientRef) GetIngredientId() int32 {
+func (x *IngredientRef) GetIngredientId() int64 {
 	if x != nil {
 		return x.IngredientId
 	}
@@ -140,11 +140,11 @@ const file_meal_proto_rawDesc = "" +
 	"\n" +
 	"meal.proto\"c\n" +
 	"\x04Meal\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x127\n" +
 	"\x0fingredient_refs\x18\x03 \x03(\v2\x0e.IngredientRefR\x0eingredientRefs\"L\n" +
 	"\rIngredientRef\x12#\n" +
-	"\ringredient_id\x18\x01 \x01(\x05R\fingredientId\x12\x16\n" +
+	"\ringredient_id\x18\x01 \x01(\x03R\fingredientId\x12\x16\n" +
 	"\x06number\x18\x02 \x01(\x05R\x06numberB?B\tMealProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
 
 var (

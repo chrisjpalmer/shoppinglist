@@ -23,7 +23,7 @@ const (
 
 type Ingredient struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -59,7 +59,7 @@ func (*Ingredient) Descriptor() ([]byte, []int) {
 	return file_ingredient_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Ingredient) GetId() int32 {
+func (x *Ingredient) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
@@ -80,7 +80,7 @@ const file_ingredient_proto_rawDesc = "" +
 	"\x10ingredient.proto\"0\n" +
 	"\n" +
 	"Ingredient\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04nameBEB\x0fIngredientProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
 
 var (

@@ -15,8 +15,8 @@ UPDATE plan set plan_data = ? WHERE id = ?;
 SELECT id, name, ingredients FROM meals
 ORDER BY name;
 
--- name: CreateMeal :exec
-INSERT INTO meals (name, ingredients) VALUES (?, ?);
+-- name: CreateMeal :one
+INSERT INTO meals (name, ingredients) VALUES (?, ?) RETURNING id;
 
 -- name: UpdateMeal :exec
 UPDATE meals set name = ?, ingredients = ? WHERE id = ?;
@@ -30,8 +30,8 @@ DELETE FROM meals WHERE id = ?;
 SELECT id, name FROM ingredients
 ORDER BY name;
 
--- name: CreateIngredient :exec
-INSERT INTO ingredients (name) VALUES (?);
+-- name: CreateIngredient :one
+INSERT INTO ingredients (name) VALUES (?) RETURNING id;
 
 -- name: UpdateIngredient :exec
 UPDATE ingredients set name = ? WHERE id = ?;

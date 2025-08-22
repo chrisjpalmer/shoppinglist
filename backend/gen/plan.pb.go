@@ -111,8 +111,8 @@ func (x *Day) GetCategoryMeals() []*CategoryMeal {
 
 type CategoryMeal struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	CategoryId    int32                  `protobuf:"varint,1,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
-	MealId        int32                  `protobuf:"varint,2,opt,name=meal_id,json=mealId,proto3" json:"meal_id,omitempty"`
+	CategoryId    int64                  `protobuf:"varint,1,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	MealId        int64                  `protobuf:"varint,2,opt,name=meal_id,json=mealId,proto3" json:"meal_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,14 +147,14 @@ func (*CategoryMeal) Descriptor() ([]byte, []int) {
 	return file_plan_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CategoryMeal) GetCategoryId() int32 {
+func (x *CategoryMeal) GetCategoryId() int64 {
 	if x != nil {
 		return x.CategoryId
 	}
 	return 0
 }
 
-func (x *CategoryMeal) GetMealId() int32 {
+func (x *CategoryMeal) GetMealId() int64 {
 	if x != nil {
 		return x.MealId
 	}
@@ -172,9 +172,9 @@ const file_plan_proto_rawDesc = "" +
 	"\x03Day\x124\n" +
 	"\x0ecategory_meals\x18\x01 \x03(\v2\r.CategoryMealR\rcategoryMeals\"H\n" +
 	"\fCategoryMeal\x12\x1f\n" +
-	"\vcategory_id\x18\x01 \x01(\x05R\n" +
+	"\vcategory_id\x18\x01 \x01(\x03R\n" +
 	"categoryId\x12\x17\n" +
-	"\ameal_id\x18\x02 \x01(\x05R\x06mealIdB?B\tPlanProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
+	"\ameal_id\x18\x02 \x01(\x03R\x06mealIdB?B\tPlanProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
 
 var (
 	file_plan_proto_rawDescOnce sync.Once

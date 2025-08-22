@@ -9,17 +9,19 @@ import (
 	"context"
 )
 
-const createIngredient = `-- name: CreateIngredient :exec
-INSERT INTO ingredients (name) VALUES (?)
+const createIngredient = `-- name: CreateIngredient :one
+INSERT INTO ingredients (name) VALUES (?) RETURNING id
 `
 
-func (q *Queries) CreateIngredient(ctx context.Context, name string) error {
-	_, err := q.db.ExecContext(ctx, createIngredient, name)
-	return err
+func (q *Queries) CreateIngredient(ctx context.Context, name string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, createIngredient, name)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
 }
 
-const createMeal = `-- name: CreateMeal :exec
-INSERT INTO meals (name, ingredients) VALUES (?, ?)
+const createMeal = `-- name: CreateMeal :one
+INSERT INTO meals (name, ingredients) VALUES (?, ?) RETURNING id
 `
 
 type CreateMealParams struct {
@@ -27,9 +29,11 @@ type CreateMealParams struct {
 	Ingredients string
 }
 
-func (q *Queries) CreateMeal(ctx context.Context, arg CreateMealParams) error {
-	_, err := q.db.ExecContext(ctx, createMeal, arg.Name, arg.Ingredients)
-	return err
+func (q *Queries) CreateMeal(ctx context.Context, arg CreateMealParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, createMeal, arg.Name, arg.Ingredients)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
 }
 
 const createPlan = `-- name: CreatePlan :exec

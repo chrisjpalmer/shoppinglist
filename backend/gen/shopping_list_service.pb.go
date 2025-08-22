@@ -307,7 +307,7 @@ func (x *CreateMealRequest) GetMeal() *Meal {
 
 type CreateMealResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	MealId        int32                  `protobuf:"varint,1,opt,name=meal_id,json=mealId,proto3" json:"meal_id,omitempty"`
+	MealId        int64                  `protobuf:"varint,1,opt,name=meal_id,json=mealId,proto3" json:"meal_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -342,7 +342,7 @@ func (*CreateMealResponse) Descriptor() ([]byte, []int) {
 	return file_shopping_list_service_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *CreateMealResponse) GetMealId() int32 {
+func (x *CreateMealResponse) GetMealId() int64 {
 	if x != nil {
 		return x.MealId
 	}
@@ -431,7 +431,7 @@ func (*UpdateMealResponse) Descriptor() ([]byte, []int) {
 
 type DeleteMealRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	MealId        int32                  `protobuf:"varint,1,opt,name=meal_id,json=mealId,proto3" json:"meal_id,omitempty"`
+	MealId        int64                  `protobuf:"varint,1,opt,name=meal_id,json=mealId,proto3" json:"meal_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -466,7 +466,7 @@ func (*DeleteMealRequest) Descriptor() ([]byte, []int) {
 	return file_shopping_list_service_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *DeleteMealRequest) GetMealId() int32 {
+func (x *DeleteMealRequest) GetMealId() int64 {
 	if x != nil {
 		return x.MealId
 	}
@@ -635,7 +635,7 @@ func (x *CreateIngredientRequest) GetIngredient() *Ingredient {
 
 type CreateIngredientResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	IngredientId  int32                  `protobuf:"varint,1,opt,name=ingredient_id,json=ingredientId,proto3" json:"ingredient_id,omitempty"`
+	IngredientId  int64                  `protobuf:"varint,1,opt,name=ingredient_id,json=ingredientId,proto3" json:"ingredient_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -670,7 +670,7 @@ func (*CreateIngredientResponse) Descriptor() ([]byte, []int) {
 	return file_shopping_list_service_proto_rawDescGZIP(), []int{15}
 }
 
-func (x *CreateIngredientResponse) GetIngredientId() int32 {
+func (x *CreateIngredientResponse) GetIngredientId() int64 {
 	if x != nil {
 		return x.IngredientId
 	}
@@ -759,7 +759,7 @@ func (*UpdateIngredientResponse) Descriptor() ([]byte, []int) {
 
 type DeleteIngredientRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	IngredientId  int32                  `protobuf:"varint,1,opt,name=ingredient_id,json=ingredientId,proto3" json:"ingredient_id,omitempty"`
+	IngredientId  int64                  `protobuf:"varint,1,opt,name=ingredient_id,json=ingredientId,proto3" json:"ingredient_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -794,7 +794,7 @@ func (*DeleteIngredientRequest) Descriptor() ([]byte, []int) {
 	return file_shopping_list_service_proto_rawDescGZIP(), []int{18}
 }
 
-func (x *DeleteIngredientRequest) GetIngredientId() int32 {
+func (x *DeleteIngredientRequest) GetIngredientId() int64 {
 	if x != nil {
 		return x.IngredientId
 	}
@@ -856,12 +856,12 @@ const file_shopping_list_service_proto_rawDesc = "" +
 	"\x11CreateMealRequest\x12\x19\n" +
 	"\x04meal\x18\x01 \x01(\v2\x05.MealR\x04meal\"-\n" +
 	"\x12CreateMealResponse\x12\x17\n" +
-	"\ameal_id\x18\x01 \x01(\x05R\x06mealId\".\n" +
+	"\ameal_id\x18\x01 \x01(\x03R\x06mealId\".\n" +
 	"\x11UpdateMealRequest\x12\x19\n" +
 	"\x04meal\x18\x01 \x01(\v2\x05.MealR\x04meal\"\x14\n" +
 	"\x12UpdateMealResponse\",\n" +
 	"\x11DeleteMealRequest\x12\x17\n" +
-	"\ameal_id\x18\x01 \x01(\x05R\x06mealId\"\x14\n" +
+	"\ameal_id\x18\x01 \x01(\x03R\x06mealId\"\x14\n" +
 	"\x12DeleteMealResponse\"\x17\n" +
 	"\x15GetIngredientsRequest\"G\n" +
 	"\x16GetIngredientsResponse\x12-\n" +
@@ -871,14 +871,14 @@ const file_shopping_list_service_proto_rawDesc = "" +
 	"ingredient\x18\x01 \x01(\v2\v.IngredientR\n" +
 	"ingredient\"?\n" +
 	"\x18CreateIngredientResponse\x12#\n" +
-	"\ringredient_id\x18\x01 \x01(\x05R\fingredientId\"F\n" +
+	"\ringredient_id\x18\x01 \x01(\x03R\fingredientId\"F\n" +
 	"\x17UpdateIngredientRequest\x12+\n" +
 	"\n" +
 	"ingredient\x18\x01 \x01(\v2\v.IngredientR\n" +
 	"ingredient\"\x1a\n" +
 	"\x18UpdateIngredientResponse\">\n" +
 	"\x17DeleteIngredientRequest\x12#\n" +
-	"\ringredient_id\x18\x01 \x01(\x05R\fingredientId\"\x1a\n" +
+	"\ringredient_id\x18\x01 \x01(\x03R\fingredientId\"\x1a\n" +
 	"\x18DeleteIngredientResponse2\xee\x04\n" +
 	"\x13ShoppingListService\x12,\n" +
 	"\aGetPlan\x12\x0f.GetPlanRequest\x1a\x10.GetPlanResponse\x125\n" +
