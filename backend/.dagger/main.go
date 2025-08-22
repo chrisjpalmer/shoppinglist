@@ -15,14 +15,12 @@
 package main
 
 import (
-	"context"
 	"dagger/backend/internal/dagger"
 )
 
 type Backend struct{}
 
 func (m *Backend) GenerateProtos(
-	ctx context.Context,
 	// +defaultPath="/backend"
 	src *dagger.Directory,
 ) *dagger.Directory {
@@ -39,11 +37,14 @@ func (m *Backend) GenerateProtos(
 }
 
 // Returns lines that match a pattern in the files of the provided Directory
-func (m *Backend) GrepDir(ctx context.Context, directoryArg *dagger.Directory, pattern string) (string, error) {
+func (m *Backend) GenerateSqlc(
+	// +defaultPath="/backend"
+	src *dagger.Directory) *dagger.Directory {
 	return dag.Container().
-		From("alpine:latest").
-		WithMountedDirectory("/mnt", directoryArg).
-		WithWorkdir("/mnt").
-		WithExec([]string{"grep", "-R", pattern, "."}).
-		Stdout(ctx)
+		From("sqlc/sqlc").
+		WithWorkdir("workdir").
+		WithDirectory("sql", src.Directory("sql")).
+		WithFile("sqlc.yaml", src.File("sqlc.yaml")).
+		WithExec([]string{"generate"}, dagger.ContainerWithExecOpts{UseEntrypoint: true}).
+		Directory("generated")
 }

@@ -12,7 +12,7 @@ import (
 )
 
 func (s *Server) GetPlan(ctx context.Context, rq *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error) {
-	p, err := s.db.GetPlan(ctx)
+	p, err := s.sql.GetPlan(ctx)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		gp, err := s.createEmptyPlan(ctx)
@@ -37,7 +37,7 @@ func (s *Server) GetPlan(ctx context.Context, rq *connect.Request[gen.GetPlanReq
 }
 
 func (s *Server) UpdatePlan(ctx context.Context, rq *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error) {
-	p, err := s.db.GetPlan(ctx)
+	p, err := s.sql.GetPlan(ctx)
 
 	pstr, err := marshalJSON(rq.Msg.Plan)
 	if err != nil {
@@ -45,7 +45,7 @@ func (s *Server) UpdatePlan(ctx context.Context, rq *connect.Request[gen.UpdateP
 	}
 
 	if errors.Is(err, sql.ErrNoRows) {
-		if err := s.db.CreatePlan(ctx, pstr); err != nil {
+		if err := s.sql.CreatePlan(ctx, pstr); err != nil {
 			return nil, err
 		}
 	}
@@ -54,7 +54,7 @@ func (s *Server) UpdatePlan(ctx context.Context, rq *connect.Request[gen.UpdateP
 		return nil, err
 	}
 
-	err = s.db.UpdatePlan(ctx, generated.UpdatePlanParams{
+	err = s.sql.UpdatePlan(ctx, generated.UpdatePlanParams{
 		ID:       p.ID,
 		PlanData: pstr,
 	})
@@ -74,7 +74,7 @@ func (s *Server) createEmptyPlan(ctx context.Context) (gen.Plan, error) {
 		return gen.Plan{}, err
 	}
 
-	err = s.db.CreatePlan(ctx, ps)
+	err = s.sql.CreatePlan(ctx, ps)
 	if err != nil {
 		return gen.Plan{}, err
 	}

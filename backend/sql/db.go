@@ -1,4 +1,4 @@
-package db
+package sql
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	_ "github.com/ncruces/go-sqlite3/embed"
 )
 
-//go:embed ../sql/schema.sql
+//go:embed schema.sql
 var ddl string
 
 func Connect(ctx context.Context) (*generated.Queries, error) {
