@@ -20,7 +20,7 @@ func (s *Server) GetPlan(ctx context.Context, rq *connect.Request[gen.GetPlanReq
 			return nil, err
 		}
 
-		return connect.NewResponse(&gen.GetPlanResponse{Plan: &gp}), nil
+		return connect.NewResponse(&gen.GetPlanResponse{Plan: gp}), nil
 	}
 
 	if err != nil {
@@ -66,20 +66,20 @@ func (s *Server) UpdatePlan(ctx context.Context, rq *connect.Request[gen.UpdateP
 	return connect.NewResponse(&gen.UpdatePlanResponse{}), nil
 }
 
-func (s *Server) createEmptyPlan(ctx context.Context) (gen.Plan, error) {
+func (s *Server) createEmptyPlan(ctx context.Context) (*gen.Plan, error) {
 	p := emptyPlan()
 
-	ps, err := marshalJSON(p)
+	ps, err := marshalJSON(&p)
 	if err != nil {
-		return gen.Plan{}, err
+		return nil, err
 	}
 
 	err = s.sql.CreatePlan(ctx, ps)
 	if err != nil {
-		return gen.Plan{}, err
+		return nil, err
 	}
 
-	return p, nil
+	return &p, nil
 }
 
 func emptyPlan() gen.Plan {
@@ -88,7 +88,7 @@ func emptyPlan() gen.Plan {
 		days = append(days, &gen.Day{
 			CategoryMeals: []*gen.CategoryMeal{
 				// 0 = lunch, 1 = dinner, 2 = snack
-				{CategoryId: 0}, {CategoryId: 1}, {CategoryId: 2},
+				{Category: gen.Category_CATEGORY_LUNCH}, {Category: gen.Category_CATEGORY_DINNER}, {Category: gen.Category_CATEGORY_SNACK},
 			},
 		})
 	}

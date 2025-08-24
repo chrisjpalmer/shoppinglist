@@ -5,6 +5,21 @@
   import { Category, type Plan } from "../gen/plan_pb";
   import type { Meal } from "../gen/meal_pb";
 
+	const categories = [
+		Category.DINNER,
+		Category.LUNCH,
+		Category.SNACK,
+	]
+
+	const days = [
+		"Monday",
+		"Tuesday",
+		"Wednesday",
+		"Thursday",
+		"Friday",
+		"Saturday",
+		"Sunday",
+	]
 
 	const transport = createConnectTransport({
 		baseUrl: "http://localhost:8080",
@@ -15,9 +30,14 @@
 	let dirty = $state(false);
 
 	let plan:Plan | null = $state(null);
+	let allMeals:Meal[] | null = $state(null);
+
 	async function refresh() {
-		const rs = await client.getPlan({})
-		plan = <Plan> rs.plan
+		const planRs = await client.getPlan({})
+		plan = <Plan> planRs.plan
+
+		const mealRs = await client.getMeals({})
+		allMeals = <Meal[]> mealRs.meals
 	}
 	
 	function getMealId(day: number, category: Category): bigint {
@@ -26,8 +46,8 @@
 			return BigInt(0)
 		}
 
-		const catMeals = plan.days[day].categoryMeals
-		const meal = catMeals.find(meal => meal.category = category)
+		const meals = plan.days[day].categoryMeals
+		const meal = meals.find(meal => meal.category = category)
 		if(!meal) {
 			console.log("could not find the meal for the given day and category")
 			return BigInt(0)
@@ -35,37 +55,34 @@
 
 		return meal.mealId
 	}
-	function setMealId(day: string, category: Category, mealId: bigint) {
+	function setMealId(day: number, category: Category, mealId: bigint) {
 		if(!plan) {
 			console.log("no plan but trying to call setMealId")
 			return BigInt(0)
 		}
 
-		const catMeals = plan.days[day].categoryMeals
-		if(!catMeals)
-		chosenMeals.get(day)?.set(category, meal)
+		const meals = plan.days[day].categoryMeals
+		const meal = meals.find(meal => meal.category = category)
+		if(!meal) {
+			console.log("could not find the meal for the given day and category")
+			return BigInt(0)
+		}
+
+		meal.mealId = mealId;
+		dirty = true;
 	}
 
-	let categories = [
-		Category.DINNER,
-		Category.LUNCH,
-		Category.SNACK,
-	]
+	async function save() {
+		if(!plan) {
+			console.log("tried to update the plan, but plan is null")
+			return
+		}
+		await client.updatePlan({plan: plan})
+		refresh()
+	}
 
-	let days = [
-		"Monday",
-		"Tuesday",
-		"Wednesday",
-		"Thursday",
-		"Friday",
-		"Saturday",
-		"Sunday",
-	]
-
-	let meals = new Map<string, string[]>()
-
-	meals.set("Lunch", ["Spaghetti Bolognese", "Not Spaghetti Bolognese"])
-	meals.set("Dinner", ["Meat Pie", "Not Meat Pie"])
+	refresh()
+	
 </script>
 
 <svelte:head>
@@ -86,16 +103,18 @@
 		<tbody>
 			{#each categories as category}
 			<tr>
-				<td>{category}</td>
-				{#each days as day}
+				<td>{Category[category]}</td>
+				{#each days as day, i}
 				<td>
 					<select bind:value={
-							()=>getMeal(day, category), 
-							(v) => setMeal(day, category, v)
+							()=>getMealId(i, category), 
+							(v) => setMealId(i, category, v)
 						}>
+						{#if allMeals}
 						{#each allMeals as meal (meal.id)}
 						<option value={meal.id}>{meal}</option>
 						{/each}
+						{/if}
 					</select>
 				</td>
 				{/each}
@@ -104,6 +123,9 @@
 		</tbody>
 	</table>
 
+	{#if dirty}
+	<button onclick={save}>Save</button>
+	{/if}
 </section>
 
 <section>
@@ -130,19 +152,5 @@
 		width: 100%;
 	}
 
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
+	
 </style>

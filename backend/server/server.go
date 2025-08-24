@@ -7,6 +7,7 @@ import (
 	"github.com/chrisjpalmer/shoppinglist/backend/gen/genconnect"
 	"github.com/chrisjpalmer/shoppinglist/backend/generated"
 	"github.com/chrisjpalmer/shoppinglist/backend/sql"
+	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -29,5 +30,5 @@ func (s *Server) Listen() error {
 	path, handler := genconnect.NewShoppingListServiceHandler(s)
 	mux.Handle(path, handler)
 
-	return http.ListenAndServe(":8080", h2c.NewHandler(mux, &http2.Server{}))
+	return http.ListenAndServe(":8080", h2c.NewHandler(cors.Default().Handler(mux), &http2.Server{}))
 }
