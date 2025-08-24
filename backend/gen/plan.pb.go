@@ -21,6 +21,55 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Category int32
+
+const (
+	Category_CATEGORY_LUNCH  Category = 0
+	Category_CATEGORY_DINNER Category = 1
+	Category_CATEGORY_SNACK  Category = 2
+)
+
+// Enum value maps for Category.
+var (
+	Category_name = map[int32]string{
+		0: "CATEGORY_LUNCH",
+		1: "CATEGORY_DINNER",
+		2: "CATEGORY_SNACK",
+	}
+	Category_value = map[string]int32{
+		"CATEGORY_LUNCH":  0,
+		"CATEGORY_DINNER": 1,
+		"CATEGORY_SNACK":  2,
+	}
+)
+
+func (x Category) Enum() *Category {
+	p := new(Category)
+	*p = x
+	return p
+}
+
+func (x Category) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Category) Descriptor() protoreflect.EnumDescriptor {
+	return file_plan_proto_enumTypes[0].Descriptor()
+}
+
+func (Category) Type() protoreflect.EnumType {
+	return &file_plan_proto_enumTypes[0]
+}
+
+func (x Category) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Category.Descriptor instead.
+func (Category) EnumDescriptor() ([]byte, []int) {
+	return file_plan_proto_rawDescGZIP(), []int{0}
+}
+
 type Plan struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Days          []*Day                 `protobuf:"bytes,1,rep,name=days,proto3" json:"days,omitempty"`
@@ -111,7 +160,7 @@ func (x *Day) GetCategoryMeals() []*CategoryMeal {
 
 type CategoryMeal struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	CategoryId    int64                  `protobuf:"varint,1,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	Category      Category               `protobuf:"varint,1,opt,name=category,proto3,enum=Category" json:"category,omitempty"`
 	MealId        int64                  `protobuf:"varint,2,opt,name=meal_id,json=mealId,proto3" json:"meal_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -147,11 +196,11 @@ func (*CategoryMeal) Descriptor() ([]byte, []int) {
 	return file_plan_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CategoryMeal) GetCategoryId() int64 {
+func (x *CategoryMeal) GetCategory() Category {
 	if x != nil {
-		return x.CategoryId
+		return x.Category
 	}
-	return 0
+	return Category_CATEGORY_LUNCH
 }
 
 func (x *CategoryMeal) GetMealId() int64 {
@@ -170,11 +219,14 @@ const file_plan_proto_rawDesc = "" +
 	"\x04Plan\x12\x18\n" +
 	"\x04days\x18\x01 \x03(\v2\x04.DayR\x04days\";\n" +
 	"\x03Day\x124\n" +
-	"\x0ecategory_meals\x18\x01 \x03(\v2\r.CategoryMealR\rcategoryMeals\"H\n" +
-	"\fCategoryMeal\x12\x1f\n" +
-	"\vcategory_id\x18\x01 \x01(\x03R\n" +
-	"categoryId\x12\x17\n" +
-	"\ameal_id\x18\x02 \x01(\x03R\x06mealIdB?B\tPlanProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
+	"\x0ecategory_meals\x18\x01 \x03(\v2\r.CategoryMealR\rcategoryMeals\"N\n" +
+	"\fCategoryMeal\x12%\n" +
+	"\bcategory\x18\x01 \x01(\x0e2\t.CategoryR\bcategory\x12\x17\n" +
+	"\ameal_id\x18\x02 \x01(\x03R\x06mealId*G\n" +
+	"\bCategory\x12\x12\n" +
+	"\x0eCATEGORY_LUNCH\x10\x00\x12\x13\n" +
+	"\x0fCATEGORY_DINNER\x10\x01\x12\x12\n" +
+	"\x0eCATEGORY_SNACK\x10\x02B?B\tPlanProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
 
 var (
 	file_plan_proto_rawDescOnce sync.Once
@@ -188,20 +240,23 @@ func file_plan_proto_rawDescGZIP() []byte {
 	return file_plan_proto_rawDescData
 }
 
+var file_plan_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_plan_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_plan_proto_goTypes = []any{
-	(*Plan)(nil),         // 0: Plan
-	(*Day)(nil),          // 1: Day
-	(*CategoryMeal)(nil), // 2: CategoryMeal
+	(Category)(0),        // 0: Category
+	(*Plan)(nil),         // 1: Plan
+	(*Day)(nil),          // 2: Day
+	(*CategoryMeal)(nil), // 3: CategoryMeal
 }
 var file_plan_proto_depIdxs = []int32{
-	1, // 0: Plan.days:type_name -> Day
-	2, // 1: Day.category_meals:type_name -> CategoryMeal
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 0: Plan.days:type_name -> Day
+	3, // 1: Day.category_meals:type_name -> CategoryMeal
+	0, // 2: CategoryMeal.category:type_name -> Category
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_plan_proto_init() }
@@ -214,13 +269,14 @@ func file_plan_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_plan_proto_rawDesc), len(file_plan_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_plan_proto_goTypes,
 		DependencyIndexes: file_plan_proto_depIdxs,
+		EnumInfos:         file_plan_proto_enumTypes,
 		MessageInfos:      file_plan_proto_msgTypes,
 	}.Build()
 	File_plan_proto = out.File

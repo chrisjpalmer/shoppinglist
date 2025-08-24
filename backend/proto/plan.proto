@@ -10,6 +10,12 @@ message Day {
 }
 
 message CategoryMeal {
-  int64 category_id = 1;
+  Category category = 1;
   int64 meal_id = 2;
+}
+
+enum Category {
+  CATEGORY_LUNCH = 0;
+  CATEGORY_DINNER = 1;
+  CATEGORY_SNACK = 2;
 }

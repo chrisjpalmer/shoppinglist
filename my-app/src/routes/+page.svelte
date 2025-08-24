@@ -1,25 +1,56 @@
 <script lang="ts">
+  import { createClient } from "@connectrpc/connect";
+  import { createConnectTransport } from "@connectrpc/connect-web";
+  import { ShoppingListService } from "../gen/shopping_list_service_pb";
+  import { Category, type Plan } from "../gen/plan_pb";
+  import type { Meal } from "../gen/meal_pb";
 
-	function getKeys(m:Map<any, any>) {
-		let keys = []
-		for (let k of m.keys()) {
-			keys.push(k)
-		}
-		return keys
+
+	const transport = createConnectTransport({
+		baseUrl: "http://localhost:8080",
+	});
+
+	const client = createClient(ShoppingListService, transport);
+
+	let dirty = $state(false);
+
+	let plan:Plan | null = $state(null);
+	async function refresh() {
+		const rs = await client.getPlan({})
+		plan = <Plan> rs.plan
 	}
-
-	let chosenMeals = $state(new Map<string, Map<string, string>>()) // day, category, meal
 	
-	function getMeal(day: string, category: string): string {
-		return <string> chosenMeals.get(day)?.get(category)
+	function getMealId(day: number, category: Category): bigint {
+		if(!plan) {
+			console.log("no plan but trying to call getMealId")
+			return BigInt(0)
+		}
+
+		const catMeals = plan.days[day].categoryMeals
+		const meal = catMeals.find(meal => meal.category = category)
+		if(!meal) {
+			console.log("could not find the meal for the given day and category")
+			return BigInt(0)
+		}
+
+		return meal.mealId
 	}
-	function setMeal(day: string, category: string, meal: string) {
+	function setMealId(day: string, category: Category, mealId: bigint) {
+		if(!plan) {
+			console.log("no plan but trying to call setMealId")
+			return BigInt(0)
+		}
+
+		const catMeals = plan.days[day].categoryMeals
+		if(!catMeals)
 		chosenMeals.get(day)?.set(category, meal)
 	}
-	
-	let monday = new Map();
-	monday.set("Lunch", "Not Spaghetti Bolognese")
-	chosenMeals.set("Monday", monday)
+
+	let categories = [
+		Category.DINNER,
+		Category.LUNCH,
+		Category.SNACK,
+	]
 
 	let days = [
 		"Monday",
@@ -35,8 +66,6 @@
 
 	meals.set("Lunch", ["Spaghetti Bolognese", "Not Spaghetti Bolognese"])
 	meals.set("Dinner", ["Meat Pie", "Not Meat Pie"])
-
-	let categories = $derived(getKeys(meals))
 </script>
 
 <svelte:head>
@@ -57,8 +86,6 @@
 		<tbody>
 			{#each categories as category}
 			<tr>
-				{#if meals.has(category)}
-				{@const categorymeals = <string[]> meals.get(category)}
 				<td>{category}</td>
 				{#each days as day}
 				<td>
@@ -66,13 +93,12 @@
 							()=>getMeal(day, category), 
 							(v) => setMeal(day, category, v)
 						}>
-						{#each categorymeals as meal}
-						<option>{meal}</option>
+						{#each allMeals as meal (meal.id)}
+						<option value={meal.id}>{meal}</option>
 						{/each}
 					</select>
 				</td>
 				{/each}
-				{/if}
 			</tr>
 			{/each}
 		</tbody>

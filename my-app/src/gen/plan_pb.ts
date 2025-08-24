@@ -2,15 +2,15 @@
 // @generated from file plan.proto (syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file plan.proto.
  */
 export const file_plan: GenFile = /*@__PURE__*/
-  fileDesc("CgpwbGFuLnByb3RvIhoKBFBsYW4SEgoEZGF5cxgBIAMoCzIELkRheSIsCgNEYXkSJQoOY2F0ZWdvcnlfbWVhbHMYASADKAsyDS5DYXRlZ29yeU1lYWwiNAoMQ2F0ZWdvcnlNZWFsEhMKC2NhdGVnb3J5X2lkGAEgASgDEg8KB21lYWxfaWQYAiABKANiBnByb3RvMw");
+  fileDesc("CgpwbGFuLnByb3RvIhoKBFBsYW4SEgoEZGF5cxgBIAMoCzIELkRheSIsCgNEYXkSJQoOY2F0ZWdvcnlfbWVhbHMYASADKAsyDS5DYXRlZ29yeU1lYWwiPAoMQ2F0ZWdvcnlNZWFsEhsKCGNhdGVnb3J5GAEgASgOMgkuQ2F0ZWdvcnkSDwoHbWVhbF9pZBgCIAEoAypHCghDYXRlZ29yeRISCg5DQVRFR09SWV9MVU5DSBAAEhMKD0NBVEVHT1JZX0RJTk5FUhABEhIKDkNBVEVHT1JZX1NOQUNLEAJiBnByb3RvMw");
 
 /**
  * @generated from message Plan
@@ -51,9 +51,9 @@ export const DaySchema: GenMessage<Day> = /*@__PURE__*/
  */
 export type CategoryMeal = Message<"CategoryMeal"> & {
   /**
-   * @generated from field: int64 category_id = 1;
+   * @generated from field: Category category = 1;
    */
-  categoryId: bigint;
+  category: Category;
 
   /**
    * @generated from field: int64 meal_id = 2;
@@ -67,4 +67,30 @@ export type CategoryMeal = Message<"CategoryMeal"> & {
  */
 export const CategoryMealSchema: GenMessage<CategoryMeal> = /*@__PURE__*/
   messageDesc(file_plan, 2);
+
+/**
+ * @generated from enum Category
+ */
+export enum Category {
+  /**
+   * @generated from enum value: CATEGORY_LUNCH = 0;
+   */
+  LUNCH = 0,
+
+  /**
+   * @generated from enum value: CATEGORY_DINNER = 1;
+   */
+  DINNER = 1,
+
+  /**
+   * @generated from enum value: CATEGORY_SNACK = 2;
+   */
+  SNACK = 2,
+}
+
+/**
+ * Describes the enum Category.
+ */
+export const CategorySchema: GenEnum<Category> = /*@__PURE__*/
+  enumDesc(file_plan, 0);
 
