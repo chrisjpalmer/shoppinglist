@@ -25,6 +25,10 @@
 
 		if(selectedMeal) {
 			await setSelectedMealId(selectedMeal.id)
+		} else {
+			if(meals.length > 0) {
+				await setSelectedMealId(meals[0].id)
+			}
 		}
 	}
 	interface SelectedMeal {
