@@ -4,13 +4,15 @@
 
 import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { IngredientRef } from "./meal_pb";
+import { file_meal } from "./meal_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file plan.proto.
  */
 export const file_plan: GenFile = /*@__PURE__*/
-  fileDesc("CgpwbGFuLnByb3RvIhoKBFBsYW4SEgoEZGF5cxgBIAMoCzIELkRheSIsCgNEYXkSJQoOY2F0ZWdvcnlfbWVhbHMYASADKAsyDS5DYXRlZ29yeU1lYWwiPAoMQ2F0ZWdvcnlNZWFsEhsKCGNhdGVnb3J5GAEgASgOMgkuQ2F0ZWdvcnkSDwoHbWVhbF9pZBgCIAEoAypHCghDYXRlZ29yeRISCg5DQVRFR09SWV9MVU5DSBAAEhMKD0NBVEVHT1JZX0RJTk5FUhABEhIKDkNBVEVHT1JZX1NOQUNLEAJiBnByb3RvMw");
+  fileDesc("CgpwbGFuLnByb3RvIhoKBFBsYW4SEgoEZGF5cxgBIAMoCzIELkRheSIsCgNEYXkSJQoOY2F0ZWdvcnlfbWVhbHMYASADKAsyDS5DYXRlZ29yeU1lYWwiPAoMQ2F0ZWdvcnlNZWFsEhsKCGNhdGVnb3J5GAEgASgOMgkuQ2F0ZWdvcnkSDwoHbWVhbF9pZBgCIAEoAyI1CgtQbGFuU3VtbWFyeRImCg5pbmdyZWRpZW50X3JlZhgBIAMoCzIOLkluZ3JlZGllbnRSZWYqRwoIQ2F0ZWdvcnkSEgoOQ0FURUdPUllfTFVOQ0gQABITCg9DQVRFR09SWV9ESU5ORVIQARISCg5DQVRFR09SWV9TTkFDSxACYgZwcm90bzM", [file_meal]);
 
 /**
  * @generated from message Plan
@@ -67,6 +69,23 @@ export type CategoryMeal = Message<"CategoryMeal"> & {
  */
 export const CategoryMealSchema: GenMessage<CategoryMeal> = /*@__PURE__*/
   messageDesc(file_plan, 2);
+
+/**
+ * @generated from message PlanSummary
+ */
+export type PlanSummary = Message<"PlanSummary"> & {
+  /**
+   * @generated from field: repeated IngredientRef ingredient_ref = 1;
+   */
+  ingredientRef: IngredientRef[];
+};
+
+/**
+ * Describes the message PlanSummary.
+ * Use `create(PlanSummarySchema)` to create a new message.
+ */
+export const PlanSummarySchema: GenMessage<PlanSummary> = /*@__PURE__*/
+  messageDesc(file_plan, 3);
 
 /**
  * @generated from enum Category

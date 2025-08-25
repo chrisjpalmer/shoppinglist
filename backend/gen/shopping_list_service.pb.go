@@ -60,6 +60,7 @@ func (*GetPlanRequest) Descriptor() ([]byte, []int) {
 type GetPlanResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Plan          *Plan                  `protobuf:"bytes,1,opt,name=plan,proto3" json:"plan,omitempty"`
+	PlanSummary   *PlanSummary           `protobuf:"bytes,2,opt,name=plan_summary,json=planSummary,proto3" json:"plan_summary,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -97,6 +98,13 @@ func (*GetPlanResponse) Descriptor() ([]byte, []int) {
 func (x *GetPlanResponse) GetPlan() *Plan {
 	if x != nil {
 		return x.Plan
+	}
+	return nil
+}
+
+func (x *GetPlanResponse) GetPlanSummary() *PlanSummary {
+	if x != nil {
+		return x.PlanSummary
 	}
 	return nil
 }
@@ -844,9 +852,10 @@ const file_shopping_list_service_proto_rawDesc = "" +
 	"\x1bshopping_list_service.proto\x1a\n" +
 	"plan.proto\x1a\n" +
 	"meal.proto\x1a\x10ingredient.proto\"\x10\n" +
-	"\x0eGetPlanRequest\",\n" +
+	"\x0eGetPlanRequest\"]\n" +
 	"\x0fGetPlanResponse\x12\x19\n" +
-	"\x04plan\x18\x01 \x01(\v2\x05.PlanR\x04plan\".\n" +
+	"\x04plan\x18\x01 \x01(\v2\x05.PlanR\x04plan\x12/\n" +
+	"\fplan_summary\x18\x02 \x01(\v2\f.PlanSummaryR\vplanSummary\".\n" +
 	"\x11UpdatePlanRequest\x12\x19\n" +
 	"\x04plan\x18\x01 \x01(\v2\x05.PlanR\x04plan\"\x14\n" +
 	"\x12UpdatePlanResponse\"\x11\n" +
@@ -931,43 +940,45 @@ var file_shopping_list_service_proto_goTypes = []any{
 	(*DeleteIngredientRequest)(nil),  // 18: DeleteIngredientRequest
 	(*DeleteIngredientResponse)(nil), // 19: DeleteIngredientResponse
 	(*Plan)(nil),                     // 20: Plan
-	(*Meal)(nil),                     // 21: Meal
-	(*Ingredient)(nil),               // 22: Ingredient
+	(*PlanSummary)(nil),              // 21: PlanSummary
+	(*Meal)(nil),                     // 22: Meal
+	(*Ingredient)(nil),               // 23: Ingredient
 }
 var file_shopping_list_service_proto_depIdxs = []int32{
 	20, // 0: GetPlanResponse.plan:type_name -> Plan
-	20, // 1: UpdatePlanRequest.plan:type_name -> Plan
-	21, // 2: GetMealsResponse.meals:type_name -> Meal
-	21, // 3: CreateMealRequest.meal:type_name -> Meal
-	21, // 4: UpdateMealRequest.meal:type_name -> Meal
-	22, // 5: GetIngredientsResponse.ingredients:type_name -> Ingredient
-	22, // 6: CreateIngredientRequest.ingredient:type_name -> Ingredient
-	22, // 7: UpdateIngredientRequest.ingredient:type_name -> Ingredient
-	0,  // 8: ShoppingListService.GetPlan:input_type -> GetPlanRequest
-	2,  // 9: ShoppingListService.UpdatePlan:input_type -> UpdatePlanRequest
-	4,  // 10: ShoppingListService.GetMeals:input_type -> GetMealsRequest
-	6,  // 11: ShoppingListService.CreateMeal:input_type -> CreateMealRequest
-	8,  // 12: ShoppingListService.UpdateMeal:input_type -> UpdateMealRequest
-	10, // 13: ShoppingListService.DeleteMeal:input_type -> DeleteMealRequest
-	12, // 14: ShoppingListService.GetIngredients:input_type -> GetIngredientsRequest
-	14, // 15: ShoppingListService.CreateIngredient:input_type -> CreateIngredientRequest
-	16, // 16: ShoppingListService.UpdateIngredient:input_type -> UpdateIngredientRequest
-	18, // 17: ShoppingListService.DeleteIngredient:input_type -> DeleteIngredientRequest
-	1,  // 18: ShoppingListService.GetPlan:output_type -> GetPlanResponse
-	3,  // 19: ShoppingListService.UpdatePlan:output_type -> UpdatePlanResponse
-	5,  // 20: ShoppingListService.GetMeals:output_type -> GetMealsResponse
-	7,  // 21: ShoppingListService.CreateMeal:output_type -> CreateMealResponse
-	9,  // 22: ShoppingListService.UpdateMeal:output_type -> UpdateMealResponse
-	11, // 23: ShoppingListService.DeleteMeal:output_type -> DeleteMealResponse
-	13, // 24: ShoppingListService.GetIngredients:output_type -> GetIngredientsResponse
-	15, // 25: ShoppingListService.CreateIngredient:output_type -> CreateIngredientResponse
-	17, // 26: ShoppingListService.UpdateIngredient:output_type -> UpdateIngredientResponse
-	19, // 27: ShoppingListService.DeleteIngredient:output_type -> DeleteIngredientResponse
-	18, // [18:28] is the sub-list for method output_type
-	8,  // [8:18] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	21, // 1: GetPlanResponse.plan_summary:type_name -> PlanSummary
+	20, // 2: UpdatePlanRequest.plan:type_name -> Plan
+	22, // 3: GetMealsResponse.meals:type_name -> Meal
+	22, // 4: CreateMealRequest.meal:type_name -> Meal
+	22, // 5: UpdateMealRequest.meal:type_name -> Meal
+	23, // 6: GetIngredientsResponse.ingredients:type_name -> Ingredient
+	23, // 7: CreateIngredientRequest.ingredient:type_name -> Ingredient
+	23, // 8: UpdateIngredientRequest.ingredient:type_name -> Ingredient
+	0,  // 9: ShoppingListService.GetPlan:input_type -> GetPlanRequest
+	2,  // 10: ShoppingListService.UpdatePlan:input_type -> UpdatePlanRequest
+	4,  // 11: ShoppingListService.GetMeals:input_type -> GetMealsRequest
+	6,  // 12: ShoppingListService.CreateMeal:input_type -> CreateMealRequest
+	8,  // 13: ShoppingListService.UpdateMeal:input_type -> UpdateMealRequest
+	10, // 14: ShoppingListService.DeleteMeal:input_type -> DeleteMealRequest
+	12, // 15: ShoppingListService.GetIngredients:input_type -> GetIngredientsRequest
+	14, // 16: ShoppingListService.CreateIngredient:input_type -> CreateIngredientRequest
+	16, // 17: ShoppingListService.UpdateIngredient:input_type -> UpdateIngredientRequest
+	18, // 18: ShoppingListService.DeleteIngredient:input_type -> DeleteIngredientRequest
+	1,  // 19: ShoppingListService.GetPlan:output_type -> GetPlanResponse
+	3,  // 20: ShoppingListService.UpdatePlan:output_type -> UpdatePlanResponse
+	5,  // 21: ShoppingListService.GetMeals:output_type -> GetMealsResponse
+	7,  // 22: ShoppingListService.CreateMeal:output_type -> CreateMealResponse
+	9,  // 23: ShoppingListService.UpdateMeal:output_type -> UpdateMealResponse
+	11, // 24: ShoppingListService.DeleteMeal:output_type -> DeleteMealResponse
+	13, // 25: ShoppingListService.GetIngredients:output_type -> GetIngredientsResponse
+	15, // 26: ShoppingListService.CreateIngredient:output_type -> CreateIngredientResponse
+	17, // 27: ShoppingListService.UpdateIngredient:output_type -> UpdateIngredientResponse
+	19, // 28: ShoppingListService.DeleteIngredient:output_type -> DeleteIngredientResponse
+	19, // [19:29] is the sub-list for method output_type
+	9,  // [9:19] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_shopping_list_service_proto_init() }

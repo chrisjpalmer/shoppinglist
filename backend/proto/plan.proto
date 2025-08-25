@@ -1,6 +1,8 @@
 
 syntax = "proto3";
 
+import "meal.proto";
+
 message Plan {
   repeated Day days = 1;
 }
@@ -19,3 +21,8 @@ enum Category {
   CATEGORY_DINNER = 1;
   CATEGORY_SNACK = 2;
 }
+
+message PlanSummary {
+  repeated IngredientRef ingredient_ref = 1;
+}
+

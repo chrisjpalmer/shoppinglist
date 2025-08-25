@@ -210,19 +210,66 @@ func (x *CategoryMeal) GetMealId() int64 {
 	return 0
 }
 
+type PlanSummary struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IngredientRef []*IngredientRef       `protobuf:"bytes,1,rep,name=ingredient_ref,json=ingredientRef,proto3" json:"ingredient_ref,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PlanSummary) Reset() {
+	*x = PlanSummary{}
+	mi := &file_plan_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlanSummary) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlanSummary) ProtoMessage() {}
+
+func (x *PlanSummary) ProtoReflect() protoreflect.Message {
+	mi := &file_plan_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlanSummary.ProtoReflect.Descriptor instead.
+func (*PlanSummary) Descriptor() ([]byte, []int) {
+	return file_plan_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PlanSummary) GetIngredientRef() []*IngredientRef {
+	if x != nil {
+		return x.IngredientRef
+	}
+	return nil
+}
+
 var File_plan_proto protoreflect.FileDescriptor
 
 const file_plan_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"plan.proto\" \n" +
+	"plan.proto\x1a\n" +
+	"meal.proto\" \n" +
 	"\x04Plan\x12\x18\n" +
 	"\x04days\x18\x01 \x03(\v2\x04.DayR\x04days\";\n" +
 	"\x03Day\x124\n" +
 	"\x0ecategory_meals\x18\x01 \x03(\v2\r.CategoryMealR\rcategoryMeals\"N\n" +
 	"\fCategoryMeal\x12%\n" +
 	"\bcategory\x18\x01 \x01(\x0e2\t.CategoryR\bcategory\x12\x17\n" +
-	"\ameal_id\x18\x02 \x01(\x03R\x06mealId*G\n" +
+	"\ameal_id\x18\x02 \x01(\x03R\x06mealId\"D\n" +
+	"\vPlanSummary\x125\n" +
+	"\x0eingredient_ref\x18\x01 \x03(\v2\x0e.IngredientRefR\ringredientRef*G\n" +
 	"\bCategory\x12\x12\n" +
 	"\x0eCATEGORY_LUNCH\x10\x00\x12\x13\n" +
 	"\x0fCATEGORY_DINNER\x10\x01\x12\x12\n" +
@@ -241,22 +288,25 @@ func file_plan_proto_rawDescGZIP() []byte {
 }
 
 var file_plan_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_plan_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_plan_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_plan_proto_goTypes = []any{
-	(Category)(0),        // 0: Category
-	(*Plan)(nil),         // 1: Plan
-	(*Day)(nil),          // 2: Day
-	(*CategoryMeal)(nil), // 3: CategoryMeal
+	(Category)(0),         // 0: Category
+	(*Plan)(nil),          // 1: Plan
+	(*Day)(nil),           // 2: Day
+	(*CategoryMeal)(nil),  // 3: CategoryMeal
+	(*PlanSummary)(nil),   // 4: PlanSummary
+	(*IngredientRef)(nil), // 5: IngredientRef
 }
 var file_plan_proto_depIdxs = []int32{
 	2, // 0: Plan.days:type_name -> Day
 	3, // 1: Day.category_meals:type_name -> CategoryMeal
 	0, // 2: CategoryMeal.category:type_name -> Category
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	5, // 3: PlanSummary.ingredient_ref:type_name -> IngredientRef
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_plan_proto_init() }
@@ -264,13 +314,14 @@ func file_plan_proto_init() {
 	if File_plan_proto != nil {
 		return
 	}
+	file_meal_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_plan_proto_rawDesc), len(file_plan_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

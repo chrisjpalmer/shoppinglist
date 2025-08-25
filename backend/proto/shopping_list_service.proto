@@ -12,6 +12,7 @@ message GetPlanRequest {
 
 message GetPlanResponse {
   Plan plan = 1;
+  PlanSummary plan_summary = 2;
 }
 
 message UpdatePlanRequest {
