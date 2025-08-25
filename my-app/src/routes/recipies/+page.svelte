@@ -5,6 +5,8 @@
   	import type { IngredientRef, Meal } from '../../gen/meal_pb';
   import type { Ingredient } from '../../gen/ingredient_pb';
 
+	let psuedoId = 10000
+
 	const transport = createConnectTransport({
 		baseUrl: "http://localhost:8080",
 	});
@@ -89,7 +91,17 @@
 	}
 
 	function addNewIngredient() {
-		selectedMeal?.ingredients.push({id: BigInt(0), name:"", number: 1, isNew: true})
+		selectedMeal?.ingredients.push({id: BigInt(psuedoId), name:"", number: 1, isNew: true})
+		psuedoId++
+	}
+
+	function deleteIngredient(id:bigint) {
+		if(!selectedMeal) {
+			console.log("trying to delete an ingredient, but no selected meal")
+			return
+		}
+		const ing = selectedMeal.ingredients;
+		ing.splice(ing.findIndex(ml => ml.id == id), 1)
 	}
 
 	async function saveSelectedMeal() {
@@ -201,10 +213,10 @@
 	{#if selectedMeal}
 	<table>
 		<thead>
-			<tr><td>Ingredient</td><td>Number</td></tr>
+			<tr><td>Ingredient</td><td>Number</td><td>Action</td></tr>
 		</thead>
 		<tbody>
-			{#each selectedMeal.ingredients as ing}
+			{#each selectedMeal.ingredients as ing (ing.id)}
 			<tr>
 				<td>
 					<select bind:value={ing.id}>
@@ -215,6 +227,9 @@
 				</td>
 				<td>
 					<input bind:value={ing.number} type="number" min="1" max="20">
+				</td>
+				<td>
+					<button onclick={() => deleteIngredient(ing.id)}>Delete</button>
 				</td>
 			</tr>
 			{/each}
