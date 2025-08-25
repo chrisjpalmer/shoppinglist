@@ -6,8 +6,8 @@
   import type { Meal } from "../gen/meal_pb";
 
 	const categories = [
-		Category.DINNER,
 		Category.LUNCH,
+		Category.DINNER,
 		Category.SNACK,
 	]
 
@@ -47,7 +47,7 @@
 		}
 
 		const meals = plan.days[day].categoryMeals
-		const meal = meals.find(meal => meal.category = category)
+		const meal = meals.find(meal => meal.category == category)
 		if(!meal) {
 			console.log("could not find the meal for the given day and category")
 			return BigInt(0)
@@ -62,7 +62,7 @@
 		}
 
 		const meals = plan.days[day].categoryMeals
-		const meal = meals.find(meal => meal.category = category)
+		const meal = meals.find(meal => meal.category == category)
 		if(!meal) {
 			console.log("could not find the meal for the given day and category")
 			return BigInt(0)
@@ -112,7 +112,7 @@
 						}>
 						{#if allMeals}
 						{#each allMeals as meal (meal.id)}
-						<option value={meal.id}>{meal}</option>
+						<option value={meal.id}>{meal.name}</option>
 						{/each}
 						{/if}
 					</select>

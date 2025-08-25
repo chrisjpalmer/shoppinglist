@@ -39,6 +39,7 @@
 	}
 
 	let selectedMeal: SelectedMeal | null = $state(null)
+	let selectedMealPristine: SelectedMeal | null = null;
 
 	function getSelectedMealId() {
 		if(selectedMeal) {
@@ -58,6 +59,11 @@
 			return
 		}
 
+		selectedMeal = toSelectedMeal(meal)
+		selectedMealPristine = toSelectedMeal(meal)
+	}
+
+	function toSelectedMeal(meal:Meal) : SelectedMeal {
 		let smig: SelectedMealIngredient[] = []
 
 		for(const igRef of meal.ingredientRefs) {
@@ -75,8 +81,8 @@
 			})
 		}
 
-		selectedMeal = {
-			id: id,
+		return {
+			id: meal.id,
 			name: meal.name,
 			ingredients: smig,
 		}
@@ -115,7 +121,44 @@
 		if(!selectedMeal) {
 			return false;
 		}
-		return selectedMeal.newIngredients.length > 0
+		if(!selectedMealPristine) {
+			console.log("selectedMealPristine was null but shouldnt be")
+			return false;
+		}
+
+		if(selectedMeal.ingredients.length != selectedMealPristine.ingredients.length) {
+			return true
+		}
+
+		for(let i = 0; i < selectedMeal.ingredients.length; i++) {
+			const ig = selectedMeal.ingredients[i]
+			const igprist = selectedMealPristine.ingredients[i]
+			if(!ingredientsEqual(ig, igprist)) {
+				return true
+			}
+		}
+		
+		return false
+	}
+
+	function ingredientsEqual(a: SelectedMealIngredient, b:SelectedMealIngredient): boolean {
+		if(a.id != b.id) {
+			return false
+		}
+
+		if (a.isNew != b.isNew) {
+			return false
+		}
+
+		if (a.name != b.name) {
+			return false
+		}
+
+		if (a.number != b.number) {
+			return false
+		}
+
+		return true
 	}
 
 	function valid(): boolean {
@@ -123,7 +166,9 @@
 			return true;
 		}
 
-		for(const ning of selectedMeal.newIngredients) {
+		const newIngredients = selectedMeal.ingredients.filter(ig => ig.isNew)
+
+		for(const ning of newIngredients) {
 			if(ning.id == BigInt(0)) {
 				return false
 			}
@@ -141,7 +186,7 @@
 
 <svelte:head>
 	<title>Recipies</title>
-	<meta name="description" content="About this app" />
+	<meta name="description" content="Build the recipes" />
 </svelte:head>
 
 <div class="text-column">
