@@ -29,18 +29,13 @@
 		id: bigint
 		name: string
 		ingredients: SelectedMealIngredient[]
-		newIngredients: SelectedMealNewIngredient[]
 	}
 
 	interface SelectedMealIngredient {
 		id: bigint
 		name: string
 		number: number
-	}
-
-	interface SelectedMealNewIngredient {
-		id: bigint
-		number: number
+		isNew: boolean
 	}
 
 	let selectedMeal: SelectedMeal | null = $state(null)
@@ -76,6 +71,7 @@
 				id: ig.id,
 				name: ig.name,
 				number: igRef.number,
+				isNew: false,
 			})
 		}
 
@@ -83,12 +79,11 @@
 			id: id,
 			name: meal.name,
 			ingredients: smig,
-			newIngredients: []
 		}
 	}
 
 	function addNewIngredient() {
-		selectedMeal?.newIngredients.push({id: BigInt(0), number: 1})
+		selectedMeal?.ingredients.push({id: BigInt(0), name:"", number: 1, isNew: true})
 	}
 
 	async function saveSelectedMeal() {
@@ -164,21 +159,17 @@
 			<tr><td>Ingredient</td><td>Number</td></tr>
 		</thead>
 		<tbody>
-			{#each selectedMeal.ingredients as ing (ing.id)}
-			<tr><td>{ing.name}</td><td>{ing.number}</td></tr>
-			{/each}
-
-			{#each selectedMeal.newIngredients as newIng}
+			{#each selectedMeal.ingredients as ing}
 			<tr>
 				<td>
-					<select bind:value={newIng.id}>
+					<select bind:value={ing.id}>
 					{#each ingredients as ing}
 						<option value={ing.id}>{ing.name}</option>
 					{/each}
 					</select>
 				</td>
 				<td>
-					<input bind:value={newIng.number} type="number" min="1" max="20">
+					<input bind:value={ing.number} type="number" min="1" max="20">
 				</td>
 			</tr>
 			{/each}

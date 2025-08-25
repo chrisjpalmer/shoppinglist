@@ -29,6 +29,7 @@
 	async function refresh() {
 		const rs = await client.getMeals({})
 		displayMeals = rs.meals.map(m => ({id: m.id, name: m.name, _meal:m, isEdit: false}))
+		displayNewMeals = []
 	}
 
 	function editMeal(id: bigint) {

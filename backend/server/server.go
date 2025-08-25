@@ -30,5 +30,5 @@ func (s *Server) Listen() error {
 	path, handler := genconnect.NewShoppingListServiceHandler(s)
 	mux.Handle(path, handler)
 
-	return http.ListenAndServe(":8080", h2c.NewHandler(cors.Default().Handler(mux), &http2.Server{}))
+	return http.ListenAndServe(":8080", h2c.NewHandler(cors.AllowAll().Handler(mux), &http2.Server{}))
 }
