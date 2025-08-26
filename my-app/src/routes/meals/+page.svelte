@@ -19,16 +19,18 @@
 		id: bigint
 		name: string
 		isEdit: boolean
+		recipeUrl: string
 	}
 
 	interface DisplayNewMeal {
 		pseudoId: number
 		name: string
+		recipeUrl: string
 	}
 
 	async function refresh() {
 		const rs = await client.getMeals({})
-		displayMeals = rs.meals.map(m => ({id: m.id, name: m.name, _meal:m, isEdit: false}))
+		displayMeals = rs.meals.map(m => ({id: m.id, name: m.name, _meal:m, isEdit: false, recipeUrl: m.recipeUrl}))
 		displayNewMeals = []
 	}
 
@@ -55,6 +57,7 @@
 
 		let _meal = m._meal
 		_meal.name = m.name
+		_meal.recipeUrl = m.recipeUrl
 
 		await client.updateMeal({
 			meal: _meal,
@@ -73,6 +76,7 @@
 		await client.createMeal({
 			meal: {
 				name: m.name,
+				recipeUrl: m.recipeUrl,
 				ingredientRefs: [],
 			},
 		})
@@ -81,7 +85,7 @@
 	}
 
 	function addMeal() {
-		displayNewMeals.push({pseudoId: psuedoIdCounter, name: ""})
+		displayNewMeals.push({pseudoId: psuedoIdCounter, name: "", recipeUrl: ""})
 		psuedoIdCounter++
 	}
 
@@ -96,20 +100,46 @@
 
 	<table>
 		<thead>
-			<tr><td>Name</td><td>Action</td></tr>
+			<tr><td>Name</td><td>Recipe Url</td><td>Action</td></tr>
 		</thead>
 		<tbody>
 			{#each displayMeals as dm (dm.id)}
 				{#if dm.isEdit}
-					<tr><td><input type="text" bind:value={dm.name}></td><td><button onclick={() => saveMeal(dm.id)}>Save</button></td></tr>
+					<tr>
+						<td>
+							<input type="text" bind:value={dm.name}>
+						</td>
+						<td>
+							<input type="text" bind:value={dm.recipeUrl}>
+						</td>
+						<td>
+							<button onclick={() => saveMeal(dm.id)}>Save</button>
+						</td>
+					</tr>
 				{:else}
-					<tr><td>{dm.name}</td><td><button onclick={() => editMeal(dm.id)}>Edit</button><button onclick={() => deleteMeal(dm.id)}>Delete</button></td></tr>
+					<tr>
+						<td>{dm.name}</td>
+						<td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</td>
+						<td>
+							<button onclick={() => editMeal(dm.id)}>Edit</button><button onclick={() => deleteMeal(dm.id)}>Delete</button>
+						</td>
+					</tr>
 				{/if}
 			{/each}
 			{#each displayNewMeals as dm (psuedoIdCounter)}
-				<tr><td><input type="text" bind:value={dm.name}></td><td><button onclick={() => saveNewMeal(dm.pseudoId)}>Save</button></td></tr>
+				<tr>
+					<td>
+						<input type="text" bind:value={dm.name}>
+					</td>
+					<td>
+						<input type="text" bind:value={dm.recipeUrl}>
+					</td>
+					<td>
+						<button onclick={() => saveNewMeal(dm.pseudoId)}>Save</button>
+					</td>
+				</tr>
 			{/each}
-			<tr><td></td><td><button onclick={addMeal}>+</button></td></tr>
+			<tr><td></td><td></td><td><button onclick={addMeal}>+</button></td></tr>
 		</tbody>
 	</table>
 </div>

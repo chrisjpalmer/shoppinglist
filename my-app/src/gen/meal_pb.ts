@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file meal.proto.
  */
 export const file_meal: GenFile = /*@__PURE__*/
-  fileDesc("CgptZWFsLnByb3RvIkkKBE1lYWwSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRInCg9pbmdyZWRpZW50X3JlZnMYAyADKAsyDi5JbmdyZWRpZW50UmVmIjYKDUluZ3JlZGllbnRSZWYSFQoNaW5ncmVkaWVudF9pZBgBIAEoAxIOCgZudW1iZXIYAiABKAViBnByb3RvMw");
+  fileDesc("CgptZWFsLnByb3RvIl0KBE1lYWwSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRInCg9pbmdyZWRpZW50X3JlZnMYAyADKAsyDi5JbmdyZWRpZW50UmVmEhIKCnJlY2lwZV91cmwYBCABKAkiNgoNSW5ncmVkaWVudFJlZhIVCg1pbmdyZWRpZW50X2lkGAEgASgDEg4KBm51bWJlchgCIAEoBWIGcHJvdG8z");
 
 /**
  * @generated from message Meal
@@ -30,6 +30,11 @@ export type Meal = Message<"Meal"> & {
    * @generated from field: repeated IngredientRef ingredient_refs = 3;
    */
   ingredientRefs: IngredientRef[];
+
+  /**
+   * @generated from field: string recipe_url = 4;
+   */
+  recipeUrl: string;
 };
 
 /**

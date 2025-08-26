@@ -12,14 +12,14 @@ UPDATE plan set plan_data = ? WHERE id = ?;
 ------- MEALS ------
 
 -- name: GetMeals :many
-SELECT id, name, ingredients FROM meals
+SELECT id, name, ingredients, recipe_url FROM meals
 ORDER BY name;
 
 -- name: CreateMeal :one
-INSERT INTO meals (name, ingredients) VALUES (?, ?) RETURNING id;
+INSERT INTO meals (name, ingredients, recipe_url) VALUES (?, ?, ?) RETURNING id;
 
 -- name: UpdateMeal :exec
-UPDATE meals set name = ?, ingredients = ? WHERE id = ?;
+UPDATE meals set name = ?, ingredients = ?, recipe_url = ? WHERE id = ?;
 
 -- name: DeleteMeal :exec
 DELETE FROM meals WHERE id = ?;

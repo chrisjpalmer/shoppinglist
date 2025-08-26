@@ -6,6 +6,7 @@ CREATE TABLE plan (
 CREATE TABLE meals (
   id           INTEGER PRIMARY KEY,
   name         text    NOT NULL,
+  recipe_url   text    NOT NULL,
   ingredients  text    NOT NULL -- [ingredient ids]
 );
 

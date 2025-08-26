@@ -21,16 +21,17 @@ func (q *Queries) CreateIngredient(ctx context.Context, name string) (int64, err
 }
 
 const createMeal = `-- name: CreateMeal :one
-INSERT INTO meals (name, ingredients) VALUES (?, ?) RETURNING id
+INSERT INTO meals (name, ingredients, recipe_url) VALUES (?, ?, ?) RETURNING id
 `
 
 type CreateMealParams struct {
 	Name        string
 	Ingredients string
+	RecipeUrl   string
 }
 
 func (q *Queries) CreateMeal(ctx context.Context, arg CreateMealParams) (int64, error) {
-	row := q.db.QueryRowContext(ctx, createMeal, arg.Name, arg.Ingredients)
+	row := q.db.QueryRowContext(ctx, createMeal, arg.Name, arg.Ingredients, arg.RecipeUrl)
 	var id int64
 	err := row.Scan(&id)
 	return id, err
@@ -95,21 +96,33 @@ func (q *Queries) GetIngredients(ctx context.Context) ([]Ingredient, error) {
 
 const getMeals = `-- name: GetMeals :many
 
-SELECT id, name, ingredients FROM meals
+SELECT id, name, ingredients, recipe_url FROM meals
 ORDER BY name
 `
 
+type GetMealsRow struct {
+	ID          int64
+	Name        string
+	Ingredients string
+	RecipeUrl   string
+}
+
 // ----- MEALS ------
-func (q *Queries) GetMeals(ctx context.Context) ([]Meal, error) {
+func (q *Queries) GetMeals(ctx context.Context) ([]GetMealsRow, error) {
 	rows, err := q.db.QueryContext(ctx, getMeals)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Meal
+	var items []GetMealsRow
 	for rows.Next() {
-		var i Meal
-		if err := rows.Scan(&i.ID, &i.Name, &i.Ingredients); err != nil {
+		var i GetMealsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Ingredients,
+			&i.RecipeUrl,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -151,17 +164,23 @@ func (q *Queries) UpdateIngredient(ctx context.Context, arg UpdateIngredientPara
 }
 
 const updateMeal = `-- name: UpdateMeal :exec
-UPDATE meals set name = ?, ingredients = ? WHERE id = ?
+UPDATE meals set name = ?, ingredients = ?, recipe_url = ? WHERE id = ?
 `
 
 type UpdateMealParams struct {
 	Name        string
 	Ingredients string
+	RecipeUrl   string
 	ID          int64
 }
 
 func (q *Queries) UpdateMeal(ctx context.Context, arg UpdateMealParams) error {
-	_, err := q.db.ExecContext(ctx, updateMeal, arg.Name, arg.Ingredients, arg.ID)
+	_, err := q.db.ExecContext(ctx, updateMeal,
+		arg.Name,
+		arg.Ingredients,
+		arg.RecipeUrl,
+		arg.ID,
+	)
 	return err
 }
 

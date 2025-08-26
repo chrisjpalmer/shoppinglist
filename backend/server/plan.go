@@ -45,6 +45,9 @@ func (s *Server) GetPlan(ctx context.Context, rq *connect.Request[gen.GetPlanReq
 
 func (s *Server) UpdatePlan(ctx context.Context, rq *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error) {
 	p, err := s.sql.GetPlan(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	pstr, err := marshalJSON(rq.Msg.Plan)
 	if err != nil {
@@ -145,7 +148,7 @@ func selectedMealIds(p *gen.Plan) []int64 {
 	return meals
 }
 
-func mealsMap(meals []generated.Meal) (map[int64]*gen.Meal, error) {
+func mealsMap(meals []generated.GetMealsRow) (map[int64]*gen.Meal, error) {
 	mealsmap := make(map[int64]*gen.Meal)
 	for _, m := range meals {
 		var igrefs []*gen.IngredientRef
@@ -159,6 +162,7 @@ func mealsMap(meals []generated.Meal) (map[int64]*gen.Meal, error) {
 			Name:           m.Name,
 			Id:             m.ID,
 			IngredientRefs: igrefs,
+			RecipeUrl:      m.RecipeUrl,
 		}
 	}
 

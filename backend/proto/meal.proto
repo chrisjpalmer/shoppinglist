@@ -4,6 +4,7 @@ message Meal {
     int64 id = 1;
     string name = 2;
     repeated IngredientRef ingredient_refs = 3;
+    string recipe_url = 4;
 }
 
 message IngredientRef {

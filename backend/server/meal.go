@@ -27,6 +27,7 @@ func (s *Server) GetMeals(ctx context.Context, rq *connect.Request[gen.GetMealsR
 			Id:             m.ID,
 			Name:           m.Name,
 			IngredientRefs: ig,
+			RecipeUrl:      m.RecipeUrl,
 		})
 	}
 
@@ -41,6 +42,7 @@ func (s *Server) CreateMeal(ctx context.Context, rq *connect.Request[gen.CreateM
 	id, err := s.sql.CreateMeal(ctx, generated.CreateMealParams{
 		Name:        rq.Msg.Meal.Name,
 		Ingredients: igstr,
+		RecipeUrl:   rq.Msg.Meal.RecipeUrl,
 	})
 	if err != nil {
 		return nil, err
@@ -58,6 +60,7 @@ func (s *Server) UpdateMeal(ctx context.Context, rq *connect.Request[gen.UpdateM
 		ID:          rq.Msg.Meal.Id,
 		Name:        rq.Msg.Meal.Name,
 		Ingredients: igstr,
+		RecipeUrl:   rq.Msg.Meal.RecipeUrl,
 	})
 	if err != nil {
 		return nil, err
