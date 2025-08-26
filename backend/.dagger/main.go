@@ -15,7 +15,10 @@
 package main
 
 import (
+	"context"
 	"dagger/backend/internal/dagger"
+	"fmt"
+	"time"
 )
 
 type Backend struct{}
@@ -47,4 +50,38 @@ func (m *Backend) GenerateSqlc(
 		WithFile("sqlc.yaml", src.File("sqlc.yaml")).
 		WithExec([]string{"generate"}, dagger.ContainerWithExecOpts{UseEntrypoint: true}).
 		Directory("generated")
+}
+
+func (m *Backend) BuildLinuxArm64(
+	// +defaultPath="/backend"
+	src *dagger.Directory,
+) *dagger.Container {
+	backend := dag.Container().
+		From("golang:latest").
+		WithWorkdir("/app").
+		WithDirectory(".", src).
+		WithEnvVariable("GOOS", "linux").
+		WithEnvVariable("GOARCH", "arm64").
+		WithExec([]string{"go", "build", "-o", "backend", "."}).
+		File("backend")
+
+	return dag.Container().
+		From("alpine:latest").
+		WithWorkdir("/app").
+		WithFile("backend", backend)
+}
+
+func (m *Backend) DeployLinuxArm64(
+	ctx context.Context,
+	// +defaultPath="/backend"
+	src *dagger.Directory,
+	registryUsername string,
+	registryPassword *dagger.Secret,
+) error {
+	now := time.Now().Format("")
+	_, err := m.BuildLinuxArm64(src).
+		WithRegistryAuth("ghcr.io", registryUsername, registryPassword).
+		Publish(ctx, fmt.Sprintf("ghcr.io/%s/shoppinglist:%s", registryUsername, now))
+
+	return err
 }
