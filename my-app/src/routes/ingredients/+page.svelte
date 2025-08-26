@@ -1,13 +1,8 @@
 <script lang="ts">
-	import { ShoppingListService } from '../../gen/shopping_list_service_pb';
-	import { createClient } from "@connectrpc/connect";
-	import { createConnectTransport } from "@connectrpc/connect-web";
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
+  	import { CreateShoppingListService } from '$lib/shopping_list_service';
 
-	const transport = createConnectTransport({
-		baseUrl: "http://localhost:8080",
-	});
-
-	const client = createClient(ShoppingListService, transport);
+	const client = CreateShoppingListService(PUBLIC_BACKEND_URL)
 
 	let psuedoIdCounter = $state(0)
 

@@ -5,6 +5,8 @@
   import { Category, type Plan } from "../gen/plan_pb";
   import type { Meal } from "../gen/meal_pb";
   import type { Ingredient } from "../gen/ingredient_pb";
+  import { PUBLIC_BACKEND_URL } from "$env/static/public";
+  import { CreateShoppingListService } from "$lib/shopping_list_service";
 
 	const categories = [
 		Category.LUNCH,
@@ -22,11 +24,7 @@
 		"Sunday",
 	]
 
-	const transport = createConnectTransport({
-		baseUrl: "http://localhost:8080",
-	});
-
-	const client = createClient(ShoppingListService, transport);
+	const client = CreateShoppingListService(PUBLIC_BACKEND_URL)
 
 	interface DisplaySummary {
 		ingredients: DisplayIngredientCount[]

@@ -1,17 +1,12 @@
 <script lang="ts">
-	import { ShoppingListService } from '../../gen/shopping_list_service_pb';
-	import { createClient } from "@connectrpc/connect";
-	import { createConnectTransport } from "@connectrpc/connect-web";
   	import type { IngredientRef, Meal } from '../../gen/meal_pb';
-  import type { Ingredient } from '../../gen/ingredient_pb';
+  	import type { Ingredient } from '../../gen/ingredient_pb';
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
+  	import { CreateShoppingListService } from '$lib/shopping_list_service';
+
+	const client = CreateShoppingListService(PUBLIC_BACKEND_URL)
 
 	let psuedoId = 10000
-
-	const transport = createConnectTransport({
-		baseUrl: "http://localhost:8080",
-	});
-
-	const client = createClient(ShoppingListService, transport);
 
 	let meals: Meal[] = $state([])
 	let ingredients: Ingredient[] = $state([])
