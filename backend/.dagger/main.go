@@ -65,24 +65,29 @@ func (m *Backend) BuildLinuxArm64(
 		WithExec([]string{"go", "build", "-o", "backend", "."}).
 		File("backend")
 
-	return dag.Container().
+	return dag.Container(dagger.ContainerOpts{
+		Platform: "linux/arm64",
+	}).
 		From("alpine:latest").
 		WithWorkdir("/app").
 		WithFile("backend", backend)
 }
 
-func (m *Backend) DeployLinuxArm64(
+func (m *Backend) PublishLinuxArm64(
 	ctx context.Context,
 	// +defaultPath="/backend"
 	src *dagger.Directory,
-	registryUsername string,
 	registryPassword *dagger.Secret,
-	tailscaleAuthKey *dagger.Secret,
-) error {
-	now := time.Now().Format("")
-	_, err := m.BuildLinuxArm64(src).
-		WithRegistryAuth("ghcr.io", registryUsername, registryPassword).
-		Publish(ctx, fmt.Sprintf("ghcr.io/%s/shoppinglist:backend-%s", registryUsername, now))
+) (string, error) {
+	now := time.Now().Format("20060102-150405")
 
-	return err
+	_, err := m.BuildLinuxArm64(src).
+		WithRegistryAuth("ghcr.io", "USERNAME", registryPassword).
+		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist:backend-%s", now))
+
+	if err != nil {
+		return "", err
+	}
+
+	return now, nil
 }

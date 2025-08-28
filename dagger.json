@@ -1,0 +1,23 @@
+{
+  "name": "shoppinglist",
+  "engineVersion": "v0.18.15",
+  "sdk": {
+    "source": "go"
+  },
+  "dependencies": [
+    {
+      "name": "backend",
+      "source": "backend"
+    },
+    {
+      "name": "helm",
+      "source": "github.com/sagikazarmark/daggerverse/helm@helm/v0.14.0",
+      "pin": "4981f49ead356d64a860ef85caec9b0622933ad7"
+    },
+    {
+      "name": "my-app",
+      "source": "my-app"
+    }
+  ],
+  "source": ".dagger"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "my-app",
+  "engineVersion": "v0.18.15",
+  "sdk": {
+    "source": "go"
+  },
+  "source": ".dagger"
+}
