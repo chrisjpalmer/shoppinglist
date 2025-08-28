@@ -77,11 +77,12 @@ func (m *Backend) DeployLinuxArm64(
 	src *dagger.Directory,
 	registryUsername string,
 	registryPassword *dagger.Secret,
+	tailscaleAuthKey *dagger.Secret,
 ) error {
 	now := time.Now().Format("")
 	_, err := m.BuildLinuxArm64(src).
 		WithRegistryAuth("ghcr.io", registryUsername, registryPassword).
-		Publish(ctx, fmt.Sprintf("ghcr.io/%s/shoppinglist:%s", registryUsername, now))
+		Publish(ctx, fmt.Sprintf("ghcr.io/%s/shoppinglist:backend-%s", registryUsername, now))
 
 	return err
 }
