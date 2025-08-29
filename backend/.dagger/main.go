@@ -70,7 +70,8 @@ func (m *Backend) BuildLinuxArm64(
 	}).
 		From("alpine:latest").
 		WithWorkdir("/app").
-		WithFile("backend", backend)
+		WithFile("backend", backend).
+		WithEntrypoint([]string{"./backend"})
 }
 
 func (m *Backend) PublishLinuxArm64(

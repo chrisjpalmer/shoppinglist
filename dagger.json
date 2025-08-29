@@ -11,8 +11,7 @@
     },
     {
       "name": "helm",
-      "source": "github.com/sagikazarmark/daggerverse/helm@helm/v0.14.0",
-      "pin": "4981f49ead356d64a860ef85caec9b0622933ad7"
+      "source": "dagger-helm"
     },
     {
       "name": "my-app",

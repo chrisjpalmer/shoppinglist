@@ -4,6 +4,7 @@ metadata:
   name: frontend
   labels:
     app: frontend
+    {{- include "frontend.labels" . | nindent 4 }}
 spec:
   type: NodePort
   ports:
@@ -11,6 +12,6 @@ spec:
       targetPort: 3000
       protocol: TCP
       name: http
-      nodePort: 3000
+      nodePort: 30000
   selector:
     app: frontend

@@ -17,6 +17,7 @@ package main
 import (
 	"context"
 	"dagger/shoppinglist/internal/dagger"
+	"fmt"
 
 	"gopkg.in/yaml.v3"
 )
@@ -29,12 +30,14 @@ func (m *Shoppinglist) Deploy(ctx context.Context,
 	src *dagger.Directory,
 	registryPassword *dagger.Secret,
 	kubectlFile *dagger.Secret,
+	clusterIP string,
+	clusterHost string,
 ) error {
-	if err := m.DeployBackend(ctx, src, registryPassword, kubectlFile); err != nil {
+	if err := m.DeployBackend(ctx, src, registryPassword, kubectlFile, clusterIP, clusterHost); err != nil {
 		return err
 	}
 
-	if err := m.DeployFrontend(ctx, src, registryPassword, kubectlFile); err != nil {
+	if err := m.DeployFrontend(ctx, src, registryPassword, kubectlFile, clusterIP, clusterHost); err != nil {
 		return err
 	}
 
@@ -47,6 +50,8 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 	src *dagger.Directory,
 	registryPassword *dagger.Secret,
 	kubectlFile *dagger.Secret,
+	clusterIP string,
+	clusterHost string,
 ) error {
 	backend := src.Directory("backend")
 
@@ -65,11 +70,16 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 		return err
 	}
 
-	_, err = dag.Helm().
+	helm, err := helm(ctx, clusterIP, clusterHost)
+	if err != nil {
+		return err
+	}
+
+	_, err = helm.
 		Chart(backend.Directory("helm")).
 		Package().
 		WithKubeconfigSecret(kubectlFile).
-		Install("backend", dagger.HelmPackageInstallOpts{Namespace: "backend", Values: []*dagger.File{valuesYaml}}).
+		Install("backend", dagger.HelmPackageInstallOpts{Namespace: "backend", Values: []*dagger.File{valuesYaml}, CreateNamespace: true}).
 		Name(ctx)
 
 	if err != nil {
@@ -79,28 +89,14 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 	return nil
 }
 
-func makeValuesYaml(tag string) (*dagger.File, error) {
-	type Image struct {
-		Tag string `yaml:"tag"`
-	}
-	type ValuesYaml struct {
-		Image Image `yaml:"image"`
-	}
-
-	out, err := yaml.Marshal(ValuesYaml{Image: Image{Tag: tag}})
-	if err != nil {
-		return nil, err
-	}
-
-	return dag.File("values.yaml", string(out)), nil
-}
-
 func (m *Shoppinglist) DeployFrontend(ctx context.Context,
 	// +defaultPath="/"
 	// +ignore=["/local"]
 	src *dagger.Directory,
 	registryPassword *dagger.Secret,
 	kubectlFile *dagger.Secret,
+	clusterIP string,
+	clusterHost string,
 ) error {
 	frontend := src.Directory("my-app")
 
@@ -119,11 +115,16 @@ func (m *Shoppinglist) DeployFrontend(ctx context.Context,
 		return err
 	}
 
-	_, err = dag.Helm().
+	helm, err := helm(ctx, clusterIP, clusterHost)
+	if err != nil {
+		return err
+	}
+
+	_, err = helm.
 		Chart(frontend.Directory("helm")).
 		Package().
 		WithKubeconfigSecret(kubectlFile).
-		Install("frontend", dagger.HelmPackageInstallOpts{Namespace: "frontend", Values: []*dagger.File{valuesYaml}}).
+		Install("frontend", dagger.HelmPackageInstallOpts{Namespace: "frontend", Values: []*dagger.File{valuesYaml}, CreateNamespace: true}).
 		Name(ctx)
 
 	if err != nil {
@@ -131,4 +132,37 @@ func (m *Shoppinglist) DeployFrontend(ctx context.Context,
 	}
 
 	return nil
+}
+
+func helm(ctx context.Context, destIP, destHost string) (*dagger.Helm, error) {
+	helm := dag.Container().From("alpine/helm:latest")
+
+	etcHosts, err := helm.File("/etc/hosts").Contents(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	etcHosts += fmt.Sprintf("\n%s\t%s", destIP, destHost)
+
+	helm = helm.WithNewFile("/etc/hosts", etcHosts)
+
+	return dag.Helm(dagger.HelmOpts{
+		Container: helm,
+	}), nil
+}
+
+func makeValuesYaml(tag string) (*dagger.File, error) {
+	type Image struct {
+		Tag string `yaml:"tag"`
+	}
+	type ValuesYaml struct {
+		Image Image `yaml:"image"`
+	}
+
+	out, err := yaml.Marshal(ValuesYaml{Image: Image{Tag: tag}})
+	if err != nil {
+		return nil, err
+	}
+
+	return dag.File("values.yaml", string(out)), nil
 }

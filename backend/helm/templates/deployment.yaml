@@ -4,6 +4,7 @@ metadata:
   name: backend
   labels:
     app: backend
+    {{- include "backend.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
