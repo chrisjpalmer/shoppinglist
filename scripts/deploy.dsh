@@ -1,3 +1,3 @@
 #!/usr/bin/env dagger
 
-. | deploy $(secret env://GH_API_KEY) $(secret file://local/kubecfg.yaml) 100.106.60.93 pipi
+. | deploy $(secret file://local/GH_API_KEY) $(secret file://local/kubecfg.yaml) 100.106.60.93 pipi
