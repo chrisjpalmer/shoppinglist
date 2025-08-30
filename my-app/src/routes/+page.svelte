@@ -117,6 +117,7 @@
 			return
 		}
 		await client.updatePlan({plan: plan})
+		dirty = false;
 		refresh()
 	}
 
