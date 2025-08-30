@@ -28,6 +28,7 @@
 	interface SelectedMeal {
 		id: bigint
 		name: string
+		recipeUrl: string
 		ingredients: SelectedMealIngredient[]
 	}
 
@@ -84,6 +85,7 @@
 		return {
 			id: meal.id,
 			name: meal.name,
+			recipeUrl: meal.recipeUrl,
 			ingredients: smig,
 		}
 	}
@@ -120,6 +122,7 @@
 			meal: {
 				id: selectedMeal.id,
 				name: selectedMeal.name,
+				recipeUrl: selectedMeal.recipeUrl,
 				ingredientRefs: igRefs,
 			},
 		})
