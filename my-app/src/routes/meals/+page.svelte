@@ -14,6 +14,7 @@
 		name: string
 		isEdit: boolean
 		recipeUrl: string
+		hasIngredients: boolean
 	}
 
 	interface DisplayNewMeal {
@@ -24,7 +25,14 @@
 
 	async function refresh() {
 		const rs = await client.getMeals({})
-		displayMeals = rs.meals.map(m => ({id: m.id, name: m.name, _meal:m, isEdit: false, recipeUrl: m.recipeUrl}))
+		displayMeals = rs.meals.map(m => ({
+			id: m.id, 
+			name: m.name, 
+			_meal:m, 
+			isEdit: false, 
+			recipeUrl: m.recipeUrl, 
+			hasIngredients: m.ingredientRefs && m.ingredientRefs.length > 0
+		}))
 		displayNewMeals = []
 	}
 
@@ -112,7 +120,7 @@
 					</tr>
 				{:else}
 					<tr>
-						<td>{dm.name}</td>
+						<td style:color={!dm.hasIngredients ? 'red' : 'initial'}>{dm.name}</td>
 						<td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</td>
 						<td>
 							<button onclick={() => editMeal(dm.id)}>Edit</button><button onclick={() => deleteMeal(dm.id)}>Delete</button>
