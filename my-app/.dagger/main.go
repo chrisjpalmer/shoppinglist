@@ -32,7 +32,7 @@ func (m *MyApp) BuildLinuxArm64(
 		WithWorkdir("/app").
 		WithDirectory(".", src).
 		WithExec([]string{"npm", "install"}).
-		WithEnvVariable("PUBLIC_BACKEND_URL", "http://pipi:8081").
+		WithEnvVariable("PUBLIC_BACKEND_PORT", "30001").
 		WithExec([]string{"npm", "run", "build"}).
 		Directory("build")
 

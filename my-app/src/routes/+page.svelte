@@ -5,7 +5,6 @@
   import { Category, type Plan } from "../gen/plan_pb";
   import type { Meal } from "../gen/meal_pb";
   import type { Ingredient } from "../gen/ingredient_pb";
-  import { PUBLIC_BACKEND_URL } from "$env/static/public";
   import { CreateShoppingListService } from "$lib/shopping_list_service";
 
 	const categories = [
@@ -24,7 +23,7 @@
 		"Sunday",
 	]
 
-	const client = CreateShoppingListService(PUBLIC_BACKEND_URL)
+	const client = CreateShoppingListService()
 
 	interface DisplaySummary {
 		ingredients: DisplayIngredientCount[]

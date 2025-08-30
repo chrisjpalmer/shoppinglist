@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { PUBLIC_BACKEND_URL } from '$env/static/public';
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
 
-	const client = CreateShoppingListService(PUBLIC_BACKEND_URL)
+	const client = CreateShoppingListService()
 
 	let psuedoIdCounter = $state(0)
 
