@@ -14,7 +14,8 @@ jobs:
       - name: Deploy
         uses: dagger/dagger-for-github@8.0.0
         with:
-          call: deploy --registry-password=env://GH_API_KEY --kubectl-file=env://KUBECTL_FILE
+          verb: call
+          args: deploy --registry-password=env://GH_API_KEY --kubectl-file=env://KUBECTL_FILE
           cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
           version: "latest"
         env:
