@@ -11,14 +11,13 @@ jobs:
         uses: tailscale/github-action@v3
         with:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
-      - name: Set env
-        run: |
-          echo "GH_API_KEY=${{ secrets.GH_API_KEY }}" >> $GITHUB_ENV
-          echo "KUBECTL_FILE=${{ secrets.KUBECTL_FILE }}" >> $GITHUB_ENV
       - name: Deploy
         uses: dagger/dagger-for-github@8.0.0
         with:
           call: deploy --registry-password=env://GH_API_KEY --kubectl-file=env://KUBECTL_FILE
           cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
           version: "latest"
+        env:
+          GH_API_KEY: ${{ secrets.GH_API_KEY }}
+          KUBECTL_FILE: ${{ secrets.KUBECTL_FILE }}
 
