@@ -142,8 +142,8 @@
 		</thead>
 		<tbody>
 			{#each categories as category}
-			<tr>
-				<td>{Category[category]}</td>
+			<tr class="category">
+				<td class="day">{Category[category]}</td>
 				{#each days as day, i}
 				<td>
 					<select bind:value={
@@ -190,11 +190,27 @@
 		justify-content: center;
 		align-items: center;
 		flex: 0.6;
+		overflow-x: auto;
 	}
 
 	h1 {
 		width: 100%;
 	}
 
+	table {
+		width: 100%;
+	}
+
+	select {
+		height: 30px;
+	}
+
+	.category {
+		height: 80px;
+	}
+
+	thead td, .day {
+		font-weight: bold;
+	}
 	
 </style>
