@@ -17,7 +17,6 @@ package main
 import (
 	"context"
 	"dagger/shoppinglist/internal/dagger"
-	"fmt"
 
 	"gopkg.in/yaml.v3"
 )
@@ -30,14 +29,12 @@ func (m *Shoppinglist) Deploy(ctx context.Context,
 	src *dagger.Directory,
 	registryPassword *dagger.Secret,
 	kubectlFile *dagger.Secret,
-	clusterIP string,
-	clusterHost string,
 ) error {
-	if err := m.DeployBackend(ctx, src, registryPassword, kubectlFile, clusterIP, clusterHost); err != nil {
+	if err := m.DeployBackend(ctx, src, registryPassword, kubectlFile); err != nil {
 		return err
 	}
 
-	if err := m.DeployFrontend(ctx, src, registryPassword, kubectlFile, clusterIP, clusterHost); err != nil {
+	if err := m.DeployFrontend(ctx, src, registryPassword, kubectlFile); err != nil {
 		return err
 	}
 
@@ -50,8 +47,6 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 	src *dagger.Directory,
 	registryPassword *dagger.Secret,
 	kubectlFile *dagger.Secret,
-	clusterIP string,
-	clusterHost string,
 ) error {
 	backend := src.Directory("backend")
 
@@ -70,12 +65,7 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 		return err
 	}
 
-	helm, err := helm(ctx, clusterIP, clusterHost)
-	if err != nil {
-		return err
-	}
-
-	_, err = helm.
+	_, err = dag.Helm().
 		Chart(backend.Directory("helm")).
 		Package().
 		WithKubeconfigSecret(kubectlFile).
@@ -95,8 +85,6 @@ func (m *Shoppinglist) DeployFrontend(ctx context.Context,
 	src *dagger.Directory,
 	registryPassword *dagger.Secret,
 	kubectlFile *dagger.Secret,
-	clusterIP string,
-	clusterHost string,
 ) error {
 	frontend := src.Directory("my-app")
 
@@ -115,12 +103,7 @@ func (m *Shoppinglist) DeployFrontend(ctx context.Context,
 		return err
 	}
 
-	helm, err := helm(ctx, clusterIP, clusterHost)
-	if err != nil {
-		return err
-	}
-
-	_, err = helm.
+	_, err = dag.Helm().
 		Chart(frontend.Directory("helm")).
 		Package().
 		WithKubeconfigSecret(kubectlFile).
@@ -132,23 +115,6 @@ func (m *Shoppinglist) DeployFrontend(ctx context.Context,
 	}
 
 	return nil
-}
-
-func helm(ctx context.Context, destIP, destHost string) (*dagger.Helm, error) {
-	helm := dag.Container().From("alpine/helm:latest")
-
-	etcHosts, err := helm.File("/etc/hosts").Contents(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	etcHosts += fmt.Sprintf("\n%s\t%s", destIP, destHost)
-
-	helm = helm.WithNewFile("/etc/hosts", etcHosts)
-
-	return dag.Helm(dagger.HelmOpts{
-		Container: helm,
-	}), nil
 }
 
 func makeValuesYaml(tag string) (*dagger.File, error) {
