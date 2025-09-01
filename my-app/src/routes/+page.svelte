@@ -199,6 +199,7 @@
 
 	table {
 		width: 100%;
+		display: block;
 	}
 
 	select {
