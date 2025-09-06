@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
-	"sort"
 
 	"connectrpc.com/connect"
 	"github.com/chrisjpalmer/shoppinglist/backend/gen"
@@ -103,6 +102,11 @@ func (s *Server) planSummary(ctx context.Context, p *gen.Plan) (*gen.PlanSummary
 		return nil, err
 	}
 
+	ingg, err := s.sql.GetIngredients(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	smIds := selectedMealIds(p)
 
 	ingredientCounts := make(map[int64]int32)
@@ -120,23 +124,16 @@ func (s *Server) planSummary(ctx context.Context, p *gen.Plan) (*gen.PlanSummary
 		}
 	}
 
-	var igrefs IngredientRefs
-	for id, ct := range ingredientCounts {
-		igrefs = append(igrefs, &gen.IngredientRef{IngredientId: id, Number: ct})
+	var igrefs []*gen.IngredientRef
+	for _, ing := range ingg {
+		ct := ingredientCounts[ing.ID]
+		igrefs = append(igrefs, &gen.IngredientRef{IngredientId: ing.ID, Number: ct})
 	}
-
-	sort.Sort(igrefs)
 
 	return &gen.PlanSummary{
 		IngredientRef: igrefs,
 	}, nil
 }
-
-type IngredientRefs []*gen.IngredientRef
-
-func (x IngredientRefs) Len() int           { return len(x) }
-func (x IngredientRefs) Less(i, j int) bool { return x[i].IngredientId < x[j].IngredientId }
-func (x IngredientRefs) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
 
 func selectedMealIds(p *gen.Plan) []int64 {
 	var meals []int64
