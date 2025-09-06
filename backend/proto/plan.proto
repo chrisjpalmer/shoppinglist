@@ -5,6 +5,9 @@ import "meal.proto";
 
 message Plan {
   repeated Day days = 1;
+  bool current_plan = 2;
+  int64 next_id = 3;
+  int64 prev_id = 4;
 }
 
 message Day {

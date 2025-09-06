@@ -73,6 +73,9 @@ func (Category) EnumDescriptor() ([]byte, []int) {
 type Plan struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Days          []*Day                 `protobuf:"bytes,1,rep,name=days,proto3" json:"days,omitempty"`
+	CurrentPlan   bool                   `protobuf:"varint,2,opt,name=current_plan,json=currentPlan,proto3" json:"current_plan,omitempty"`
+	NextId        int64                  `protobuf:"varint,3,opt,name=next_id,json=nextId,proto3" json:"next_id,omitempty"`
+	PrevId        int64                  `protobuf:"varint,4,opt,name=prev_id,json=prevId,proto3" json:"prev_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -112,6 +115,27 @@ func (x *Plan) GetDays() []*Day {
 		return x.Days
 	}
 	return nil
+}
+
+func (x *Plan) GetCurrentPlan() bool {
+	if x != nil {
+		return x.CurrentPlan
+	}
+	return false
+}
+
+func (x *Plan) GetNextId() int64 {
+	if x != nil {
+		return x.NextId
+	}
+	return 0
+}
+
+func (x *Plan) GetPrevId() int64 {
+	if x != nil {
+		return x.PrevId
+	}
+	return 0
 }
 
 type Day struct {
@@ -260,9 +284,12 @@ const file_plan_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
 	"plan.proto\x1a\n" +
-	"meal.proto\" \n" +
+	"meal.proto\"u\n" +
 	"\x04Plan\x12\x18\n" +
-	"\x04days\x18\x01 \x03(\v2\x04.DayR\x04days\";\n" +
+	"\x04days\x18\x01 \x03(\v2\x04.DayR\x04days\x12!\n" +
+	"\fcurrent_plan\x18\x02 \x01(\bR\vcurrentPlan\x12\x17\n" +
+	"\anext_id\x18\x03 \x01(\x03R\x06nextId\x12\x17\n" +
+	"\aprev_id\x18\x04 \x01(\x03R\x06prevId\";\n" +
 	"\x03Day\x124\n" +
 	"\x0ecategory_meals\x18\x01 \x03(\v2\r.CategoryMealR\rcategoryMeals\"N\n" +
 	"\fCategoryMeal\x12%\n" +

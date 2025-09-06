@@ -6,8 +6,16 @@ import "ingredient.proto";
 
 // plan
 
-message GetPlanRequest {
+message GetCurrentPlanRequest {
 
+}
+
+message GetCurrentPlanResponse {
+  int64 plan_id = 1;
+}
+
+message GetPlanRequest {
+  int64 plan_id = 1;
 }
 
 message GetPlanResponse {
@@ -16,10 +24,19 @@ message GetPlanResponse {
 }
 
 message UpdatePlanRequest {
-  Plan plan = 1;
+  int64 plan_id = 1;
+  Plan plan = 2;
 }
 
 message UpdatePlanResponse {
+
+}
+
+message MarkPlanAsCurrentRequest {
+  int64 plan_id = 1;
+}
+
+message MarkPlanAsCurrentResponse {
 
 }
 
@@ -95,8 +112,10 @@ message DeleteIngredientResponse {
 
 service ShoppingListService {
   // plan
+  rpc GetCurrentPlan(GetCurrentPlanRequest) returns (GetCurrentPlanResponse);
   rpc GetPlan(GetPlanRequest) returns (GetPlanResponse);
   rpc UpdatePlan(UpdatePlanRequest) returns (UpdatePlanResponse);
+  rpc MarkPlanAsCurrent(MarkPlanAsCurrentRequest) returns (MarkPlanAsCurrentResponse);
 
   // meals
   rpc GetMeals(GetMealsRequest) returns (GetMealsResponse);

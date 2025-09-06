@@ -1,13 +1,22 @@
 ------- PLAN --------
 
+-- name: GetCurrentPlan :many
+SELECT id FROM plan WHERE current_plan = true;
+
 -- name: GetPlan :one
-SELECT * FROM plan LIMIT 1;
+SELECT * FROM plan WHERE id = ?;
 
 -- name: CreatePlan :exec
 INSERT INTO plan (plan_data) VALUES (?);
 
 -- name: UpdatePlan :exec
 UPDATE plan set plan_data = ? WHERE id = ?;
+
+-- name: UnmarkPlansAsCurrent :exec
+UPDATE plan SET current_plan = false;
+
+-- name: MarkPlanAsCurrent :exec
+UPDATE plan SET curent_plan = true WHERE id = ?;
 
 ------- MEALS ------
 

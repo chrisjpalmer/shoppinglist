@@ -33,12 +33,18 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// ShoppingListServiceGetCurrentPlanProcedure is the fully-qualified name of the
+	// ShoppingListService's GetCurrentPlan RPC.
+	ShoppingListServiceGetCurrentPlanProcedure = "/ShoppingListService/GetCurrentPlan"
 	// ShoppingListServiceGetPlanProcedure is the fully-qualified name of the ShoppingListService's
 	// GetPlan RPC.
 	ShoppingListServiceGetPlanProcedure = "/ShoppingListService/GetPlan"
 	// ShoppingListServiceUpdatePlanProcedure is the fully-qualified name of the ShoppingListService's
 	// UpdatePlan RPC.
 	ShoppingListServiceUpdatePlanProcedure = "/ShoppingListService/UpdatePlan"
+	// ShoppingListServiceMarkPlanAsCurrentProcedure is the fully-qualified name of the
+	// ShoppingListService's MarkPlanAsCurrent RPC.
+	ShoppingListServiceMarkPlanAsCurrentProcedure = "/ShoppingListService/MarkPlanAsCurrent"
 	// ShoppingListServiceGetMealsProcedure is the fully-qualified name of the ShoppingListService's
 	// GetMeals RPC.
 	ShoppingListServiceGetMealsProcedure = "/ShoppingListService/GetMeals"
@@ -68,8 +74,10 @@ const (
 // ShoppingListServiceClient is a client for the ShoppingListService service.
 type ShoppingListServiceClient interface {
 	// plan
+	GetCurrentPlan(context.Context, *connect.Request[gen.GetCurrentPlanRequest]) (*connect.Response[gen.GetCurrentPlanResponse], error)
 	GetPlan(context.Context, *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error)
 	UpdatePlan(context.Context, *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error)
+	MarkPlanAsCurrent(context.Context, *connect.Request[gen.MarkPlanAsCurrentRequest]) (*connect.Response[gen.MarkPlanAsCurrentResponse], error)
 	// meals
 	GetMeals(context.Context, *connect.Request[gen.GetMealsRequest]) (*connect.Response[gen.GetMealsResponse], error)
 	CreateMeal(context.Context, *connect.Request[gen.CreateMealRequest]) (*connect.Response[gen.CreateMealResponse], error)
@@ -92,6 +100,12 @@ func NewShoppingListServiceClient(httpClient connect.HTTPClient, baseURL string,
 	baseURL = strings.TrimRight(baseURL, "/")
 	shoppingListServiceMethods := gen.File_shopping_list_service_proto.Services().ByName("ShoppingListService").Methods()
 	return &shoppingListServiceClient{
+		getCurrentPlan: connect.NewClient[gen.GetCurrentPlanRequest, gen.GetCurrentPlanResponse](
+			httpClient,
+			baseURL+ShoppingListServiceGetCurrentPlanProcedure,
+			connect.WithSchema(shoppingListServiceMethods.ByName("GetCurrentPlan")),
+			connect.WithClientOptions(opts...),
+		),
 		getPlan: connect.NewClient[gen.GetPlanRequest, gen.GetPlanResponse](
 			httpClient,
 			baseURL+ShoppingListServiceGetPlanProcedure,
@@ -102,6 +116,12 @@ func NewShoppingListServiceClient(httpClient connect.HTTPClient, baseURL string,
 			httpClient,
 			baseURL+ShoppingListServiceUpdatePlanProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("UpdatePlan")),
+			connect.WithClientOptions(opts...),
+		),
+		markPlanAsCurrent: connect.NewClient[gen.MarkPlanAsCurrentRequest, gen.MarkPlanAsCurrentResponse](
+			httpClient,
+			baseURL+ShoppingListServiceMarkPlanAsCurrentProcedure,
+			connect.WithSchema(shoppingListServiceMethods.ByName("MarkPlanAsCurrent")),
 			connect.WithClientOptions(opts...),
 		),
 		getMeals: connect.NewClient[gen.GetMealsRequest, gen.GetMealsResponse](
@@ -157,16 +177,23 @@ func NewShoppingListServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // shoppingListServiceClient implements ShoppingListServiceClient.
 type shoppingListServiceClient struct {
-	getPlan          *connect.Client[gen.GetPlanRequest, gen.GetPlanResponse]
-	updatePlan       *connect.Client[gen.UpdatePlanRequest, gen.UpdatePlanResponse]
-	getMeals         *connect.Client[gen.GetMealsRequest, gen.GetMealsResponse]
-	createMeal       *connect.Client[gen.CreateMealRequest, gen.CreateMealResponse]
-	updateMeal       *connect.Client[gen.UpdateMealRequest, gen.UpdateMealResponse]
-	deleteMeal       *connect.Client[gen.DeleteMealRequest, gen.DeleteMealResponse]
-	getIngredients   *connect.Client[gen.GetIngredientsRequest, gen.GetIngredientsResponse]
-	createIngredient *connect.Client[gen.CreateIngredientRequest, gen.CreateIngredientResponse]
-	updateIngredient *connect.Client[gen.UpdateIngredientRequest, gen.UpdateIngredientResponse]
-	deleteIngredient *connect.Client[gen.DeleteIngredientRequest, gen.DeleteIngredientResponse]
+	getCurrentPlan    *connect.Client[gen.GetCurrentPlanRequest, gen.GetCurrentPlanResponse]
+	getPlan           *connect.Client[gen.GetPlanRequest, gen.GetPlanResponse]
+	updatePlan        *connect.Client[gen.UpdatePlanRequest, gen.UpdatePlanResponse]
+	markPlanAsCurrent *connect.Client[gen.MarkPlanAsCurrentRequest, gen.MarkPlanAsCurrentResponse]
+	getMeals          *connect.Client[gen.GetMealsRequest, gen.GetMealsResponse]
+	createMeal        *connect.Client[gen.CreateMealRequest, gen.CreateMealResponse]
+	updateMeal        *connect.Client[gen.UpdateMealRequest, gen.UpdateMealResponse]
+	deleteMeal        *connect.Client[gen.DeleteMealRequest, gen.DeleteMealResponse]
+	getIngredients    *connect.Client[gen.GetIngredientsRequest, gen.GetIngredientsResponse]
+	createIngredient  *connect.Client[gen.CreateIngredientRequest, gen.CreateIngredientResponse]
+	updateIngredient  *connect.Client[gen.UpdateIngredientRequest, gen.UpdateIngredientResponse]
+	deleteIngredient  *connect.Client[gen.DeleteIngredientRequest, gen.DeleteIngredientResponse]
+}
+
+// GetCurrentPlan calls ShoppingListService.GetCurrentPlan.
+func (c *shoppingListServiceClient) GetCurrentPlan(ctx context.Context, req *connect.Request[gen.GetCurrentPlanRequest]) (*connect.Response[gen.GetCurrentPlanResponse], error) {
+	return c.getCurrentPlan.CallUnary(ctx, req)
 }
 
 // GetPlan calls ShoppingListService.GetPlan.
@@ -177,6 +204,11 @@ func (c *shoppingListServiceClient) GetPlan(ctx context.Context, req *connect.Re
 // UpdatePlan calls ShoppingListService.UpdatePlan.
 func (c *shoppingListServiceClient) UpdatePlan(ctx context.Context, req *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error) {
 	return c.updatePlan.CallUnary(ctx, req)
+}
+
+// MarkPlanAsCurrent calls ShoppingListService.MarkPlanAsCurrent.
+func (c *shoppingListServiceClient) MarkPlanAsCurrent(ctx context.Context, req *connect.Request[gen.MarkPlanAsCurrentRequest]) (*connect.Response[gen.MarkPlanAsCurrentResponse], error) {
+	return c.markPlanAsCurrent.CallUnary(ctx, req)
 }
 
 // GetMeals calls ShoppingListService.GetMeals.
@@ -222,8 +254,10 @@ func (c *shoppingListServiceClient) DeleteIngredient(ctx context.Context, req *c
 // ShoppingListServiceHandler is an implementation of the ShoppingListService service.
 type ShoppingListServiceHandler interface {
 	// plan
+	GetCurrentPlan(context.Context, *connect.Request[gen.GetCurrentPlanRequest]) (*connect.Response[gen.GetCurrentPlanResponse], error)
 	GetPlan(context.Context, *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error)
 	UpdatePlan(context.Context, *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error)
+	MarkPlanAsCurrent(context.Context, *connect.Request[gen.MarkPlanAsCurrentRequest]) (*connect.Response[gen.MarkPlanAsCurrentResponse], error)
 	// meals
 	GetMeals(context.Context, *connect.Request[gen.GetMealsRequest]) (*connect.Response[gen.GetMealsResponse], error)
 	CreateMeal(context.Context, *connect.Request[gen.CreateMealRequest]) (*connect.Response[gen.CreateMealResponse], error)
@@ -242,6 +276,12 @@ type ShoppingListServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewShoppingListServiceHandler(svc ShoppingListServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	shoppingListServiceMethods := gen.File_shopping_list_service_proto.Services().ByName("ShoppingListService").Methods()
+	shoppingListServiceGetCurrentPlanHandler := connect.NewUnaryHandler(
+		ShoppingListServiceGetCurrentPlanProcedure,
+		svc.GetCurrentPlan,
+		connect.WithSchema(shoppingListServiceMethods.ByName("GetCurrentPlan")),
+		connect.WithHandlerOptions(opts...),
+	)
 	shoppingListServiceGetPlanHandler := connect.NewUnaryHandler(
 		ShoppingListServiceGetPlanProcedure,
 		svc.GetPlan,
@@ -252,6 +292,12 @@ func NewShoppingListServiceHandler(svc ShoppingListServiceHandler, opts ...conne
 		ShoppingListServiceUpdatePlanProcedure,
 		svc.UpdatePlan,
 		connect.WithSchema(shoppingListServiceMethods.ByName("UpdatePlan")),
+		connect.WithHandlerOptions(opts...),
+	)
+	shoppingListServiceMarkPlanAsCurrentHandler := connect.NewUnaryHandler(
+		ShoppingListServiceMarkPlanAsCurrentProcedure,
+		svc.MarkPlanAsCurrent,
+		connect.WithSchema(shoppingListServiceMethods.ByName("MarkPlanAsCurrent")),
 		connect.WithHandlerOptions(opts...),
 	)
 	shoppingListServiceGetMealsHandler := connect.NewUnaryHandler(
@@ -304,10 +350,14 @@ func NewShoppingListServiceHandler(svc ShoppingListServiceHandler, opts ...conne
 	)
 	return "/ShoppingListService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case ShoppingListServiceGetCurrentPlanProcedure:
+			shoppingListServiceGetCurrentPlanHandler.ServeHTTP(w, r)
 		case ShoppingListServiceGetPlanProcedure:
 			shoppingListServiceGetPlanHandler.ServeHTTP(w, r)
 		case ShoppingListServiceUpdatePlanProcedure:
 			shoppingListServiceUpdatePlanHandler.ServeHTTP(w, r)
+		case ShoppingListServiceMarkPlanAsCurrentProcedure:
+			shoppingListServiceMarkPlanAsCurrentHandler.ServeHTTP(w, r)
 		case ShoppingListServiceGetMealsProcedure:
 			shoppingListServiceGetMealsHandler.ServeHTTP(w, r)
 		case ShoppingListServiceCreateMealProcedure:
@@ -333,12 +383,20 @@ func NewShoppingListServiceHandler(svc ShoppingListServiceHandler, opts ...conne
 // UnimplementedShoppingListServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedShoppingListServiceHandler struct{}
 
+func (UnimplementedShoppingListServiceHandler) GetCurrentPlan(context.Context, *connect.Request[gen.GetCurrentPlanRequest]) (*connect.Response[gen.GetCurrentPlanResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.GetCurrentPlan is not implemented"))
+}
+
 func (UnimplementedShoppingListServiceHandler) GetPlan(context.Context, *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.GetPlan is not implemented"))
 }
 
 func (UnimplementedShoppingListServiceHandler) UpdatePlan(context.Context, *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.UpdatePlan is not implemented"))
+}
+
+func (UnimplementedShoppingListServiceHandler) MarkPlanAsCurrent(context.Context, *connect.Request[gen.MarkPlanAsCurrentRequest]) (*connect.Response[gen.MarkPlanAsCurrentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.MarkPlanAsCurrent is not implemented"))
 }
 
 func (UnimplementedShoppingListServiceHandler) GetMeals(context.Context, *connect.Request[gen.GetMealsRequest]) (*connect.Response[gen.GetMealsResponse], error) {
