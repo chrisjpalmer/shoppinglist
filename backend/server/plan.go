@@ -127,7 +127,9 @@ func (s *Server) planSummary(ctx context.Context, p *gen.Plan) (*gen.PlanSummary
 	var igrefs []*gen.IngredientRef
 	for _, ing := range ingg {
 		ct := ingredientCounts[ing.ID]
-		igrefs = append(igrefs, &gen.IngredientRef{IngredientId: ing.ID, Number: ct})
+		if ct > 0 {
+			igrefs = append(igrefs, &gen.IngredientRef{IngredientId: ing.ID, Number: ct})
+		}
 	}
 
 	return &gen.PlanSummary{
