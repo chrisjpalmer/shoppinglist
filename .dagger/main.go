@@ -23,6 +23,7 @@ import (
 
 type Shoppinglist struct{}
 
+// +cache="never"
 func (m *Shoppinglist) Deploy(ctx context.Context,
 	// +defaultPath="/"
 	// +ignore=["/local"]
@@ -41,6 +42,7 @@ func (m *Shoppinglist) Deploy(ctx context.Context,
 	return nil
 }
 
+// +cache="never"
 func (m *Shoppinglist) DeployBackend(ctx context.Context,
 	// +defaultPath="/"
 	// +ignore=["/local"]
@@ -79,6 +81,7 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 	return nil
 }
 
+// +cache="never"
 func (m *Shoppinglist) DeployFrontend(ctx context.Context,
 	// +defaultPath="/"
 	// +ignore=["/local"]

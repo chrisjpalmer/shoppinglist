@@ -23,6 +23,7 @@ import (
 
 type MyApp struct{}
 
+// +check
 func (m *MyApp) BuildLinuxArm64(
 	// +defaultPath="/my-app"
 	src *dagger.Directory,
@@ -47,6 +48,7 @@ func (m *MyApp) BuildLinuxArm64(
 		WithEntrypoint([]string{"node", "build"})
 }
 
+// +cache="never"
 func (m *MyApp) PublishLinuxArm64(
 	ctx context.Context,
 	// +defaultPath="/my-app"
