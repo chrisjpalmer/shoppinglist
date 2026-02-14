@@ -1,0 +1,23 @@
+name: check-pull-request
+on:
+  pull_request:
+
+jobs:
+  check-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Install dagger
+        uses: dagger/dagger-for-github@8.0.0
+        with:
+          version: "0.19.11"
+        
+      - name: Checks
+        run:
+          dagger checks
+        env:
+          GH_API_KEY: ${{ secrets.GH_API_KEY }}
+          KUBECTL_FILE: ${{ secrets.KUBECTL_FILE }}
+          DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
+

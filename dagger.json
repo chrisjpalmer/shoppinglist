@@ -1,21 +1,23 @@
 {
   "name": "shoppinglist",
-  "engineVersion": "v0.18.15",
+  "engineVersion": "v0.19.11",
   "sdk": {
     "source": "go"
   },
-  "dependencies": [
+  "toolchains": [
     {
       "name": "backend",
       "source": "backend"
     },
     {
-      "name": "helm",
-      "source": "dagger-helm"
-    },
-    {
       "name": "my-app",
       "source": "my-app"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "helm",
+      "source": "dagger-helm"
     }
   ],
   "source": ".dagger"

@@ -263,6 +263,7 @@ func (m *Helm) Logout(host string) *Helm {
 }
 
 // Push a Helm chart package to an OCI registry.
+// +cache="never"
 func (m *Helm) Push(
 	ctx context.Context,
 

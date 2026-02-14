@@ -19,7 +19,7 @@ jobs:
           verb: call
           args: deploy --registry-password=env://GH_API_KEY --kubectl-file=env://KUBECTL_FILE
           cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
-          version: "latest"
+          version: "0.19.11"
         env:
           GH_API_KEY: ${{ secrets.GH_API_KEY }}
           KUBECTL_FILE: ${{ secrets.KUBECTL_FILE }}

@@ -23,6 +23,7 @@ import (
 
 type Backend struct{}
 
+// +generate
 func (m *Backend) GenerateProtos(
 	// +defaultPath="/backend"
 	src *dagger.Directory,
@@ -40,6 +41,7 @@ func (m *Backend) GenerateProtos(
 }
 
 // Returns lines that match a pattern in the files of the provided Directory
+// +generate
 func (m *Backend) GenerateSqlc(
 	// +defaultPath="/backend"
 	src *dagger.Directory) *dagger.Directory {
@@ -52,6 +54,7 @@ func (m *Backend) GenerateSqlc(
 		Directory("generated")
 }
 
+// +check
 func (m *Backend) BuildLinuxArm64(
 	// +defaultPath="/backend"
 	src *dagger.Directory,
@@ -74,6 +77,7 @@ func (m *Backend) BuildLinuxArm64(
 		WithEntrypoint([]string{"./backend"})
 }
 
+// +cache="never"
 func (m *Backend) PublishLinuxArm64(
 	ctx context.Context,
 	// +defaultPath="/backend"
