@@ -1,4 +1,4 @@
-package server
+package api
 
 import (
 	"context"
@@ -16,7 +16,7 @@ type Server struct {
 	sql *generated.Queries
 }
 
-func New() (*Server, error) {
+func NewServer() (*Server, error) {
 	sql, err := sql.Connect(context.Background())
 	if err != nil {
 		return nil, err
