@@ -21,72 +21,33 @@ import (
 	"time"
 )
 
-type Backend struct{}
-
-// +generate
-func (m *Backend) GenerateProtos(
-	// +defaultPath="/backend"
-	src *dagger.Directory,
-) *dagger.Directory {
-
-	return dag.Container().
-		From("bufbuild/buf:latest").
-		WithExec([]string{"apk", "add", "--no-cache", "protobuf-dev"}).
-		WithWorkdir("workdir").
-		WithDirectory("proto", src.Directory("proto")).
-		WithFiles(".", []*dagger.File{src.File("buf.yaml"), src.File("buf.gen.yaml")}).
-		WithExec([]string{"buf", "generate"}).
-		Directory("gen")
-
+type Backend struct {
+	// +private
+	Src *dagger.Directory
 }
 
-// Returns lines that match a pattern in the files of the provided Directory
-// +generate
-func (m *Backend) GenerateSqlc(
-	// +defaultPath="/backend"
-	src *dagger.Directory) *dagger.Directory {
-	return dag.Container().
-		From("sqlc/sqlc").
-		WithWorkdir("workdir").
-		WithDirectory("sql", src.Directory("sql")).
-		WithFile("sqlc.yaml", src.File("sqlc.yaml")).
-		WithExec([]string{"generate"}, dagger.ContainerWithExecOpts{UseEntrypoint: true}).
-		Directory("generated")
-}
-
-// +check
-func (m *Backend) BuildLinuxArm64(
+func New(
 	// +defaultPath="/backend"
 	src *dagger.Directory,
-) *dagger.Container {
-	backend := dag.Container().
-		From("golang:latest").
-		WithWorkdir("/app").
-		WithDirectory(".", src).
-		WithEnvVariable("GOOS", "linux").
-		WithEnvVariable("GOARCH", "arm64").
-		WithExec([]string{"go", "build", "-o", "backend", "."}).
-		File("backend")
-
-	return dag.Container(dagger.ContainerOpts{
-		Platform: "linux/arm64",
-	}).
-		From("alpine:latest").
-		WithWorkdir("/app").
-		WithFile("backend", backend).
-		WithEntrypoint([]string{"./backend"})
+) *Backend {
+	return &Backend{
+		Src: src,
+	}
 }
 
 // +cache="never"
 func (m *Backend) PublishLinuxArm64(
 	ctx context.Context,
-	// +defaultPath="/backend"
-	src *dagger.Directory,
 	registryPassword *dagger.Secret,
 ) (string, error) {
 	now := time.Now().Format("20060102-150405")
 
-	_, err := m.BuildLinuxArm64(src).
+	build, err := m.BuildLinuxArm64(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = build.
 		WithRegistryAuth("ghcr.io", "USERNAME", registryPassword).
 		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist:backend-%s", now))
 
