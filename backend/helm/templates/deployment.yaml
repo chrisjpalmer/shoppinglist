@@ -22,7 +22,7 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-            - name: http
+            - name: shopping
               containerPort: 8081
               protocol: TCP
           volumeMounts:
