@@ -6,11 +6,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/chrisjpalmer/shoppinglist/backend/server"
+	"github.com/chrisjpalmer/shoppinglist/backend/api"
 )
 
 func main() {
-	srv, err := server.New()
+	srv, err := api.NewServer()
 	if err != nil {
 		log.Fatal("error during set up of server", err)
 	}
