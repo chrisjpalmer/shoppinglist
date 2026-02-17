@@ -567,6 +567,7 @@ func (r *Address) Value(ctx context.Context) (string, error) {
 type Backend struct { // backend (../../../backend/.dagger/main.go:24:6)
 	query *querybuilder.Selection
 
+	checkTempl        *Void
 	id                *BackendID
 	publishLinuxArm64 *string
 }
@@ -577,60 +578,44 @@ func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
 	}
 }
 
-// BackendBuildLinuxArm64Opts contains options for Backend.BuildLinuxArm64
-type BackendBuildLinuxArm64Opts struct {
-	Src *Directory // backend (../../../backend/.dagger/main.go:57:2)
-}
-
-func (r *Backend) BuildLinuxArm64(opts ...BackendBuildLinuxArm64Opts) *Container { // backend (../../../backend/.dagger/main.go:55:1)
+func (r *Backend) BuildLinuxArm64() *Container { // backend (../../../backend/.dagger/build.go:12:1)
 	q := r.query.Select("buildLinuxArm64")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `src` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Src) {
-			q = q.Arg("src", opts[i].Src)
-		}
-	}
 
 	return &Container{
 		query: q,
 	}
 }
 
-// BackendGenerateProtosOpts contains options for Backend.GenerateProtos
-type BackendGenerateProtosOpts struct {
-	Src *Directory // backend (../../../backend/.dagger/main.go:28:2)
+func (r *Backend) CheckTempl(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:38:1)
+	if r.checkTempl != nil {
+		return nil
+	}
+	q := r.query.Select("checkTempl")
+
+	return q.Execute(ctx)
 }
 
-func (r *Backend) GenerateProtos(opts ...BackendGenerateProtosOpts) *Directory { // backend (../../../backend/.dagger/main.go:26:1)
+func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.dagger/generated.go:10:1)
 	q := r.query.Select("generateProtos")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `src` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Src) {
-			q = q.Arg("src", opts[i].Src)
-		}
-	}
 
-	return &Directory{
+	return &Changeset{
 		query: q,
 	}
 }
 
-// BackendGenerateSqlcOpts contains options for Backend.GenerateSqlc
-type BackendGenerateSqlcOpts struct {
-	Src *Directory // backend (../../../backend/.dagger/main.go:45:2)
+// Returns lines that match a pattern in the files of the provided Directory
+func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagger/generated.go:25:1)
+	q := r.query.Select("generateSqlc")
+
+	return &Changeset{
+		query: q,
+	}
 }
 
-// Returns lines that match a pattern in the files of the provided Directory
-func (r *Backend) GenerateSqlc(opts ...BackendGenerateSqlcOpts) *Directory { // backend (../../../backend/.dagger/main.go:43:1)
-	q := r.query.Select("generateSqlc")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `src` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Src) {
-			q = q.Arg("src", opts[i].Src)
-		}
-	}
+func (r *Backend) GenerateTempl() *Changeset { // backend (../../../backend/.dagger/generated.go:57:1)
+	q := r.query.Select("generateTempl")
 
-	return &Directory{
+	return &Changeset{
 		query: q,
 	}
 }
@@ -684,23 +669,12 @@ func (r *Backend) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-// BackendPublishLinuxArm64Opts contains options for Backend.PublishLinuxArm64
-type BackendPublishLinuxArm64Opts struct {
-	Src *Directory // backend (../../../backend/.dagger/main.go:80:2)
-}
-
-func (r *Backend) PublishLinuxArm64(ctx context.Context, registryPassword *Secret, opts ...BackendPublishLinuxArm64Opts) (string, error) { // backend (../../../backend/.dagger/main.go:77:1)
+func (r *Backend) PublishLinuxArm64(ctx context.Context, registryPassword *Secret) (string, error) { // backend (../../../backend/.dagger/main.go:39:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publishLinuxArm64 != nil {
 		return *r.publishLinuxArm64, nil
 	}
 	q := r.query.Select("publishLinuxArm64")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `src` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Src) {
-			q = q.Arg("src", opts[i].Src)
-		}
-	}
 	q = q.Arg("registryPassword", registryPassword)
 
 	var response string
@@ -8724,27 +8698,27 @@ type HelmPushOpts struct {
 	//
 	// Use insecure HTTP connections for the chart upload.
 	//
-	PlainHTTP bool // helm (../../../dagger-helm/main.go:278:2)
+	PlainHTTP bool // helm (../../../dagger-helm/main.go:279:2)
 	//
 	// Skip tls certificate checks for the chart upload.
 	//
-	InsecureSkipTLSVerify bool // helm (../../../dagger-helm/main.go:283:2)
+	InsecureSkipTLSVerify bool // helm (../../../dagger-helm/main.go:284:2)
 	//
 	// Verify certificates of HTTPS-enabled servers using this CA bundle.
 	//
-	CaFile *File // helm (../../../dagger-helm/main.go:288:2)
+	CaFile *File // helm (../../../dagger-helm/main.go:289:2)
 	//
 	// Identify registry client using this SSL certificate file.
 	//
-	CertFile *File // helm (../../../dagger-helm/main.go:293:2)
+	CertFile *File // helm (../../../dagger-helm/main.go:294:2)
 	//
 	// Identify registry client using this SSL key file.
 	//
-	KeyFile *Secret // helm (../../../dagger-helm/main.go:298:2)
+	KeyFile *Secret // helm (../../../dagger-helm/main.go:299:2)
 }
 
 // Push a Helm chart package to an OCI registry.
-func (r *Helm) Push(ctx context.Context, pkg *File, registry string, opts ...HelmPushOpts) error { // helm (../../../dagger-helm/main.go:266:1)
+func (r *Helm) Push(ctx context.Context, pkg *File, registry string, opts ...HelmPushOpts) error { // helm (../../../dagger-helm/main.go:267:1)
 	assertNotNil("pkg", pkg)
 	if r.push != nil {
 		return nil
@@ -12110,10 +12084,10 @@ func (r *MyApp) WithGraphQLQuery(q *querybuilder.Selection) *MyApp {
 
 // MyAppBuildLinuxArm64Opts contains options for MyApp.BuildLinuxArm64
 type MyAppBuildLinuxArm64Opts struct {
-	Src *Directory // my-app (../../../my-app/.dagger/main.go:28:2)
+	Src *Directory // my-app (../../../my-app/.dagger/main.go:29:2)
 }
 
-func (r *MyApp) BuildLinuxArm64(opts ...MyAppBuildLinuxArm64Opts) *Container { // my-app (../../../my-app/.dagger/main.go:26:1)
+func (r *MyApp) BuildLinuxArm64(opts ...MyAppBuildLinuxArm64Opts) *Container { // my-app (../../../my-app/.dagger/main.go:27:1)
 	q := r.query.Select("buildLinuxArm64")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `src` optional argument
@@ -12178,10 +12152,10 @@ func (r *MyApp) UnmarshalJSON(bs []byte) error {
 
 // MyAppPublishLinuxArm64Opts contains options for MyApp.PublishLinuxArm64
 type MyAppPublishLinuxArm64Opts struct {
-	Src *Directory // my-app (../../../my-app/.dagger/main.go:53:2)
+	Src *Directory // my-app (../../../my-app/.dagger/main.go:55:2)
 }
 
-func (r *MyApp) PublishLinuxArm64(ctx context.Context, registryPassword *Secret, opts ...MyAppPublishLinuxArm64Opts) (string, error) { // my-app (../../../my-app/.dagger/main.go:50:1)
+func (r *MyApp) PublishLinuxArm64(ctx context.Context, registryPassword *Secret, opts ...MyAppPublishLinuxArm64Opts) (string, error) { // my-app (../../../my-app/.dagger/main.go:52:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publishLinuxArm64 != nil {
 		return *r.publishLinuxArm64, nil
@@ -12538,8 +12512,19 @@ func (r *Client) Address(value string) *Address {
 	}
 }
 
-func (r *Client) Backend() *Backend { // backend (../../../backend/.dagger/main.go:24:6)
+// BackendOpts contains options for Client.Backend
+type BackendOpts struct {
+	Src *Directory // backend (../../../backend/.dagger/main.go:31:2)
+}
+
+func (r *Client) Backend(opts ...BackendOpts) *Backend { // backend (../../../backend/.dagger/main.go:29:1)
 	q := r.query.Select("backend")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `src` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Src) {
+			q = q.Arg("src", opts[i].Src)
+		}
+	}
 
 	return &Backend{
 		query: q,

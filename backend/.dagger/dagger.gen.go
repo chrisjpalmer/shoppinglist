@@ -57,16 +57,22 @@ func convertSlice[I any, O any](in []I, f func(I) O) []O {
 }
 
 func (r Backend) MarshalJSON() ([]byte, error) {
-	var concrete struct{}
+	var concrete struct {
+		Src *dagger.Directory
+	}
+	concrete.Src = r.Src
 	return json.Marshal(&concrete)
 }
 
 func (r *Backend) UnmarshalJSON(bs []byte) error {
-	var concrete struct{}
+	var concrete struct {
+		Src *dagger.Directory
+	}
 	err := json.Unmarshal(bs, &concrete)
 	if err != nil {
 		return err
 	}
+	r.Src = concrete.Src
 	return nil
 }
 
@@ -195,54 +201,40 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var src *dagger.Directory
-			if inputArgs["src"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
-				}
+			return (*Backend).BuildLinuxArm64(&parent, ctx)
+		case "CheckTempl":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			return (*Backend).BuildLinuxArm64(&parent, src), nil
+			return nil, (*Backend).CheckTempl(&parent, ctx)
 		case "GenerateProtos":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var src *dagger.Directory
-			if inputArgs["src"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
-				}
-			}
-			return (*Backend).GenerateProtos(&parent, src), nil
+			return (*Backend).GenerateProtos(&parent), nil
 		case "GenerateSqlc":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var src *dagger.Directory
-			if inputArgs["src"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
-				}
-			}
-			return (*Backend).GenerateSqlc(&parent, src), nil
-		case "PublishLinuxArm64":
+			return (*Backend).GenerateSqlc(&parent), nil
+		case "GenerateTempl":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var src *dagger.Directory
-			if inputArgs["src"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
-				}
+			return (*Backend).GenerateTempl(&parent, ctx)
+		case "PublishLinuxArm64":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			var registryPassword *dagger.Secret
 			if inputArgs["registryPassword"] != nil {
@@ -251,7 +243,21 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
 				}
 			}
-			return (*Backend).PublishLinuxArm64(&parent, ctx, src, registryPassword)
+			return (*Backend).PublishLinuxArm64(&parent, ctx, registryPassword)
+		case "":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var src *dagger.Directory
+			if inputArgs["src"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
+				}
+			}
+			return New(src), nil
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
