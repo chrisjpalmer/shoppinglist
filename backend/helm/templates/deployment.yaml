@@ -22,6 +22,9 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+            - name: http
+              containerPort: 8081
+              protocol: TCP
           volumeMounts:
             - mountPath: /app/local/local.db
               name: db

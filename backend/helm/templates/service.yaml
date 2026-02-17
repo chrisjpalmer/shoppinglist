@@ -13,5 +13,10 @@ spec:
       protocol: TCP
       name: http
       nodePort: 30001
+    - port: 8081
+      targetPort: 8081
+      protocol: TCP
+      name: http
+      nodePort: 30002
   selector:
     app: backend
