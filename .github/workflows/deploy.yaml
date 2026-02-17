@@ -10,9 +10,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
       - name: Tailscale
-        uses: tailscale/github-action@v3
+        uses: tailscale/github-action@v4
         with:
-          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:ci
       - name: Deploy
         uses: dagger/dagger-for-github@8.0.0
         with:
@@ -24,3 +26,5 @@ jobs:
           GH_API_KEY: ${{ secrets.GH_API_KEY }}
           KUBECTL_FILE: ${{ secrets.KUBECTL_FILE }}
 
+permissions:
+  id-token: write
