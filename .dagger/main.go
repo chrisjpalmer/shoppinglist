@@ -55,7 +55,6 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 	tag, err := dag.Backend().PublishLinuxArm64(
 		ctx,
 		registryPassword,
-		dagger.BackendPublishLinuxArm64Opts{Src: backend},
 	)
 
 	if err != nil {
