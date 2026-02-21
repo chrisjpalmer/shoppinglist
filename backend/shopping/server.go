@@ -19,7 +19,10 @@ func NewServer(port int) *Server {
 	mux := http.NewServeMux()
 
 	// serve one route on `/` which will be our hello page
-	mux.HandleFunc("/", handleHomePage)
+	mux.HandleFunc("/", handleRootPage)
+	mux.HandleFunc("/want", handleWantPage)
+	mux.HandleFunc("/got", handleGotPage)
+	mux.HandleFunc("/shop", handleShopPage)
 
 	return &Server{
 		srv: http.Server{
@@ -29,13 +32,21 @@ func NewServer(port int) *Server {
 	}
 }
 
-func handleHomePage(w http.ResponseWriter, r *http.Request) {
-	var (
-		name = ""
-		opts []func(*templ.ComponentHandler)
-	)
+func handleRootPage(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Location", "/want")
+	w.WriteHeader(http.StatusFound)
+}
 
-	templ.Handler(render.HomePage(name), opts...).ServeHTTP(w, r)
+func handleWantPage(w http.ResponseWriter, r *http.Request) {
+	templ.Handler(render.WantPage()).ServeHTTP(w, r)
+}
+
+func handleGotPage(w http.ResponseWriter, r *http.Request) {
+	templ.Handler(render.GotPage()).ServeHTTP(w, r)
+}
+
+func handleShopPage(w http.ResponseWriter, r *http.Request) {
+	templ.Handler(render.ShopPage()).ServeHTTP(w, r)
 }
 
 // Listen - starts the server
