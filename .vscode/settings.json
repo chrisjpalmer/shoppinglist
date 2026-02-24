@@ -1,0 +1,5 @@
+{
+    "go.alternateTools": {
+        "dlv": "/home/chrisjpalmer/.asdf/installs/golang/1.25.5/bin/dlv"
+    }
+}
