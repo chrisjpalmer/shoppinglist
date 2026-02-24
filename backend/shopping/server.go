@@ -2,12 +2,16 @@ package shopping
 
 import (
 	"context"
+	"embed"
 	"net/http"
 	"strconv"
 
 	"github.com/a-h/templ"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render"
 )
+
+//go:embed assets/*
+var assets embed.FS
 
 // Server - the server for giving you nice hello greetings
 type Server struct {
@@ -20,6 +24,7 @@ func NewServer(port int) *Server {
 
 	// serve one route on `/` which will be our hello page
 	mux.HandleFunc("/", handleRootPage)
+	mux.Handle("/assets/", http.FileServerFS(assets))
 	mux.HandleFunc("/want", handleWantPage)
 	mux.HandleFunc("/got", handleGotPage)
 	mux.HandleFunc("/shop", handleShopPage)
