@@ -4,6 +4,14 @@ templ page() {
 	<html>
 		<head>
 			<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
+			<script>
+				const ws = new WebSocket("http://localhost:8081/reload")
+				ws.addEventListener('close', () => {
+					setTimeout(() => {
+						window.location.reload()
+					}, 500)
+				})
+			</script>
 		</head>
 		<body>
 			{ children... }
