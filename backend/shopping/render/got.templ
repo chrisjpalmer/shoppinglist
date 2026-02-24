@@ -1,10 +1,15 @@
 // package render exposes pages for the hello server
 package render
 
+import (
+	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render/components"
+)
+
 // GotPage - the main page for the hello server
 templ GotPage() {
 	@page() {
 		<div>
+			@components.Nav()
 			<div id="title">Got</div>
 		</div>
 	}
