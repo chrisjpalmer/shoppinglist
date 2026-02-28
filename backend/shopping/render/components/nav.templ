@@ -1,13 +1,36 @@
 // package components contains common components to be reused among various pages
 package components
 
+import (
+    "github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
+)
+
+type Link struct {
+    Title string
+    Link string
+}
+
+var links = []Link{
+    {Title: "Want", Link: "/want"},
+    {Title: "Got", Link: "/got"},
+    {Title: "Shop", Link: "/shop"},
+}
+
 // Nav - the navigation bar for choosing which page to view
-templ Nav() {
-    <nav>
+templ Nav(pageContext page.Context) {
+    <nav class="nav">
         <ul>
-            <li><a href="/want">Want</a></li>
-            <li><a href="/got">Got</a></li>
-            <li><a href="/shop">Shop</a></li>
+            for _, link := range links {
+                <div class="spacer"></div>
+                <li
+                    if pageContext.Path == link.Link {
+                        class="active"
+                    }
+                >
+                    <a href={link.Link}>{link.Title}</a>
+                </li>
+            }
+            <div class="spacer"></div>
         </ul>
     </nav>
 }

@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/a-h/templ"
+	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render"
 	"golang.org/x/net/websocket"
 )
@@ -83,15 +84,18 @@ func handleRootPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleWantPage(w http.ResponseWriter, r *http.Request) {
-	templ.Handler(render.WantPage()).ServeHTTP(w, r)
+	pctx := page.NewContext(r)
+	templ.Handler(render.WantPage(pctx)).ServeHTTP(w, r)
 }
 
 func handleGotPage(w http.ResponseWriter, r *http.Request) {
-	templ.Handler(render.GotPage()).ServeHTTP(w, r)
+	pctx := page.NewContext(r)
+	templ.Handler(render.GotPage(pctx)).ServeHTTP(w, r)
 }
 
 func handleShopPage(w http.ResponseWriter, r *http.Request) {
-	templ.Handler(render.ShopPage()).ServeHTTP(w, r)
+	pctx := page.NewContext(r)
+	templ.Handler(render.ShopPage(pctx)).ServeHTTP(w, r)
 }
 
 // Listen - starts the server
