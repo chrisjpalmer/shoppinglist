@@ -2,14 +2,15 @@
 package render
 
 import (
+	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render/components"
 )
 
 // WantPage - the main page for the hello server
-templ WantPage() {
+templ WantPage(pageContext page.Context) {
 	@base() {
 		<div>
-			@components.Nav()
+			@components.Nav(pageContext)
 			<div id="title">Want</div>
 		</div>
 	}
