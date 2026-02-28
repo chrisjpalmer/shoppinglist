@@ -1,8 +1,9 @@
 package render
 
-templ page() {
+templ base() {
 	<html>
 		<head>
+			<link href="/assets/main.css" rel="stylesheet"/>
 			<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
 			<script>
 				const ws = new WebSocket("http://localhost:8081/reload")
