@@ -11,7 +11,32 @@ templ WantPage(pageContext page.Context) {
 	@base() {
 		<div>
 			@components.Nav(pageContext)
-			<div id="title">Want</div>
+		</div>
+		
+		<div class="content">
+			<header>
+				<h1>Want</h1>
+			</header>
+			<div class="table-content">
+				<table>
+					<tr class="table-header">
+						<td class="col-item">Item</td>
+						<td class="col-number">Number</td>
+						<td class="col-override">Override</td>
+					</tr>
+					<tr>
+						<td class="col-item">Eggs</td>
+						<td class="col-number">3</td>
+						<td class="col-override"><input max="999" type="number"/></td>
+					</tr>
+					<tr>
+						<td class="col-item">Brocolli</td>
+						<td class="col-number">2</td>
+						<td class="col-override"><input max="999" type="number"/></td>
+					</tr>
+					
+				</table>
+			</div> 
 		</div>
 	}
 }
