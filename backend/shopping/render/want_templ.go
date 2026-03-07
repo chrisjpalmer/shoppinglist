@@ -57,7 +57,7 @@ func WantPage(pageContext page.Context) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div id=\"title\">Want</div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div class=\"content\"><header><h1>Want</h1></header><div class=\"table-content\"><table><tr class=\"table-header\"><td class=\"col-item\">Item</td><td class=\"col-number\">Number</td><td class=\"col-override\">Override</td></tr><tr><td class=\"col-item\">Eggs</td><td class=\"col-number\">3</td><td class=\"col-override\"><input max=\"999\" type=\"number\"></td></tr><tr><td class=\"col-item\">Brocolli</td><td class=\"col-number\">2</td><td class=\"col-override\"><input max=\"999\" type=\"number\"></td></tr></table></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
