@@ -7,7 +7,7 @@ import (
 )
 
 // WantPage - the main page for the hello server
-templ WantPage(pageContext page.Context) {
+templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 	@base() {
 		<div>
 			@components.Nav(pageContext)
@@ -24,16 +24,13 @@ templ WantPage(pageContext page.Context) {
 						<td class="col-number">Number</td>
 						<td class="col-override">Override</td>
 					</tr>
+					for _, w := range wantItems {
 					<tr>
-						<td class="col-item">Eggs</td>
-						<td class="col-number">3</td>
+						<td class="col-item">{w.Ingredient}</td>
+						<td class="col-number">{w.Count}</td>
 						<td class="col-override"><input max="999" type="number"/></td>
 					</tr>
-					<tr>
-						<td class="col-item">Brocolli</td>
-						<td class="col-number">2</td>
-						<td class="col-override"><input max="999" type="number"/></td>
-					</tr>
+					}
 					
 				</table>
 			</div> 

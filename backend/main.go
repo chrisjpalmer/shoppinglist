@@ -16,7 +16,10 @@ func main() {
 		log.Fatal("error during set up of api server", err)
 	}
 
-	spsrv := shopping.NewServer(8081)
+	spsrv, err := shopping.NewServer(8081)
+	if err != nil {
+		log.Fatal("error during set up of shopping server", err)
+	}
 
 	go apisrv.Listen()
 
