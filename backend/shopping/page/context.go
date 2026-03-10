@@ -14,3 +14,9 @@ func NewContext(r *http.Request) Context {
 		Path: r.URL.Path,
 	}
 }
+
+// WantItem - an item to display on the want page
+type WantItem struct {
+	Ingredient string
+	Count      int32
+}

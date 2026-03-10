@@ -9,8 +9,10 @@ import (
 	"strconv"
 
 	"github.com/a-h/templ"
+	"github.com/chrisjpalmer/shoppinglist/backend/generated"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render"
+	"github.com/chrisjpalmer/shoppinglist/backend/sql"
 	"golang.org/x/net/websocket"
 )
 
@@ -21,11 +23,17 @@ var assets embed.FS
 type Server struct {
 	srv  http.Server
 	done chan struct{}
+	sql  *generated.Queries
 }
 
 // NewServer - creates a new server
-func NewServer(port int) *Server {
+func NewServer(port int) (*Server, error) {
 	mux := http.NewServeMux()
+
+	sql, err := sql.Connect(context.Background())
+	if err != nil {
+		return nil, err
+	}
 
 	srv := &Server{
 		srv: http.Server{
@@ -33,6 +41,7 @@ func NewServer(port int) *Server {
 			Handler: mux,
 		},
 		done: make(chan struct{}),
+		sql:  sql,
 	}
 
 	// serve one route on `/` which will be our hello page
@@ -41,11 +50,11 @@ func NewServer(port int) *Server {
 	})
 	mux.HandleFunc("/", handleRootPage)
 	mux.Handle("/assets/", http.FileServerFS(assets))
-	mux.HandleFunc("/want", handleWantPage)
+	mux.HandleFunc("/want", srv.handleWantPage)
 	mux.HandleFunc("/got", handleGotPage)
 	mux.HandleFunc("/shop", handleShopPage)
 
-	return srv
+	return srv, nil
 }
 
 func (m *Server) handleReload(conn *websocket.Conn) {
@@ -81,11 +90,6 @@ func (m *Server) handleReload(conn *websocket.Conn) {
 func handleRootPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Location", "/want")
 	w.WriteHeader(http.StatusFound)
-}
-
-func handleWantPage(w http.ResponseWriter, r *http.Request) {
-	pctx := page.NewContext(r)
-	templ.Handler(render.WantPage(pctx)).ServeHTTP(w, r)
 }
 
 func handleGotPage(w http.ResponseWriter, r *http.Request) {
