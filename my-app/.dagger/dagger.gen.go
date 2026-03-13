@@ -57,16 +57,22 @@ func convertSlice[I any, O any](in []I, f func(I) O) []O {
 }
 
 func (r MyApp) MarshalJSON() ([]byte, error) {
-	var concrete struct{}
+	var concrete struct {
+		Src *dagger.Directory
+	}
+	concrete.Src = r.Src
 	return json.Marshal(&concrete)
 }
 
 func (r *MyApp) UnmarshalJSON(bs []byte) error {
-	var concrete struct{}
+	var concrete struct {
+		Src *dagger.Directory
+	}
 	err := json.Unmarshal(bs, &concrete)
 	if err != nil {
 		return err
 	}
+	r.Src = concrete.Src
 	return nil
 }
 
@@ -189,31 +195,24 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 	switch parentName {
 	case "MyApp":
 		switch fnName {
-		case "BuildLinuxArm64":
+		case "BuildCheck":
 			var parent MyApp
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var src *dagger.Directory
-			if inputArgs["src"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
-				}
-			}
-			return (*MyApp).BuildLinuxArm64(&parent, src), nil
-		case "PublishLinuxArm64":
+			return (*MyApp).BuildCheck(&parent, ctx)
+		case "Publish":
 			var parent MyApp
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var src *dagger.Directory
-			if inputArgs["src"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
+			var tag string
+			if inputArgs["tag"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["tag"]), &tag)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg tag", err))
 				}
 			}
 			var registryPassword *dagger.Secret
@@ -223,7 +222,21 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
 				}
 			}
-			return (*MyApp).PublishLinuxArm64(&parent, ctx, src, registryPassword)
+			return nil, (*MyApp).Publish(&parent, ctx, tag, registryPassword)
+		case "":
+			var parent MyApp
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var src *dagger.Directory
+			if inputArgs["src"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
+				}
+			}
+			return New(src), nil
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}

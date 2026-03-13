@@ -18,52 +18,99 @@ import (
 	"context"
 	"dagger/my-app/internal/dagger"
 	"fmt"
-	"time"
+
+	"dagger.io/dagger/telemetry"
+	"golang.org/x/sync/errgroup"
 )
 
-type MyApp struct{}
+type MyApp struct {
+	Src *dagger.Directory
+}
 
-// +check
-func (m *MyApp) BuildLinuxArm64(
+func New(
 	// +defaultPath="/my-app"
 	src *dagger.Directory,
-) *dagger.Container {
+) *MyApp {
+	return &MyApp{
+		Src: src,
+	}
+}
+
+// +check
+func (m *MyApp) BuildCheck(ctx context.Context) (*dagger.Container, error) {
+	plt, err := dag.DefaultPlatform(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return m.build(ctx, plt)
+}
+
+func (m *MyApp) build(
+	ctx context.Context,
+	platform dagger.Platform,
+) (_ *dagger.Container, rerr error) {
+	ctx, span := Tracer().Start(ctx, "build: "+string(platform))
+	defer telemetry.EndWithCause(span, &rerr)
+
 	build := dag.Container().
 		From("node:latest").
 		WithWorkdir("/app").
-		WithDirectory(".", src).
+		WithDirectory(".", m.Src).
 		WithExec([]string{"npm", "install"}).
 		WithEnvVariable("PUBLIC_BACKEND_PORT", "30001").
 		WithExec([]string{"npm", "run", "build"}).
 		Directory("build")
 
 	return dag.Container(dagger.ContainerOpts{
-		Platform: "linux/arm64",
+		Platform: platform,
 	}).
 		From("node:latest").
 		WithWorkdir("/app").
-		WithFiles(".", []*dagger.File{src.File("package.json"), src.File("package-lock.json")}).
+		WithFiles(".", []*dagger.File{m.Src.File("package.json"), m.Src.File("package-lock.json")}).
 		WithExec([]string{"npm", "install"}).
 		WithDirectory("build", build).
-		WithEntrypoint([]string{"node", "build"})
+		WithEntrypoint([]string{"node", "build"}).Sync(ctx)
 }
 
 // +cache="never"
-func (m *MyApp) PublishLinuxArm64(
+func (m *MyApp) Publish(
 	ctx context.Context,
-	// +defaultPath="/my-app"
-	src *dagger.Directory,
+	tag string,
 	registryPassword *dagger.Secret,
-) (string, error) {
-	now := time.Now().Format("20060102-150405")
+) error {
+	plats := []dagger.Platform{"linux/arm64", "linux/amd64"}
 
-	_, err := m.BuildLinuxArm64(src).
-		WithRegistryAuth("ghcr.io", "USERNAME", registryPassword).
-		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist:frontend-%s", now))
+	ctrs := make([]*dagger.Container, len(plats))
 
-	if err != nil {
-		return "", err
+	errg, gctx := errgroup.WithContext(ctx)
+
+	for i, plt := range plats {
+		errg.Go(func() error {
+			build, err := m.build(gctx, plt)
+			if err != nil {
+				return err
+			}
+
+			ctrs[i] = build
+
+			return nil
+		})
 	}
 
-	return now, nil
+	if err := errg.Wait(); err != nil {
+		return err
+	}
+
+	_, err := dag.Container().
+		WithRegistryAuth("ghcr.io", "USERNAME", registryPassword).
+		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist:frontend-%s", tag), dagger.ContainerPublishOpts{
+			PlatformVariants: ctrs,
+		})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
