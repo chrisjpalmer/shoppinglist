@@ -17,26 +17,68 @@ package main
 import (
 	"context"
 	"dagger/shoppinglist/internal/dagger"
+	"fmt"
 	"time"
 
+	"dagger.io/dagger/telemetry"
 	"gopkg.in/yaml.v3"
 )
 
-type Shoppinglist struct{}
+type Shoppinglist struct {
+	Backend  *dagger.Directory
+	Frontend *dagger.Directory
+}
 
-// +cache="never"
-func (m *Shoppinglist) Deploy(ctx context.Context,
+func New(
 	// +defaultPath="/"
 	// +ignore=["/local"]
 	src *dagger.Directory,
+) *Shoppinglist {
+	return &Shoppinglist{
+		Backend:  src.Directory("backend"),
+		Frontend: src.Directory("my-app"),
+	}
+}
+
+// +cache="never"
+func (m *Shoppinglist) BuildAndDeploy(
+	ctx context.Context,
 	registryPassword *dagger.Secret,
-	kubectlFile *dagger.Secret,
+	kubeEnv1 *dagger.Secret,
+	kubeEnv2 *dagger.Secret,
 ) error {
-	if err := m.DeployBackend(ctx, src, registryPassword, kubectlFile); err != nil {
+	tag := time.Now().Format("20060102-150405")
+
+	if err := m.Build(ctx, tag, registryPassword); err != nil {
+		return fmt.Errorf("error while building: %w", err)
+	}
+
+	if err := m.Deploy(ctx, "env1", tag, kubeEnv1); err != nil {
+		return fmt.Errorf("error while deploying to kubeEnv1: %w", err)
+	}
+
+	if err := m.Deploy(ctx, "env2", tag, kubeEnv2); err != nil {
+		return fmt.Errorf("error while deploying to kubeEnv2: %w", err)
+	}
+
+	return nil
+}
+
+// +cache="never"
+func (m *Shoppinglist) Deploy(
+	ctx context.Context,
+	env string,
+	tag string,
+	kubectlFile *dagger.Secret,
+) (rerr error) {
+	ctx, span := Tracer().Start(ctx, "deploy: "+env)
+	defer telemetry.EndWithCause(span, &rerr)
+
+	if err := m.deployBackend(ctx, tag, kubectlFile); err != nil {
 		return err
 	}
 
-	if err := m.DeployFrontend(ctx, src, registryPassword, kubectlFile); err != nil {
+	if err := m.deployFrontend(ctx, tag, kubectlFile); err != nil {
 		return err
 	}
 
@@ -44,16 +86,13 @@ func (m *Shoppinglist) Deploy(ctx context.Context,
 }
 
 // +cache="never"
-func (m *Shoppinglist) DeployBackend(ctx context.Context,
-	// +defaultPath="/"
-	// +ignore=["/local"]
-	src *dagger.Directory,
+func (m *Shoppinglist) Build(
+	ctx context.Context,
+	tag string,
 	registryPassword *dagger.Secret,
-	kubectlFile *dagger.Secret,
-) error {
-	backend := src.Directory("backend")
-
-	tag := time.Now().Format("20060102-150405")
+) (rerr error) {
+	ctx, span := Tracer().Start(ctx, "build")
+	defer telemetry.EndWithCause(span, &rerr)
 
 	err := dag.Backend().Publish(
 		ctx,
@@ -65,13 +104,34 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 		return err
 	}
 
+	err = dag.MyApp().Publish(
+		ctx,
+		tag,
+		registryPassword,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Shoppinglist) deployBackend(
+	ctx context.Context,
+	tag string,
+	kubectlFile *dagger.Secret,
+) (rerr error) {
+	ctx, span := Tracer().Start(ctx, "deploy backend")
+	defer telemetry.EndWithCause(span, &rerr)
+
 	valuesYaml, err := makeValuesYaml(tag)
 	if err != nil {
 		return err
 	}
 
 	_, err = dag.Helm().
-		Chart(backend.Directory("helm")).
+		Chart(m.Backend.Directory("helm")).
 		Package().
 		WithKubeconfigSecret(kubectlFile).
 		Install("backend", dagger.HelmPackageInstallOpts{Namespace: "backend", Values: []*dagger.File{valuesYaml}, CreateNamespace: true}).
@@ -84,27 +144,13 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 	return nil
 }
 
-// +cache="never"
-func (m *Shoppinglist) DeployFrontend(ctx context.Context,
-	// +defaultPath="/"
-	// +ignore=["/local"]
-	src *dagger.Directory,
-	registryPassword *dagger.Secret,
+func (m *Shoppinglist) deployFrontend(
+	ctx context.Context,
+	tag string,
 	kubectlFile *dagger.Secret,
-) error {
-	frontend := src.Directory("my-app")
-
-	tag := time.Now().Format("20060102-150405")
-
-	err := dag.MyApp().Publish(
-		ctx,
-		tag,
-		registryPassword,
-	)
-
-	if err != nil {
-		return err
-	}
+) (rerr error) {
+	ctx, span := Tracer().Start(ctx, "deploy frontend")
+	defer telemetry.EndWithCause(span, &rerr)
 
 	valuesYaml, err := makeValuesYaml(tag)
 	if err != nil {
@@ -112,7 +158,7 @@ func (m *Shoppinglist) DeployFrontend(ctx context.Context,
 	}
 
 	_, err = dag.Helm().
-		Chart(frontend.Directory("helm")).
+		Chart(m.Frontend.Directory("helm")).
 		Package().
 		WithKubeconfigSecret(kubectlFile).
 		Install("frontend", dagger.HelmPackageInstallOpts{Namespace: "frontend", Values: []*dagger.File{valuesYaml}, CreateNamespace: true}).
