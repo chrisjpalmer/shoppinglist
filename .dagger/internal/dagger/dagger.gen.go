@@ -12067,11 +12067,11 @@ func (r *ModuleSource) WithoutToolchains(toolchains []string) *ModuleSource {
 	}
 }
 
-type MyApp struct { // my-app (../../../my-app/.dagger/main.go:24:6)
+type MyApp struct { // my-app (../../../my-app/.dagger/main.go:26:6)
 	query *querybuilder.Selection
 
-	id                *MyAppID
-	publishLinuxArm64 *string
+	id      *MyAppID
+	publish *Void
 }
 
 func (r *MyApp) WithGraphQLQuery(q *querybuilder.Selection) *MyApp {
@@ -12080,19 +12080,8 @@ func (r *MyApp) WithGraphQLQuery(q *querybuilder.Selection) *MyApp {
 	}
 }
 
-// MyAppBuildLinuxArm64Opts contains options for MyApp.BuildLinuxArm64
-type MyAppBuildLinuxArm64Opts struct {
-	Src *Directory // my-app (../../../my-app/.dagger/main.go:29:2)
-}
-
-func (r *MyApp) BuildLinuxArm64(opts ...MyAppBuildLinuxArm64Opts) *Container { // my-app (../../../my-app/.dagger/main.go:27:1)
-	q := r.query.Select("buildLinuxArm64")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `src` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Src) {
-			q = q.Arg("src", opts[i].Src)
-		}
-	}
+func (r *MyApp) BuildCheck() *Container { // my-app (../../../my-app/.dagger/main.go:40:1)
+	q := r.query.Select("buildCheck")
 
 	return &Container{
 		query: q,
@@ -12148,29 +12137,24 @@ func (r *MyApp) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-// MyAppPublishLinuxArm64Opts contains options for MyApp.PublishLinuxArm64
-type MyAppPublishLinuxArm64Opts struct {
-	Src *Directory // my-app (../../../my-app/.dagger/main.go:55:2)
-}
-
-func (r *MyApp) PublishLinuxArm64(ctx context.Context, registryPassword *Secret, opts ...MyAppPublishLinuxArm64Opts) (string, error) { // my-app (../../../my-app/.dagger/main.go:52:1)
+func (r *MyApp) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // my-app (../../../my-app/.dagger/main.go:77:1)
 	assertNotNil("registryPassword", registryPassword)
-	if r.publishLinuxArm64 != nil {
-		return *r.publishLinuxArm64, nil
+	if r.publish != nil {
+		return nil
 	}
-	q := r.query.Select("publishLinuxArm64")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `src` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Src) {
-			q = q.Arg("src", opts[i].Src)
-		}
-	}
+	q := r.query.Select("publish")
+	q = q.Arg("tag", tag)
 	q = q.Arg("registryPassword", registryPassword)
 
-	var response string
+	return q.Execute(ctx)
+}
 
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
+func (r *MyApp) Src() *Directory { // my-app (../../../my-app/.dagger/main.go:27:2)
+	q := r.query.Select("src")
+
+	return &Directory{
+		query: q,
+	}
 }
 
 // A definition of a custom object defined in a Module.
@@ -13555,8 +13539,19 @@ func (r *Client) ModuleSource(refString string, opts ...ModuleSourceOpts) *Modul
 	}
 }
 
-func (r *Client) MyApp() *MyApp { // my-app (../../../my-app/.dagger/main.go:24:6)
+// MyAppOpts contains options for Client.MyApp
+type MyAppOpts struct {
+	Src *Directory // my-app (../../../my-app/.dagger/main.go:32:2)
+}
+
+func (r *Client) MyApp(opts ...MyAppOpts) *MyApp { // my-app (../../../my-app/.dagger/main.go:30:1)
 	q := r.query.Select("myApp")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `src` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Src) {
+			q = q.Arg("src", opts[i].Src)
+		}
+	}
 
 	return &MyApp{
 		query: q,

@@ -94,10 +94,12 @@ func (m *Shoppinglist) DeployFrontend(ctx context.Context,
 ) error {
 	frontend := src.Directory("my-app")
 
-	tag, err := dag.MyApp().PublishLinuxArm64(
+	tag := time.Now().Format("20060102-150405")
+
+	err := dag.MyApp().Publish(
 		ctx,
+		tag,
 		registryPassword,
-		dagger.MyAppPublishLinuxArm64Opts{Src: frontend},
 	)
 
 	if err != nil {
