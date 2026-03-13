@@ -26,9 +26,9 @@ spec:
               containerPort: 8081
               protocol: TCP
           volumeMounts:
-            - mountPath: /app/local/local.db
+            - mountPath: /app/local
               name: db
       volumes:
         - name: db
           hostPath:
-            path: /home/chris/shoppinglist/local/local.db
+            path: /home/chris/shoppinglist/local
