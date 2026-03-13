@@ -57,16 +57,26 @@ func convertSlice[I any, O any](in []I, f func(I) O) []O {
 }
 
 func (r Shoppinglist) MarshalJSON() ([]byte, error) {
-	var concrete struct{}
+	var concrete struct {
+		Backend  *dagger.Directory
+		Frontend *dagger.Directory
+	}
+	concrete.Backend = r.Backend
+	concrete.Frontend = r.Frontend
 	return json.Marshal(&concrete)
 }
 
 func (r *Shoppinglist) UnmarshalJSON(bs []byte) error {
-	var concrete struct{}
+	var concrete struct {
+		Backend  *dagger.Directory
+		Frontend *dagger.Directory
+	}
 	err := json.Unmarshal(bs, &concrete)
 	if err != nil {
 		return err
 	}
+	r.Backend = concrete.Backend
+	r.Frontend = concrete.Frontend
 	return nil
 }
 
@@ -189,24 +199,73 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 	switch parentName {
 	case "Shoppinglist":
 		switch fnName {
+		case "Build":
+			var parent Shoppinglist
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var tag string
+			if inputArgs["tag"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["tag"]), &tag)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg tag", err))
+				}
+			}
+			var registryPassword *dagger.Secret
+			if inputArgs["registryPassword"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["registryPassword"]), &registryPassword)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
+				}
+			}
+			return nil, (*Shoppinglist).Build(&parent, ctx, tag, registryPassword)
+		case "BuildAndDeploy":
+			var parent Shoppinglist
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var registryPassword *dagger.Secret
+			if inputArgs["registryPassword"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["registryPassword"]), &registryPassword)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
+				}
+			}
+			var kubeEnv1 *dagger.Secret
+			if inputArgs["kubeEnv1"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["kubeEnv1"]), &kubeEnv1)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubeEnv1", err))
+				}
+			}
+			var kubeEnv2 *dagger.Secret
+			if inputArgs["kubeEnv2"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["kubeEnv2"]), &kubeEnv2)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubeEnv2", err))
+				}
+			}
+			return nil, (*Shoppinglist).BuildAndDeploy(&parent, ctx, registryPassword, kubeEnv1, kubeEnv2)
 		case "Deploy":
 			var parent Shoppinglist
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var src *dagger.Directory
-			if inputArgs["src"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
+			var env string
+			if inputArgs["env"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["env"]), &env)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg env", err))
 				}
 			}
-			var registryPassword *dagger.Secret
-			if inputArgs["registryPassword"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["registryPassword"]), &registryPassword)
+			var tag string
+			if inputArgs["tag"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["tag"]), &tag)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg tag", err))
 				}
 			}
 			var kubectlFile *dagger.Secret
@@ -216,8 +275,8 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubectlFile", err))
 				}
 			}
-			return nil, (*Shoppinglist).Deploy(&parent, ctx, src, registryPassword, kubectlFile)
-		case "DeployBackend":
+			return nil, (*Shoppinglist).Deploy(&parent, ctx, env, tag, kubectlFile)
+		case "":
 			var parent Shoppinglist
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
@@ -230,49 +289,7 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
 				}
 			}
-			var registryPassword *dagger.Secret
-			if inputArgs["registryPassword"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["registryPassword"]), &registryPassword)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
-				}
-			}
-			var kubectlFile *dagger.Secret
-			if inputArgs["kubectlFile"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["kubectlFile"]), &kubectlFile)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubectlFile", err))
-				}
-			}
-			return nil, (*Shoppinglist).DeployBackend(&parent, ctx, src, registryPassword, kubectlFile)
-		case "DeployFrontend":
-			var parent Shoppinglist
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			var src *dagger.Directory
-			if inputArgs["src"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
-				}
-			}
-			var registryPassword *dagger.Secret
-			if inputArgs["registryPassword"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["registryPassword"]), &registryPassword)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
-				}
-			}
-			var kubectlFile *dagger.Secret
-			if inputArgs["kubectlFile"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["kubectlFile"]), &kubectlFile)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubectlFile", err))
-				}
-			}
-			return nil, (*Shoppinglist).DeployFrontend(&parent, ctx, src, registryPassword, kubectlFile)
+			return New(src), nil
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
