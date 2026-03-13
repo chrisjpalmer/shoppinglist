@@ -195,13 +195,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 	switch parentName {
 	case "Backend":
 		switch fnName {
-		case "BuildLinuxArm64":
+		case "BuildCheck":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			return (*Backend).BuildLinuxArm64(&parent, ctx)
+			return (*Backend).BuildCheck(&parent, ctx)
 		case "CheckTempl":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
@@ -230,11 +230,18 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			return (*Backend).GenerateTempl(&parent, ctx)
-		case "PublishLinuxArm64":
+		case "Publish":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var tag string
+			if inputArgs["tag"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["tag"]), &tag)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg tag", err))
+				}
 			}
 			var registryPassword *dagger.Secret
 			if inputArgs["registryPassword"] != nil {
@@ -243,7 +250,7 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
 				}
 			}
-			return (*Backend).PublishLinuxArm64(&parent, ctx, registryPassword)
+			return nil, (*Backend).Publish(&parent, ctx, tag, registryPassword)
 		case "":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
