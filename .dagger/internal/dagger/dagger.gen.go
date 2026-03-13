@@ -564,12 +564,12 @@ func (r *Address) Value(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
-type Backend struct { // backend (../../../backend/.dagger/main.go:24:6)
+type Backend struct { // backend (../../../backend/.dagger/main.go:25:6)
 	query *querybuilder.Selection
 
-	checkTempl        *Void
-	id                *BackendID
-	publishLinuxArm64 *string
+	checkTempl *Void
+	id         *BackendID
+	publish    *Void
 }
 
 func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
@@ -578,8 +578,8 @@ func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
 	}
 }
 
-func (r *Backend) BuildLinuxArm64() *Container { // backend (../../../backend/.dagger/build.go:12:1)
-	q := r.query.Select("buildLinuxArm64")
+func (r *Backend) BuildCheck() *Container { // backend (../../../backend/.dagger/build.go:14:1)
+	q := r.query.Select("buildCheck")
 
 	return &Container{
 		query: q,
@@ -612,7 +612,7 @@ func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagg
 	}
 }
 
-func (r *Backend) GenerateTempl() *Changeset { // backend (../../../backend/.dagger/generated.go:57:1)
+func (r *Backend) GenerateTempl() *Changeset { // backend (../../../backend/.dagger/generated.go:48:1)
 	q := r.query.Select("generateTempl")
 
 	return &Changeset{
@@ -669,18 +669,16 @@ func (r *Backend) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-func (r *Backend) PublishLinuxArm64(ctx context.Context, registryPassword *Secret) (string, error) { // backend (../../../backend/.dagger/main.go:39:1)
+func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/main.go:40:1)
 	assertNotNil("registryPassword", registryPassword)
-	if r.publishLinuxArm64 != nil {
-		return *r.publishLinuxArm64, nil
+	if r.publish != nil {
+		return nil
 	}
-	q := r.query.Select("publishLinuxArm64")
+	q := r.query.Select("publish")
+	q = q.Arg("tag", tag)
 	q = q.Arg("registryPassword", registryPassword)
 
-	var response string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
+	return q.Execute(ctx)
 }
 
 type Binding struct {
@@ -12514,10 +12512,10 @@ func (r *Client) Address(value string) *Address {
 
 // BackendOpts contains options for Client.Backend
 type BackendOpts struct {
-	Src *Directory // backend (../../../backend/.dagger/main.go:31:2)
+	Src *Directory // backend (../../../backend/.dagger/main.go:32:2)
 }
 
-func (r *Client) Backend(opts ...BackendOpts) *Backend { // backend (../../../backend/.dagger/main.go:29:1)
+func (r *Client) Backend(opts ...BackendOpts) *Backend { // backend (../../../backend/.dagger/main.go:30:1)
 	q := r.query.Select("backend")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `src` optional argument

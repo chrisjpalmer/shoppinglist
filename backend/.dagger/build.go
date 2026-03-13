@@ -4,12 +4,26 @@ import (
 	"context"
 	"dagger/backend/internal/dagger"
 	"fmt"
+	"strings"
 
+	"dagger.io/dagger/telemetry"
 	"golang.org/x/mod/modfile"
 )
 
 // +check
-func (m *Backend) BuildLinuxArm64(ctx context.Context) (*dagger.Container, error) {
+func (m *Backend) BuildCheck(ctx context.Context) (*dagger.Container, error) {
+	plt, err := dag.DefaultPlatform(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return m.build(ctx, plt)
+}
+
+func (m *Backend) build(ctx context.Context, platform dagger.Platform) (_ *dagger.Container, rerr error) {
+	ctx, span := Tracer().Start(ctx, "build: "+string(platform))
+	defer telemetry.EndWithCause(span, &rerr)
+
 	ctr, err := m.buildCtr(ctx)
 	if err != nil {
 		return nil, err
@@ -17,16 +31,20 @@ func (m *Backend) BuildLinuxArm64(ctx context.Context) (*dagger.Container, error
 
 	backend := ctr.
 		WithEnvVariable("GOOS", "linux").
-		WithEnvVariable("GOARCH", "arm64").
+		WithEnvVariable("GOARCH", arch(platform)).
 		WithExec([]string{"go", "build", "-o", "backend", "."}).
 		File("backend")
 
 	return dag.Container(dagger.ContainerOpts{
-		Platform: "linux/arm64",
+		Platform: platform,
 	}).From("alpine:latest").
 		WithWorkdir("/app").
 		WithFile("backend", backend).
-		WithEntrypoint([]string{"./backend"}), nil
+		WithEntrypoint([]string{"./backend"}).Sync(ctx)
+}
+
+func arch(platform dagger.Platform) string {
+	return strings.Split(string(platform), "/")[1]
 }
 
 func (m *Backend) buildCtr(ctx context.Context) (*dagger.Container, error) {

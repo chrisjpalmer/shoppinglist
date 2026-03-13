@@ -18,7 +18,8 @@ import (
 	"context"
 	"dagger/backend/internal/dagger"
 	"fmt"
-	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type Backend struct {
@@ -36,24 +37,43 @@ func New(
 }
 
 // +cache="never"
-func (m *Backend) PublishLinuxArm64(
+func (m *Backend) Publish(
 	ctx context.Context,
+	tag string,
 	registryPassword *dagger.Secret,
-) (string, error) {
-	now := time.Now().Format("20060102-150405")
+) error {
+	plats := []dagger.Platform{"linux/arm64", "linux/amd64"}
 
-	build, err := m.BuildLinuxArm64(ctx)
-	if err != nil {
-		return "", err
+	ctrs := make([]*dagger.Container, len(plats))
+
+	errg, gctx := errgroup.WithContext(ctx)
+
+	for i, plt := range plats {
+		errg.Go(func() error {
+			build, err := m.build(gctx, plt)
+			if err != nil {
+				return err
+			}
+
+			ctrs[i] = build
+
+			return nil
+		})
 	}
 
-	_, err = build.
+	if err := errg.Wait(); err != nil {
+		return err
+	}
+
+	_, err := dag.Container().
 		WithRegistryAuth("ghcr.io", "USERNAME", registryPassword).
-		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist:backend-%s", now))
+		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist:backend-%s", tag), dagger.ContainerPublishOpts{
+			PlatformVariants: ctrs,
+		})
 
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return now, nil
+	return nil
 }

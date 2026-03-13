@@ -17,6 +17,7 @@ package main
 import (
 	"context"
 	"dagger/shoppinglist/internal/dagger"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -52,8 +53,11 @@ func (m *Shoppinglist) DeployBackend(ctx context.Context,
 ) error {
 	backend := src.Directory("backend")
 
-	tag, err := dag.Backend().PublishLinuxArm64(
+	tag := time.Now().Format("20060102-150405")
+
+	err := dag.Backend().Publish(
 		ctx,
+		tag,
 		registryPassword,
 	)
 
