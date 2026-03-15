@@ -104,6 +104,10 @@ func (m *Shoppinglist) Build(
 		return err
 	}
 
+	if err = dag.Backend().PublishMigrateImage(ctx, tag, registryPassword); err != nil {
+		return err
+	}
+
 	err = dag.MyApp().Publish(
 		ctx,
 		tag,

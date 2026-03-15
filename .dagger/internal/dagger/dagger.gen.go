@@ -567,9 +567,14 @@ func (r *Address) Value(ctx context.Context) (string, error) {
 type Backend struct { // backend (../../../backend/.dagger/main.go:25:6)
 	query *querybuilder.Selection
 
-	checkTempl *Void
-	id         *BackendID
-	publish    *Void
+	checkTempl              *Void
+	id                      *BackendID
+	migrateCheck            *Void
+	publish                 *Void
+	publishMigrateImage     *Void
+	testMigrateImageNodb    *Void
+	testMigrateImageNodbenv *Void
+	testMigrateImageWithDb  *Void
 }
 
 func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
@@ -669,7 +674,29 @@ func (r *Backend) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/main.go:40:1)
+// MigrateCheck - checks whether the previous schema on the master branch
+// can be successfully migrated to the new schema
+func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../../backend/.dagger/migrate.go:22:1)
+	if r.migrateCheck != nil {
+		return nil
+	}
+	q := r.query.Select("migrateCheck")
+
+	return q.Execute(ctx)
+}
+
+// MigrateLocal - migrates the passed in database and returns it
+func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../backend/.dagger/migrate.go:13:1)
+	assertNotNil("localdb", localdb)
+	q := r.query.Select("migrateLocal")
+	q = q.Arg("localdb", localdb)
+
+	return &File{
+		query: q,
+	}
+}
+
+func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/main.go:45:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -677,6 +704,48 @@ func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Sec
 	q := r.query.Select("publish")
 	q = q.Arg("tag", tag)
 	q = q.Arg("registryPassword", registryPassword)
+
+	return q.Execute(ctx)
+}
+
+func (r *Backend) PublishMigrateImage(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/migrate_image.go:11:1)
+	assertNotNil("registryPassword", registryPassword)
+	if r.publishMigrateImage != nil {
+		return nil
+	}
+	q := r.query.Select("publishMigrateImage")
+	q = q.Arg("tag", tag)
+	q = q.Arg("registryPassword", registryPassword)
+
+	return q.Execute(ctx)
+}
+
+// TestMigrateImageNODB - tests that the migrate image works if the DB exists
+func (r *Backend) TestMigrateImageNodb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:71:1)
+	if r.testMigrateImageNodb != nil {
+		return nil
+	}
+	q := r.query.Select("testMigrateImageNodb")
+
+	return q.Execute(ctx)
+}
+
+// TestMigrateImageNoDBEnv - tests that the migrate image correctly fails if the DATABASE_FILE var isn't present
+func (r *Backend) TestMigrateImageNodbenv(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:87:1)
+	if r.testMigrateImageNodbenv != nil {
+		return nil
+	}
+	q := r.query.Select("testMigrateImageNodbenv")
+
+	return q.Execute(ctx)
+}
+
+// TestMigrateImageWithDB - tests that the migrate image works if the DB exists
+func (r *Backend) TestMigrateImageWithDb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:52:1)
+	if r.testMigrateImageWithDb != nil {
+		return nil
+	}
+	q := r.query.Select("testMigrateImageWithDb")
 
 	return q.Execute(ctx)
 }
@@ -12496,12 +12565,18 @@ func (r *Client) Address(value string) *Address {
 
 // BackendOpts contains options for Client.Backend
 type BackendOpts struct {
-	Src *Directory // backend (../../../backend/.dagger/main.go:32:2)
+	RootSrc *Directory // backend (../../../backend/.dagger/main.go:34:2)
+
+	Src *Directory // backend (../../../backend/.dagger/main.go:36:2)
 }
 
-func (r *Client) Backend(opts ...BackendOpts) *Backend { // backend (../../../backend/.dagger/main.go:30:1)
+func (r *Client) Backend(opts ...BackendOpts) *Backend { // backend (../../../backend/.dagger/main.go:32:1)
 	q := r.query.Select("backend")
 	for i := len(opts) - 1; i >= 0; i-- {
+		// `rootSrc` optional argument
+		if !querybuilder.IsZeroValue(opts[i].RootSrc) {
+			q = q.Arg("rootSrc", opts[i].RootSrc)
+		}
 		// `src` optional argument
 		if !querybuilder.IsZeroValue(opts[i].Src) {
 			q = q.Arg("src", opts[i].Src)
