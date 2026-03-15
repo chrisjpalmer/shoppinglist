@@ -3,8 +3,6 @@ package shopping
 import (
 	"context"
 	"embed"
-	"fmt"
-	"io"
 	"net/http"
 	"strconv"
 
@@ -13,7 +11,6 @@ import (
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render"
 	"github.com/chrisjpalmer/shoppinglist/backend/sql"
-	"golang.org/x/net/websocket"
 )
 
 //go:embed assets/*
@@ -45,9 +42,6 @@ func NewServer(port int) (*Server, error) {
 	}
 
 	// serve one route on `/` which will be our hello page
-	mux.Handle("/reload", &websocket.Server{
-		Handler: srv.handleReload,
-	})
 	mux.HandleFunc("/", handleRootPage)
 	mux.Handle("/assets/", http.FileServerFS(assets))
 	mux.HandleFunc("/want", srv.handleWantPage)
@@ -55,36 +49,6 @@ func NewServer(port int) (*Server, error) {
 	mux.HandleFunc("/shop", handleShopPage)
 
 	return srv, nil
-}
-
-func (m *Server) handleReload(conn *websocket.Conn) {
-	defer conn.Close()
-
-	addr := conn.LocalAddr().String()
-
-	fmt.Println("/reload: ", addr)
-
-	done := make(chan struct{})
-
-	go func() {
-		buf := make([]byte, 100)
-		defer close(done)
-
-		for {
-			_, err := conn.Read(buf)
-			if err == io.EOF {
-				return
-			}
-		}
-	}()
-
-	select {
-	case <-done:
-		fmt.Println("/reload: ", addr, "socket closed")
-	case <-m.done:
-		fmt.Println("/reload: ", addr, "sending closing signal")
-	}
-
 }
 
 func handleRootPage(w http.ResponseWriter, r *http.Request) {
