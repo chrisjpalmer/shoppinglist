@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"dagger.io/dagger/telemetry"
+	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v3"
 )
 
@@ -94,31 +95,40 @@ func (m *Shoppinglist) Build(
 	ctx, span := Tracer().Start(ctx, "build")
 	defer telemetry.EndWithCause(span, &rerr)
 
-	err := dag.Backend().Publish(
-		ctx,
-		tag,
-		registryPassword,
-	)
+	errg, gctx := errgroup.WithContext(ctx)
 
-	if err != nil {
-		return err
-	}
+	errg.Go(func() error { return m.publishBackend(gctx, tag, registryPassword) })
 
-	if err = dag.Backend().PublishMigrateImage(ctx, tag, registryPassword); err != nil {
-		return err
-	}
+	errg.Go(func() error { return m.publishMigrateImage(gctx, tag, registryPassword) })
 
-	err = dag.MyApp().Publish(
-		ctx,
-		tag,
-		registryPassword,
-	)
+	errg.Go(func() error { return m.publishMyApp(gctx, tag, registryPassword) })
 
-	if err != nil {
+	if err := errg.Wait(); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (m *Shoppinglist) publishBackend(ctx context.Context, tag string, registryPassword *dagger.Secret) (rerr error) {
+	ctx, span := Tracer().Start(ctx, "publish-backend")
+	defer telemetry.EndWithCause(span, &rerr)
+
+	return dag.Backend().Publish(ctx, tag, registryPassword)
+}
+
+func (m *Shoppinglist) publishMigrateImage(ctx context.Context, tag string, registryPassword *dagger.Secret) (rerr error) {
+	ctx, span := Tracer().Start(ctx, "publish-migrate-image")
+	defer telemetry.EndWithCause(span, &rerr)
+
+	return dag.Backend().PublishMigrateImage(ctx, tag, registryPassword)
+}
+
+func (m *Shoppinglist) publishMyApp(ctx context.Context, tag string, registryPassword *dagger.Secret) (rerr error) {
+	ctx, span := Tracer().Start(ctx, "publish-myapp")
+	defer telemetry.EndWithCause(span, &rerr)
+
+	return dag.MyApp().Publish(ctx, tag, registryPassword)
 }
 
 func (m *Shoppinglist) deployBackend(
