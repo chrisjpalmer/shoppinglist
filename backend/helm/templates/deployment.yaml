@@ -22,7 +22,8 @@ spec:
             - mountPath: /app/local
               name: db
           env:
-            DATABASE_FILE: /app/local/local.db  
+            - name: DATABASE_FILE
+              value: /app/local/local.db  
       containers:
         - name: backend
           image: "ghcr.io/chrisjpalmer/shoppinglist:backend-{{ .Values.image.tag }}"
