@@ -24,15 +24,20 @@ import (
 
 type Backend struct {
 	// +private
+	RootSrc *dagger.Directory
+	// +private
 	Src *dagger.Directory
 }
 
 func New(
+	// +defaultPath="/"
+	rootSrc *dagger.Directory,
 	// +defaultPath="/backend"
 	src *dagger.Directory,
 ) *Backend {
 	return &Backend{
-		Src: src,
+		RootSrc: rootSrc,
+		Src:     src,
 	}
 }
 

@@ -15,6 +15,14 @@ spec:
       labels:
         app: backend
     spec:
+      initContainers:
+        - name: migrate
+          image: "ghcr.io/chrisjpalmer/shoppinglist:migrate-{{ .Values.image.tag }}"
+          volumeMounts:
+            - mountPath: /app/local
+              name: db
+          env:
+            DATABASE_FILE: /app/local/local.db  
       containers:
         - name: backend
           image: "ghcr.io/chrisjpalmer/shoppinglist:backend-{{ .Values.image.tag }}"
