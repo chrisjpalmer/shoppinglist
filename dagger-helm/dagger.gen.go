@@ -10,16 +10,16 @@ import (
 	"os"
 	"sort"
 
+	telemetry "github.com/dagger/otel-go"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/sdk/resource"
-	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.39.0"
 	"go.opentelemetry.io/otel/trace"
 
 	"dagger/helm/internal/dagger"
 
 	"dagger.io/dagger/querybuilder"
-	"dagger.io/dagger/telemetry"
 )
 
 var dag = dagger.Connect()
@@ -104,34 +104,6 @@ func (r *Chart) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-func (r Package) MarshalJSON() ([]byte, error) {
-	var concrete struct {
-		File  *dagger.File
-		Helm  *Helm
-		Chart *Chart
-	}
-	concrete.File = r.File
-	concrete.Helm = r.Helm
-	concrete.Chart = r.Chart
-	return json.Marshal(&concrete)
-}
-
-func (r *Package) UnmarshalJSON(bs []byte) error {
-	var concrete struct {
-		File  *dagger.File
-		Helm  *Helm
-		Chart *Chart
-	}
-	err := json.Unmarshal(bs, &concrete)
-	if err != nil {
-		return err
-	}
-	r.File = concrete.File
-	r.Helm = concrete.Helm
-	r.Chart = concrete.Chart
-	return nil
-}
-
 func (r Release) MarshalJSON() ([]byte, error) {
 	var concrete struct {
 		Name      string
@@ -157,6 +129,34 @@ func (r *Release) UnmarshalJSON(bs []byte) error {
 	r.Name = concrete.Name
 	r.Namespace = concrete.Namespace
 	r.Container = concrete.Container
+	return nil
+}
+
+func (r Package) MarshalJSON() ([]byte, error) {
+	var concrete struct {
+		File  *dagger.File
+		Helm  *Helm
+		Chart *Chart
+	}
+	concrete.File = r.File
+	concrete.Helm = r.Helm
+	concrete.Chart = r.Chart
+	return json.Marshal(&concrete)
+}
+
+func (r *Package) UnmarshalJSON(bs []byte) error {
+	var concrete struct {
+		File  *dagger.File
+		Helm  *Helm
+		Chart *Chart
+	}
+	err := json.Unmarshal(bs, &concrete)
+	if err != nil {
+		return err
+	}
+	r.File = concrete.File
+	r.Helm = concrete.Helm
+	r.Chart = concrete.Chart
 	return nil
 }
 

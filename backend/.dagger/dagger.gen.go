@@ -10,16 +10,16 @@ import (
 	"os"
 	"sort"
 
+	telemetry "github.com/dagger/otel-go"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/sdk/resource"
-	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.39.0"
 	"go.opentelemetry.io/otel/trace"
 
 	"dagger/backend/internal/dagger"
 
 	"dagger.io/dagger/querybuilder"
-	"dagger.io/dagger/telemetry"
 )
 
 var dag = dagger.Connect()
@@ -241,6 +241,20 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			return nil, (*Backend).MigrateCheck(&parent, ctx)
+		case "MigrateLocal":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var localdb *dagger.File
+			if inputArgs["localdb"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["localdb"]), &localdb)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg localdb", err))
+				}
+			}
+			return (*Backend).MigrateLocal(&parent, ctx, localdb), nil
 		case "Publish":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
@@ -262,6 +276,48 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				}
 			}
 			return nil, (*Backend).Publish(&parent, ctx, tag, registryPassword)
+		case "PublishMigrateImage":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var tag string
+			if inputArgs["tag"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["tag"]), &tag)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg tag", err))
+				}
+			}
+			var registryPassword *dagger.Secret
+			if inputArgs["registryPassword"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["registryPassword"]), &registryPassword)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
+				}
+			}
+			return nil, (*Backend).PublishMigrateImage(&parent, ctx, tag, registryPassword)
+		case "TestMigrateImageNODB":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return nil, (*Backend).TestMigrateImageNODB(&parent, ctx)
+		case "TestMigrateImageNODBEnv":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return nil, (*Backend).TestMigrateImageNODBEnv(&parent, ctx)
+		case "TestMigrateImageWithDB":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return nil, (*Backend).TestMigrateImageWithDB(&parent, ctx)
 		case "":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)

@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"time"
 
-	"dagger.io/dagger/telemetry"
+	telemetry "github.com/dagger/otel-go"
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v3"
 )
