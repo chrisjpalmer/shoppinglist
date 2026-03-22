@@ -21,7 +21,8 @@ jobs:
           verb: call
           args: build-and-deploy --registry-password=env://GH_API_KEY --kube-env1=env://KUBECTL_FILE --kube-env2=env://KUBECTL2_FILE
           cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
-          version: "0.19.11"
+          version: "0.20.3"
+          dagger-flags: "--progress=logs"
         env:
           GH_API_KEY: ${{ secrets.GH_API_KEY }}
           KUBECTL_FILE: ${{ secrets.KUBECTL_FILE }}

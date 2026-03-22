@@ -20,7 +20,8 @@ import (
 	"go.opentelemetry.io/otel/trace"
 
 	"dagger.io/dagger/querybuilder"
-	"dagger.io/dagger/telemetry"
+
+	telemetry "github.com/dagger/otel-go"
 )
 
 func Tracer() trace.Tracer {
@@ -228,6 +229,9 @@ type GitRefID string
 // The `GitRepositoryID` scalar type represents an identifier for an object of type GitRepository.
 type GitRepositoryID string
 
+// The `HealthcheckConfigID` scalar type represents an identifier for an object of type HealthcheckConfig.
+type HealthcheckConfigID string
+
 // The `InputTypeDefID` scalar type represents an identifier for an object of type InputTypeDef.
 type InputTypeDefID string
 
@@ -309,6 +313,9 @@ type TypeDefID string
 //
 // A Null Void is used as a placeholder for resolvers that do not return anything.
 type Void string
+
+// The `WorkspaceID` scalar type represents an identifier for an object of type Workspace.
+type WorkspaceID string
 
 // Key value object that represents a build argument.
 type BuildArg struct {
@@ -801,6 +808,15 @@ func (r *Binding) AsString(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
+// Retrieve the binding value, as type Workspace
+func (r *Binding) AsWorkspace() *Workspace {
+	q := r.query.Select("asWorkspace")
+
+	return &Workspace{
+		query: q,
+	}
+}
+
 // Returns the digest of the binding value
 func (r *Binding) Digest(ctx context.Context) (string, error) {
 	if r.digest != nil {
@@ -1249,6 +1265,15 @@ func (r *Check) Description(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
+// If the check failed, this is the error
+func (r *Check) Error() *Error {
+	q := r.query.Select("error")
+
+	return &Error{
+		query: q,
+	}
+}
+
 // A unique identifier for this Check.
 func (r *Check) ID(ctx context.Context) (CheckID, error) {
 	if r.id != nil {
@@ -1309,6 +1334,15 @@ func (r *Check) Name(ctx context.Context) (string, error) {
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
+}
+
+// The original module in which the check has been defined
+func (r *Check) OriginalModule() *Module {
+	q := r.query.Select("originalModule")
+
+	return &Module{
+		query: q,
+	}
 }
 
 // Whether the check passed
@@ -1732,6 +1766,15 @@ func (r *Container) Directory(path string, opts ...ContainerDirectoryOpts) *Dire
 	q = q.Arg("path", path)
 
 	return &Directory{
+		query: q,
+	}
+}
+
+// Retrieves this container's configured docker healthcheck.
+func (r *Container) DockerHealthcheck() *HealthcheckConfig {
+	q := r.query.Select("dockerHealthcheck")
+
+	return &HealthcheckConfig{
 		query: q,
 	}
 }
@@ -2531,6 +2574,58 @@ func (r *Container) WithDirectory(path string, source *Directory, opts ...Contai
 	}
 }
 
+// ContainerWithDockerHealthcheckOpts contains options for Container.WithDockerHealthcheck
+type ContainerWithDockerHealthcheckOpts struct {
+	// When true, command must be a single element, which is run using the container's shell
+	Shell bool
+	// Interval between running healthcheck. Example: "30s"
+	Interval string
+	// Healthcheck timeout. Example: "3s"
+	Timeout string
+	// StartPeriod allows for failures during this initial startup period which do not count towards maximum number of retries. Example: "0s"
+	StartPeriod string
+	// StartInterval configures the duration between checks during the startup phase. Example: "5s"
+	StartInterval string
+	// The maximum number of consecutive failures before the container is marked as unhealthy. Example: "3"
+	Retries int
+}
+
+// Retrieves this container with the specificed docker healtcheck command set.
+func (r *Container) WithDockerHealthcheck(args []string, opts ...ContainerWithDockerHealthcheckOpts) *Container {
+	q := r.query.Select("withDockerHealthcheck")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `shell` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Shell) {
+			q = q.Arg("shell", opts[i].Shell)
+		}
+		// `interval` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Interval) {
+			q = q.Arg("interval", opts[i].Interval)
+		}
+		// `timeout` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Timeout) {
+			q = q.Arg("timeout", opts[i].Timeout)
+		}
+		// `startPeriod` optional argument
+		if !querybuilder.IsZeroValue(opts[i].StartPeriod) {
+			q = q.Arg("startPeriod", opts[i].StartPeriod)
+		}
+		// `startInterval` optional argument
+		if !querybuilder.IsZeroValue(opts[i].StartInterval) {
+			q = q.Arg("startInterval", opts[i].StartInterval)
+		}
+		// `retries` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Retries) {
+			q = q.Arg("retries", opts[i].Retries)
+		}
+	}
+	q = q.Arg("args", args)
+
+	return &Container{
+		query: q,
+	}
+}
+
 // ContainerWithEntrypointOpts contains options for Container.WithEntrypoint
 type ContainerWithEntrypointOpts struct {
 	// Don't reset the default arguments when setting the entrypoint. By default it is reset, since entrypoint and default args are often tightly coupled.
@@ -3220,6 +3315,15 @@ func (r *Container) WithoutDirectory(path string, opts ...ContainerWithoutDirect
 		}
 	}
 	q = q.Arg("path", path)
+
+	return &Container{
+		query: q,
+	}
+}
+
+// Retrieves this container without a configured docker healtcheck command.
+func (r *Container) WithoutDockerHealthcheck() *Container {
+	q := r.query.Select("withoutDockerHealthcheck")
 
 	return &Container{
 		query: q,
@@ -5644,6 +5748,30 @@ func (r *Env) WithWorkspace(workspace *Directory) *Env {
 	}
 }
 
+// Create or update a binding of type Workspace in the environment
+func (r *Env) WithWorkspaceInput(name string, value *Workspace, description string) *Env {
+	assertNotNil("value", value)
+	q := r.query.Select("withWorkspaceInput")
+	q = q.Arg("name", name)
+	q = q.Arg("value", value)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
+// Declare a desired Workspace output to be assigned in the environment
+func (r *Env) WithWorkspaceOutput(name string, description string) *Env {
+	q := r.query.Select("withWorkspaceOutput")
+	q = q.Arg("name", name)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
 // Returns a new environment without any outputs
 func (r *Env) WithoutOutputs() *Env {
 	q := r.query.Select("withoutOutputs")
@@ -7682,6 +7810,25 @@ func (r *Generator) Name(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
+// The original module in which the generator has been defined
+func (r *Generator) OriginalModule() *Module {
+	q := r.query.Select("originalModule")
+
+	return &Module{
+		query: q,
+	}
+}
+
+// The path of the generator within its module
+func (r *Generator) Path(ctx context.Context) ([]string, error) {
+	q := r.query.Select("path")
+
+	var response []string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
 // Execute the generator
 func (r *Generator) Run() *Generator {
 	q := r.query.Select("run")
@@ -7960,6 +8107,8 @@ type GitRefTreeOpts struct {
 	//
 	// Default: 1
 	Depth int
+	// Set to true to populate tag refs in the local checkout .git.
+	IncludeTags bool
 }
 
 // The filesystem tree at this ref.
@@ -7973,6 +8122,10 @@ func (r *GitRef) Tree(opts ...GitRefTreeOpts) *Directory {
 		// `depth` optional argument
 		if !querybuilder.IsZeroValue(opts[i].Depth) {
 			q = q.Arg("depth", opts[i].Depth)
+		}
+		// `includeTags` optional argument
+		if !querybuilder.IsZeroValue(opts[i].IncludeTags) {
+			q = q.Arg("includeTags", opts[i].IncludeTags)
 		}
 	}
 
@@ -8161,6 +8314,162 @@ func (r *GitRepository) URL(ctx context.Context) (string, error) {
 		return *r.url, nil
 	}
 	q := r.query.Select("url")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Image healthcheck configuration.
+type HealthcheckConfig struct {
+	query *querybuilder.Selection
+
+	id            *HealthcheckConfigID
+	interval      *string
+	retries       *int
+	shell         *bool
+	startInterval *string
+	startPeriod   *string
+	timeout       *string
+}
+
+func (r *HealthcheckConfig) WithGraphQLQuery(q *querybuilder.Selection) *HealthcheckConfig {
+	return &HealthcheckConfig{
+		query: q,
+	}
+}
+
+// Healthcheck command arguments.
+func (r *HealthcheckConfig) Args(ctx context.Context) ([]string, error) {
+	q := r.query.Select("args")
+
+	var response []string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// A unique identifier for this HealthcheckConfig.
+func (r *HealthcheckConfig) ID(ctx context.Context) (HealthcheckConfigID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response HealthcheckConfigID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *HealthcheckConfig) XXX_GraphQLType() string {
+	return "HealthcheckConfig"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *HealthcheckConfig) XXX_GraphQLIDType() string {
+	return "HealthcheckConfigID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *HealthcheckConfig) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *HealthcheckConfig) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+func (r *HealthcheckConfig) UnmarshalJSON(bs []byte) error {
+	var id string
+	err := json.Unmarshal(bs, &id)
+	if err != nil {
+		return err
+	}
+	*r = *dag.LoadHealthcheckConfigFromID(HealthcheckConfigID(id))
+	return nil
+}
+
+// Interval between running healthcheck. Example:30s
+func (r *HealthcheckConfig) Interval(ctx context.Context) (string, error) {
+	if r.interval != nil {
+		return *r.interval, nil
+	}
+	q := r.query.Select("interval")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// The maximum number of consecutive failures before the container is marked as unhealthy. Example:3
+func (r *HealthcheckConfig) Retries(ctx context.Context) (int, error) {
+	if r.retries != nil {
+		return *r.retries, nil
+	}
+	q := r.query.Select("retries")
+
+	var response int
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Healthcheck command is a shell command.
+func (r *HealthcheckConfig) Shell(ctx context.Context) (bool, error) {
+	if r.shell != nil {
+		return *r.shell, nil
+	}
+	q := r.query.Select("shell")
+
+	var response bool
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// StartInterval configures the duration between checks during the startup phase. Example:5s
+func (r *HealthcheckConfig) StartInterval(ctx context.Context) (string, error) {
+	if r.startInterval != nil {
+		return *r.startInterval, nil
+	}
+	q := r.query.Select("startInterval")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// StartPeriod allows for failures during this initial startup period which do not count towards maximum number of retries. Example:0s
+func (r *HealthcheckConfig) StartPeriod(ctx context.Context) (string, error) {
+	if r.startPeriod != nil {
+		return *r.startPeriod, nil
+	}
+	q := r.query.Select("startPeriod")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Healthcheck timeout. Example:3s
+func (r *HealthcheckConfig) Timeout(ctx context.Context) (string, error) {
+	if r.timeout != nil {
+		return *r.timeout, nil
+	}
+	q := r.query.Select("timeout")
 
 	var response string
 
@@ -10063,6 +10372,15 @@ func (r *ModuleSource) EngineVersion(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
+// The generated files and directories made on top of the module source's context directory, returned as a Changeset.
+func (r *ModuleSource) GeneratedContextChangeset() *Changeset {
+	q := r.query.Select("generatedContextChangeset")
+
+	return &Changeset{
+		query: q,
+	}
+}
+
 // The generated files and directories made on top of the module source's context directory.
 func (r *ModuleSource) GeneratedContextDirectory() *Directory {
 	q := r.query.Select("generatedContextDirectory")
@@ -10891,6 +11209,15 @@ func (r *Client) CacheVolume(key string) *CacheVolume {
 	}
 }
 
+// Creates an empty changeset
+func (r *Client) Changeset() *Changeset {
+	q := r.query.Select("changeset")
+
+	return &Changeset{
+		query: q,
+	}
+}
+
 // Dagger Cloud configuration and state
 func (r *Client) Cloud() *Cloud {
 	q := r.query.Select("cloud")
@@ -10989,6 +11316,29 @@ func (r *Client) CurrentTypeDefs(ctx context.Context) ([]TypeDef, error) {
 	}
 
 	return convert(response), nil
+}
+
+// CurrentWorkspaceOpts contains options for Client.CurrentWorkspace
+type CurrentWorkspaceOpts struct {
+	// If true, skip legacy dagger.json migration checks.
+	SkipMigrationCheck bool
+}
+
+// Detect and return the current workspace.
+//
+// Experimental: Highly experimental API extracted from a more ambitious workspace implementation.
+func (r *Client) CurrentWorkspace(opts ...CurrentWorkspaceOpts) *Workspace {
+	q := r.query.Select("currentWorkspace")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `skipMigrationCheck` optional argument
+		if !querybuilder.IsZeroValue(opts[i].SkipMigrationCheck) {
+			q = q.Arg("skipMigrationCheck", opts[i].SkipMigrationCheck)
+		}
+	}
+
+	return &Workspace{
+		query: q,
+	}
 }
 
 // The default platform of the engine.
@@ -11538,6 +11888,16 @@ func (r *Client) LoadGitRepositoryFromID(id GitRepositoryID) *GitRepository {
 	}
 }
 
+// Load a HealthcheckConfig from its ID.
+func (r *Client) LoadHealthcheckConfigFromID(id HealthcheckConfigID) *HealthcheckConfig {
+	q := r.query.Select("loadHealthcheckConfigFromID")
+	q = q.Arg("id", id)
+
+	return &HealthcheckConfig{
+		query: q,
+	}
+}
+
 // Load a InputTypeDef from its ID.
 func (r *Client) LoadInputTypeDefFromID(id InputTypeDefID) *InputTypeDef {
 	q := r.query.Select("loadInputTypeDefFromID")
@@ -11764,6 +12124,16 @@ func (r *Client) LoadTypeDefFromID(id TypeDefID) *TypeDef {
 	q = q.Arg("id", id)
 
 	return &TypeDef{
+		query: q,
+	}
+}
+
+// Load a Workspace from its ID.
+func (r *Client) LoadWorkspaceFromID(id WorkspaceID) *Workspace {
+	q := r.query.Select("loadWorkspaceFromID")
+	q = q.Arg("id", id)
+
+	return &Workspace{
 		query: q,
 	}
 }
@@ -13525,6 +13895,177 @@ func (r *TypeDef) WithScalar(name string, opts ...TypeDefWithScalarOpts) *TypeDe
 	return &TypeDef{
 		query: q,
 	}
+}
+
+// A Dagger workspace detected from the current working directory.
+type Workspace struct {
+	query *querybuilder.Selection
+
+	clientId *string
+	findUp   *string
+	id       *WorkspaceID
+	root     *string
+}
+
+func (r *Workspace) WithGraphQLQuery(q *querybuilder.Selection) *Workspace {
+	return &Workspace{
+		query: q,
+	}
+}
+
+// The client ID that owns this workspace's host filesystem.
+func (r *Workspace) ClientID(ctx context.Context) (string, error) {
+	if r.clientId != nil {
+		return *r.clientId, nil
+	}
+	q := r.query.Select("clientId")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// WorkspaceDirectoryOpts contains options for Workspace.Directory
+type WorkspaceDirectoryOpts struct {
+	// Exclude artifacts that match the given pattern (e.g., ["node_modules/", ".git*"]).
+	Exclude []string
+	// Include only artifacts that match the given pattern (e.g., ["app/", "package.*"]).
+	Include []string
+	// Apply .gitignore filter rules inside the directory.
+	Gitignore bool
+}
+
+// Returns a Directory from the workspace.
+//
+// Path is relative to workspace root. Use "." for the root directory.
+func (r *Workspace) Directory(path string, opts ...WorkspaceDirectoryOpts) *Directory {
+	q := r.query.Select("directory")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `exclude` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Exclude) {
+			q = q.Arg("exclude", opts[i].Exclude)
+		}
+		// `include` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Include) {
+			q = q.Arg("include", opts[i].Include)
+		}
+		// `gitignore` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Gitignore) {
+			q = q.Arg("gitignore", opts[i].Gitignore)
+		}
+	}
+	q = q.Arg("path", path)
+
+	return &Directory{
+		query: q,
+	}
+}
+
+// Returns a File from the workspace.
+//
+// Path is relative to workspace root.
+func (r *Workspace) File(path string) *File {
+	q := r.query.Select("file")
+	q = q.Arg("path", path)
+
+	return &File{
+		query: q,
+	}
+}
+
+// WorkspaceFindUpOpts contains options for Workspace.FindUp
+type WorkspaceFindUpOpts struct {
+	// Path to start the search from, relative to the workspace root.
+	//
+	// Default: "."
+	From string
+}
+
+// Search for a file or directory by walking up from the start path within the workspace.
+//
+// Returns the path relative to the workspace root if found, or null if not found.
+//
+// The search stops at the workspace root and will not traverse above it.
+func (r *Workspace) FindUp(ctx context.Context, name string, opts ...WorkspaceFindUpOpts) (string, error) {
+	if r.findUp != nil {
+		return *r.findUp, nil
+	}
+	q := r.query.Select("findUp")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `from` optional argument
+		if !querybuilder.IsZeroValue(opts[i].From) {
+			q = q.Arg("from", opts[i].From)
+		}
+	}
+	q = q.Arg("name", name)
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// A unique identifier for this Workspace.
+func (r *Workspace) ID(ctx context.Context) (WorkspaceID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response WorkspaceID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *Workspace) XXX_GraphQLType() string {
+	return "Workspace"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *Workspace) XXX_GraphQLIDType() string {
+	return "WorkspaceID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *Workspace) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *Workspace) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+func (r *Workspace) UnmarshalJSON(bs []byte) error {
+	var id string
+	err := json.Unmarshal(bs, &id)
+	if err != nil {
+		return err
+	}
+	*r = *dag.LoadWorkspaceFromID(WorkspaceID(id))
+	return nil
+}
+
+// Absolute path to the workspace root directory.
+func (r *Workspace) Root(ctx context.Context) (string, error) {
+	if r.root != nil {
+		return *r.root, nil
+	}
+	q := r.query.Select("root")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
 }
 
 // Sharing mode of the cache volume.

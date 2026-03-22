@@ -19,7 +19,7 @@ import (
 	"dagger/my-app/internal/dagger"
 	"fmt"
 
-	"dagger.io/dagger/telemetry"
+	telemetry "github.com/dagger/otel-go"
 	"golang.org/x/sync/errgroup"
 )
 

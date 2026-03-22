@@ -1,5 +1,5 @@
 nodejs 22.18.0
-dagger v0.19.11
+dagger v0.20.3
 golang 1.25.5
 helm 3.18.6
 kubectl 1.33.4
