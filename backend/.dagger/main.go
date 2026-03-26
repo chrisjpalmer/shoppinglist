@@ -30,14 +30,11 @@ type Backend struct {
 }
 
 func New(
-	// +defaultPath="/"
-	rootSrc *dagger.Directory,
-	// +defaultPath="/backend"
-	src *dagger.Directory,
+	ws *dagger.Workspace,
 ) *Backend {
 	return &Backend{
-		RootSrc: rootSrc,
-		Src:     src,
+		RootSrc: ws.Directory("/", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
+		Src:     ws.Directory("/backend", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
 	}
 }
 

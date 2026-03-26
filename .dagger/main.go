@@ -30,11 +30,9 @@ type Shoppinglist struct {
 	Frontend *dagger.Directory
 }
 
-func New(
-	// +defaultPath="/"
-	// +ignore=["/local"]
-	src *dagger.Directory,
-) *Shoppinglist {
+func New(ws *dagger.Workspace) *Shoppinglist {
+	src := ws.Directory("/", dagger.WorkspaceDirectoryOpts{Gitignore: true})
+
 	return &Shoppinglist{
 		Backend:  src.Directory("backend"),
 		Frontend: src.Directory("my-app"),
