@@ -28,11 +28,10 @@ type MyApp struct {
 }
 
 func New(
-	// +defaultPath="/my-app"
-	src *dagger.Directory,
+	ws *dagger.Workspace,
 ) *MyApp {
 	return &MyApp{
-		Src: src,
+		Src: ws.Directory("/my-app", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
 	}
 }
 

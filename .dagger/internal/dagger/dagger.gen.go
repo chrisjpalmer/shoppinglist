@@ -703,7 +703,7 @@ func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../backe
 	}
 }
 
-func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/main.go:45:1)
+func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/main.go:42:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -12467,7 +12467,7 @@ func (r *MyApp) WithGraphQLQuery(q *querybuilder.Selection) *MyApp {
 	}
 }
 
-func (r *MyApp) BuildCheck() *Container { // my-app (../../../my-app/.dagger/main.go:40:1)
+func (r *MyApp) BuildCheck() *Container { // my-app (../../../my-app/.dagger/main.go:39:1)
 	q := r.query.Select("buildCheck")
 
 	return &Container{
@@ -12524,7 +12524,7 @@ func (r *MyApp) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-func (r *MyApp) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // my-app (../../../my-app/.dagger/main.go:77:1)
+func (r *MyApp) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // my-app (../../../my-app/.dagger/main.go:76:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -12883,21 +12883,15 @@ func (r *Client) Address(value string) *Address {
 
 // BackendOpts contains options for Client.Backend
 type BackendOpts struct {
-	RootSrc *Directory // backend (../../../backend/.dagger/main.go:34:2)
-
-	Src *Directory // backend (../../../backend/.dagger/main.go:36:2)
+	Ws *Workspace // backend (../../../backend/.dagger/main.go:33:2)
 }
 
 func (r *Client) Backend(opts ...BackendOpts) *Backend { // backend (../../../backend/.dagger/main.go:32:1)
 	q := r.query.Select("backend")
 	for i := len(opts) - 1; i >= 0; i-- {
-		// `rootSrc` optional argument
-		if !querybuilder.IsZeroValue(opts[i].RootSrc) {
-			q = q.Arg("rootSrc", opts[i].RootSrc)
-		}
-		// `src` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Src) {
-			q = q.Arg("src", opts[i].Src)
+		// `ws` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Ws) {
+			q = q.Arg("ws", opts[i].Ws)
 		}
 	}
 
@@ -13986,15 +13980,15 @@ func (r *Client) ModuleSource(refString string, opts ...ModuleSourceOpts) *Modul
 
 // MyAppOpts contains options for Client.MyApp
 type MyAppOpts struct {
-	Src *Directory // my-app (../../../my-app/.dagger/main.go:32:2)
+	Ws *Workspace // my-app (../../../my-app/.dagger/main.go:31:2)
 }
 
 func (r *Client) MyApp(opts ...MyAppOpts) *MyApp { // my-app (../../../my-app/.dagger/main.go:30:1)
 	q := r.query.Select("myApp")
 	for i := len(opts) - 1; i >= 0; i-- {
-		// `src` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Src) {
-			q = q.Arg("src", opts[i].Src)
+		// `ws` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Ws) {
+			q = q.Arg("ws", opts[i].Ws)
 		}
 	}
 
