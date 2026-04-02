@@ -49,7 +49,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<header>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -57,7 +57,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div class=\"content\"><header><h1>Want</h1></header><div class=\"table-content\"><table><tr class=\"table-header\"><td class=\"col-item\">Item</td><td class=\"col-number\">Number</td><td class=\"col-override\">Override</td></tr>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"page-menu\"><h1>Want</h1></div></header><div id=\"content\"><div class=\"table-content\"><table><tr class=\"table-header\"><td class=\"col-item\">Item</td><td class=\"col-number\">Number</td><td class=\"col-override\">Override</td></tr>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

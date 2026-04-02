@@ -20,8 +20,10 @@ var links = []Link{
 templ Nav(pageContext page.Context) {
     <nav class="nav">
         <ul>
-            for _, link := range links {
-                <div class="spacer"></div>
+            for i, link := range links {
+                if i != 0 {
+                    <div class="spacer"></div>
+                }
                 <li
                     if pageContext.Path == link.Link {
                         class="active"
@@ -30,7 +32,6 @@ templ Nav(pageContext page.Context) {
                     <a href={link.Link}>{link.Title}</a>
                 </li>
             }
-            <div class="spacer"></div>
         </ul>
     </nav>
 }
