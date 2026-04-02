@@ -66,7 +66,7 @@ func (q *Queries) DeleteMeal(ctx context.Context, id int64) error {
 
 const getIngredients = `-- name: GetIngredients :many
 
-SELECT id, name FROM ingredients
+SELECT id, name, want_override_count FROM ingredients
 ORDER BY name
 `
 
@@ -80,7 +80,7 @@ func (q *Queries) GetIngredients(ctx context.Context) ([]Ingredient, error) {
 	var items []Ingredient
 	for rows.Next() {
 		var i Ingredient
-		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+		if err := rows.Scan(&i.ID, &i.Name, &i.WantOverrideCount); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -160,6 +160,20 @@ type UpdateIngredientParams struct {
 
 func (q *Queries) UpdateIngredient(ctx context.Context, arg UpdateIngredientParams) error {
 	_, err := q.db.ExecContext(ctx, updateIngredient, arg.Name, arg.ID)
+	return err
+}
+
+const updateIngredientWantOverrideCount = `-- name: UpdateIngredientWantOverrideCount :exec
+UPDATE ingredients set want_override_count = ? WHERE id = ?
+`
+
+type UpdateIngredientWantOverrideCountParams struct {
+	WantOverrideCount int64
+	ID                int64
+}
+
+func (q *Queries) UpdateIngredientWantOverrideCount(ctx context.Context, arg UpdateIngredientWantOverrideCountParams) error {
+	_, err := q.db.ExecContext(ctx, updateIngredientWantOverrideCount, arg.WantOverrideCount, arg.ID)
 	return err
 }
 

@@ -17,6 +17,8 @@ func NewContext(r *http.Request) Context {
 
 // WantItem - an item to display on the want page
 type WantItem struct {
-	Ingredient string
-	Count      int32
+	ID            int64
+	Ingredient    string
+	Count         int
+	OverrideCount int
 }

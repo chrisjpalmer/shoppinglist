@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/a-h/templ"
 	"github.com/chrisjpalmer/shoppinglist/backend/gen"
@@ -17,6 +19,28 @@ import (
 )
 
 func (m *Server) handleWantPage(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		ovCt, err := parseOverrideColumns(r)
+		if err != nil {
+			w.WriteHeader(400)
+			fmt.Println("error while parsing override columns", err.Error())
+			return
+		}
+
+		err = m.saveOverrideColumns(r.Context(), ovCt)
+		if err != nil {
+			w.WriteHeader(500)
+			fmt.Println("error updating override counts", err.Error())
+			return
+		}
+	}
+
+	m.renderWantPage(w, r)
+}
+
+func (m *Server) renderWantPage(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+
 	pctx := page.NewContext(r)
 
 	ww, err := m.wantItems(r.Context())
@@ -26,7 +50,75 @@ func (m *Server) handleWantPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templ.Handler(render.WantPage(pctx, ww)).ServeHTTP(w, r)
+	var opts []func(*templ.ComponentHandler)
+
+	if q.Has(fragmentParam) {
+		opts = append(opts, templ.WithFragments(q.Get(fragmentParam)))
+	}
+
+	templ.Handler(render.WantPage(pctx, ww), opts...).ServeHTTP(w, r)
+}
+
+func (m *Server) saveOverrideColumns(ctx context.Context, ovCt map[int64]int64) error {
+	for id, ct := range ovCt {
+		err := m.sql.UpdateIngredientWantOverrideCount(ctx, generated.UpdateIngredientWantOverrideCountParams{
+			ID:                id,
+			WantOverrideCount: ct,
+		})
+
+		if err != nil {
+			return fmt.Errorf("error updating want override count for ingredient %d: %w", id, err)
+		}
+	}
+
+	return nil
+}
+
+func parseOverrideColumns(r *http.Request) (map[int64]int64, error) {
+	const maxMemory = 100000
+
+	const prefix = "col-override."
+
+	r.ParseMultipartForm(maxMemory)
+
+	ovCt := make(map[int64]int64, len(r.Form))
+
+	for k, v := range r.Form {
+		if !strings.HasPrefix(k, prefix) {
+			continue
+		}
+
+		idstr := strings.TrimPrefix(k, prefix)
+
+		id, ct, err := parseOverrideColumn(idstr, v)
+		if err != nil {
+			return nil, fmt.Errorf("could not parse override column %q: %w", k, err)
+		}
+
+		ovCt[id] = ct
+	}
+
+	return ovCt, nil
+}
+
+func parseOverrideColumn(idstr string, value []string) (id int64, ct int64, err error) {
+	id, err = strconv.ParseInt(idstr, 10, 64)
+	if err != nil {
+		return 0, 0, fmt.Errorf("could not parse id %q as int64: %w", idstr, err)
+	}
+
+	if len(value) == 0 {
+		return 0, 0, fmt.Errorf("expected value slice not to be empty", err)
+	}
+
+	v := value[0]
+
+	ct, err = strconv.ParseInt(v, 10, 64)
+	if err != nil {
+		return 0, 0, fmt.Errorf("could not parse value %q as int64: %w", v, err)
+	}
+
+	return id, ct, nil
 }
 
 func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
@@ -70,12 +162,12 @@ func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
 	var ww []page.WantItem
 	for _, ing := range ingg {
 		ct := ingredientCounts[ing.ID]
-		if ct > 0 {
-			ww = append(ww, page.WantItem{
-				Ingredient: ing.Name,
-				Count:      ct,
-			})
-		}
+		ww = append(ww, page.WantItem{
+			ID:            ing.ID,
+			Ingredient:    ing.Name,
+			Count:         int(ct),
+			OverrideCount: int(ing.WantOverrideCount),
+		})
 	}
 
 	return ww, nil

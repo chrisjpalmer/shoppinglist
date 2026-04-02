@@ -71,6 +71,33 @@ h1 {
     justify-self: flex-start;
 }
 
+#save-button {
+    visibility: hidden;
+}
+
+#save-button.dirty {
+    visibility: visible;
+}
+
+.button {
+    background-color: rgb(255, 153, 0);
+    border-radius: 5px;
+    border-style: solid;
+    border-color: rgb(255, 228, 188);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    height: 40px;
+    padding: 0px 10px;
+}
+
+.button:hover {
+    background-color: rgb(250, 229, 123);
+}
+
+.button:active {
+    background-color: rgb(133, 81, 2);
+}
+
 #content {
     margin-top: 20px;
     margin-left: 50px;

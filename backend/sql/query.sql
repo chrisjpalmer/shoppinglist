@@ -27,7 +27,7 @@ DELETE FROM meals WHERE id = ?;
 ------- INGREDIENTS ------
 
 -- name: GetIngredients :many
-SELECT id, name FROM ingredients
+SELECT id, name, want_override_count FROM ingredients
 ORDER BY name;
 
 -- name: CreateIngredient :one
@@ -35,6 +35,9 @@ INSERT INTO ingredients (name) VALUES (?) RETURNING id;
 
 -- name: UpdateIngredient :exec
 UPDATE ingredients set name = ? WHERE id = ?;
+
+-- name: UpdateIngredientWantOverrideCount :exec
+UPDATE ingredients set want_override_count = ? WHERE id = ?;
 
 -- name: DeleteIngredient :exec
 DELETE FROM ingredients WHERE id = ?;
