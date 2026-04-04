@@ -1,4 +1,4 @@
-// A generated module for MyApp functions
+// A generated module for Frontend functions
 //
 // This module has been generated via dagger init and serves as a reference to
 // basic module structure as you get started with Dagger.
@@ -16,27 +16,27 @@ package main
 
 import (
 	"context"
-	"dagger/my-app/internal/dagger"
+	"dagger/frontend/internal/dagger"
 	"fmt"
 
 	telemetry "github.com/dagger/otel-go"
 	"golang.org/x/sync/errgroup"
 )
 
-type MyApp struct {
+type Frontend struct {
 	Src *dagger.Directory
 }
 
 func New(
 	ws *dagger.Workspace,
-) *MyApp {
-	return &MyApp{
-		Src: ws.Directory("/my-app", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
+) *Frontend {
+	return &Frontend{
+		Src: ws.Directory("/frontend", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
 	}
 }
 
 // +check
-func (m *MyApp) BuildCheck(ctx context.Context) (*dagger.Container, error) {
+func (m *Frontend) BuildCheck(ctx context.Context) (*dagger.Container, error) {
 	plt, err := dag.DefaultPlatform(ctx)
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (m *MyApp) BuildCheck(ctx context.Context) (*dagger.Container, error) {
 	return m.build(ctx, plt)
 }
 
-func (m *MyApp) build(
+func (m *Frontend) build(
 	ctx context.Context,
 	platform dagger.Platform,
 ) (_ *dagger.Container, rerr error) {
@@ -73,7 +73,7 @@ func (m *MyApp) build(
 }
 
 // +cache="never"
-func (m *MyApp) Publish(
+func (m *Frontend) Publish(
 	ctx context.Context,
 	tag string,
 	registryPassword *dagger.Secret,

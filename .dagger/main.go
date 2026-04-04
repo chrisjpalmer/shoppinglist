@@ -35,7 +35,7 @@ func New(ws *dagger.Workspace) *Shoppinglist {
 
 	return &Shoppinglist{
 		Backend:  src.Directory("backend"),
-		Frontend: src.Directory("my-app"),
+		Frontend: src.Directory("frontend"),
 	}
 }
 
@@ -99,7 +99,7 @@ func (m *Shoppinglist) Build(
 
 	errg.Go(func() error { return m.publishMigrateImage(gctx, tag, registryPassword) })
 
-	errg.Go(func() error { return m.publishMyApp(gctx, tag, registryPassword) })
+	errg.Go(func() error { return m.publishFrontend(gctx, tag, registryPassword) })
 
 	if err := errg.Wait(); err != nil {
 		return err
@@ -122,11 +122,11 @@ func (m *Shoppinglist) publishMigrateImage(ctx context.Context, tag string, regi
 	return dag.Backend().PublishMigrateImage(ctx, tag, registryPassword)
 }
 
-func (m *Shoppinglist) publishMyApp(ctx context.Context, tag string, registryPassword *dagger.Secret) (rerr error) {
-	ctx, span := Tracer().Start(ctx, "publish-myapp")
+func (m *Shoppinglist) publishFrontend(ctx context.Context, tag string, registryPassword *dagger.Secret) (rerr error) {
+	ctx, span := Tracer().Start(ctx, "publish-frontend")
 	defer telemetry.EndWithCause(span, &rerr)
 
-	return dag.MyApp().Publish(ctx, tag, registryPassword)
+	return dag.Frontend().Publish(ctx, tag, registryPassword)
 }
 
 func (m *Shoppinglist) deployBackend(

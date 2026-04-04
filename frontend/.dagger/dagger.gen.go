@@ -17,7 +17,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.39.0"
 	"go.opentelemetry.io/otel/trace"
 
-	"dagger/my-app/internal/dagger"
+	"dagger/frontend/internal/dagger"
 
 	"dagger.io/dagger/querybuilder"
 )
@@ -56,7 +56,7 @@ func convertSlice[I any, O any](in []I, f func(I) O) []O {
 	return out
 }
 
-func (r MyApp) MarshalJSON() ([]byte, error) {
+func (r Frontend) MarshalJSON() ([]byte, error) {
 	var concrete struct {
 		Src *dagger.Directory
 	}
@@ -64,7 +64,7 @@ func (r MyApp) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&concrete)
 }
 
-func (r *MyApp) UnmarshalJSON(bs []byte) error {
+func (r *Frontend) UnmarshalJSON(bs []byte) error {
 	var concrete struct {
 		Src *dagger.Directory
 	}
@@ -193,17 +193,17 @@ func dispatch(ctx context.Context) (rerr error) {
 func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName string, inputArgs map[string][]byte) (_ any, err error) {
 	_ = inputArgs
 	switch parentName {
-	case "MyApp":
+	case "Frontend":
 		switch fnName {
 		case "BuildCheck":
-			var parent MyApp
+			var parent Frontend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			return (*MyApp).BuildCheck(&parent, ctx)
+			return (*Frontend).BuildCheck(&parent, ctx)
 		case "Publish":
-			var parent MyApp
+			var parent Frontend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
@@ -222,9 +222,9 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
 				}
 			}
-			return nil, (*MyApp).Publish(&parent, ctx, tag, registryPassword)
+			return nil, (*Frontend).Publish(&parent, ctx, tag, registryPassword)
 		case "":
-			var parent MyApp
+			var parent Frontend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
