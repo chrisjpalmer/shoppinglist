@@ -53,9 +53,11 @@ func (m *Backend) migrateImage(platform dagger.Platform, toSql *dagger.File) *da
 // TestMigrateImageWithDB - tests that the migrate image works if the DB exists
 // +check
 func (m *Backend) TestMigrateImageWithDB(ctx context.Context) error {
-	fromSql := dag.CurrentModule().Source().File("golden/schema.sql")
+	curMod := dag.CurrentModule().Source()
 
-	toSql := m.RootSrc.File(schemaPath)
+	fromSql := curMod.File("golden/from.sql")
+
+	toSql := curMod.File("golden/to.sql")
 
 	plt, err := dag.DefaultPlatform(ctx)
 	if err != nil {
