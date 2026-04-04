@@ -15,4 +15,5 @@ echo "running migration on database"
 atlas schema apply \
   --url "sqlite:///${DATABASE_FILE}" \
   --to file:///app/to.sql \
-  --dev-url "sqlite://dev?mode=memory"
+  --dev-url "sqlite://dev?mode=memory" \
+  --auto-approve
