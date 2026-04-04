@@ -42,13 +42,14 @@ func New(ws *dagger.Workspace) *Shoppinglist {
 // +cache="never"
 func (m *Shoppinglist) BuildAndDeploy(
 	ctx context.Context,
+	ws *dagger.Workspace,
 	registryPassword *dagger.Secret,
 	kubeEnv1 *dagger.Secret,
 	kubeEnv2 *dagger.Secret,
 ) error {
 	tag := time.Now().Format("20060102-150405")
 
-	if err := m.Build(ctx, tag, registryPassword); err != nil {
+	if err := m.Build(ctx, ws, tag, registryPassword); err != nil {
 		return fmt.Errorf("error while building: %w", err)
 	}
 
@@ -87,6 +88,7 @@ func (m *Shoppinglist) Deploy(
 // +cache="never"
 func (m *Shoppinglist) Build(
 	ctx context.Context,
+	ws *dagger.Workspace,
 	tag string,
 	registryPassword *dagger.Secret,
 ) (rerr error) {
@@ -95,11 +97,11 @@ func (m *Shoppinglist) Build(
 
 	errg, gctx := errgroup.WithContext(ctx)
 
-	errg.Go(func() error { return m.publishBackend(gctx, tag, registryPassword) })
+	errg.Go(func() error { return m.publishBackend(gctx, ws, tag, registryPassword) })
 
-	errg.Go(func() error { return m.publishMigrateImage(gctx, tag, registryPassword) })
+	errg.Go(func() error { return m.publishMigrateImage(gctx, ws, tag, registryPassword) })
 
-	errg.Go(func() error { return m.publishFrontend(gctx, tag, registryPassword) })
+	errg.Go(func() error { return m.publishFrontend(gctx, ws, tag, registryPassword) })
 
 	if err := errg.Wait(); err != nil {
 		return err
@@ -108,25 +110,25 @@ func (m *Shoppinglist) Build(
 	return nil
 }
 
-func (m *Shoppinglist) publishBackend(ctx context.Context, tag string, registryPassword *dagger.Secret) (rerr error) {
+func (m *Shoppinglist) publishBackend(ctx context.Context, ws *dagger.Workspace, tag string, registryPassword *dagger.Secret) (rerr error) {
 	ctx, span := Tracer().Start(ctx, "publish-backend")
 	defer telemetry.EndWithCause(span, &rerr)
 
-	return dag.Backend().Publish(ctx, tag, registryPassword)
+	return dag.Backend(dagger.BackendOpts{Ws: ws}).Publish(ctx, tag, registryPassword)
 }
 
-func (m *Shoppinglist) publishMigrateImage(ctx context.Context, tag string, registryPassword *dagger.Secret) (rerr error) {
+func (m *Shoppinglist) publishMigrateImage(ctx context.Context, ws *dagger.Workspace, tag string, registryPassword *dagger.Secret) (rerr error) {
 	ctx, span := Tracer().Start(ctx, "publish-migrate-image")
 	defer telemetry.EndWithCause(span, &rerr)
 
-	return dag.Backend().PublishMigrateImage(ctx, tag, registryPassword)
+	return dag.Backend(dagger.BackendOpts{Ws: ws}).PublishMigrateImage(ctx, tag, registryPassword)
 }
 
-func (m *Shoppinglist) publishFrontend(ctx context.Context, tag string, registryPassword *dagger.Secret) (rerr error) {
+func (m *Shoppinglist) publishFrontend(ctx context.Context, ws *dagger.Workspace, tag string, registryPassword *dagger.Secret) (rerr error) {
 	ctx, span := Tracer().Start(ctx, "publish-frontend")
 	defer telemetry.EndWithCause(span, &rerr)
 
-	return dag.Frontend().Publish(ctx, tag, registryPassword)
+	return dag.Frontend(dagger.FrontendOpts{Ws: ws}).Publish(ctx, tag, registryPassword)
 }
 
 func (m *Shoppinglist) deployBackend(
