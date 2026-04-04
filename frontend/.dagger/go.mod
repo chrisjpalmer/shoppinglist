@@ -1,4 +1,4 @@
-module dagger/my-app
+module dagger/frontend
 
 go 1.25.0
 

@@ -205,6 +205,9 @@ type FieldTypeDefID string
 // The `FileID` scalar type represents an identifier for an object of type File.
 type FileID string
 
+// The `FrontendID` scalar type represents an identifier for an object of type Frontend.
+type FrontendID string // frontend (../../../frontend/.dagger/main.go:26:6)
+
 // The `FunctionArgID` scalar type represents an identifier for an object of type FunctionArg.
 type FunctionArgID string
 
@@ -279,9 +282,6 @@ type ModuleID string
 
 // The `ModuleSourceID` scalar type represents an identifier for an object of type ModuleSource.
 type ModuleSourceID string
-
-// The `MyAppID` scalar type represents an identifier for an object of type MyApp.
-type MyAppID string // my-app (../../../my-app/.dagger/main.go:26:6)
 
 // The `ObjectTypeDefID` scalar type represents an identifier for an object of type ObjectTypeDef.
 type ObjectTypeDefID string
@@ -882,6 +882,15 @@ func (r *Binding) AsFile() *File {
 	}
 }
 
+// Retrieve the binding value, as type Frontend
+func (r *Binding) AsFrontend() *Frontend { // frontend (../../../frontend/.dagger/main.go:26:6)
+	q := r.query.Select("asFrontend")
+
+	return &Frontend{
+		query: q,
+	}
+}
+
 // Retrieve the binding value, as type Generator
 func (r *Binding) AsGenerator() *Generator {
 	q := r.query.Select("asGenerator")
@@ -986,15 +995,6 @@ func (r *Binding) AsModuleSource() *ModuleSource {
 	q := r.query.Select("asModuleSource")
 
 	return &ModuleSource{
-		query: q,
-	}
-}
-
-// Retrieve the binding value, as type MyApp
-func (r *Binding) AsMyApp() *MyApp { // my-app (../../../my-app/.dagger/main.go:26:6)
-	q := r.query.Select("asMyApp")
-
-	return &MyApp{
 		query: q,
 	}
 }
@@ -5632,6 +5632,30 @@ func (r *Env) WithFileOutput(name string, description string) *Env {
 	}
 }
 
+// Create or update a binding of type Frontend in the environment
+func (r *Env) WithFrontendInput(name string, value *Frontend, description string) *Env { // frontend (../../../frontend/.dagger/main.go:26:6)
+	assertNotNil("value", value)
+	q := r.query.Select("withFrontendInput")
+	q = q.Arg("name", name)
+	q = q.Arg("value", value)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
+// Declare a desired Frontend output to be assigned in the environment
+func (r *Env) WithFrontendOutput(name string, description string) *Env { // frontend (../../../frontend/.dagger/main.go:26:6)
+	q := r.query.Select("withFrontendOutput")
+	q = q.Arg("name", name)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
 // Create or update a binding of type GeneratorGroup in the environment
 func (r *Env) WithGeneratorGroupInput(name string, value *GeneratorGroup, description string) *Env {
 	assertNotNil("value", value)
@@ -5940,30 +5964,6 @@ func (r *Env) WithModuleSourceInput(name string, value *ModuleSource, descriptio
 // Declare a desired ModuleSource output to be assigned in the environment
 func (r *Env) WithModuleSourceOutput(name string, description string) *Env {
 	q := r.query.Select("withModuleSourceOutput")
-	q = q.Arg("name", name)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Create or update a binding of type MyApp in the environment
-func (r *Env) WithMyAppInput(name string, value *MyApp, description string) *Env { // my-app (../../../my-app/.dagger/main.go:26:6)
-	assertNotNil("value", value)
-	q := r.query.Select("withMyAppInput")
-	q = q.Arg("name", name)
-	q = q.Arg("value", value)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Declare a desired MyApp output to be assigned in the environment
-func (r *Env) WithMyAppOutput(name string, description string) *Env { // my-app (../../../my-app/.dagger/main.go:26:6)
-	q := r.query.Select("withMyAppOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
 
@@ -7220,6 +7220,96 @@ func (r *File) WithTimestamps(timestamp int) *File {
 	q = q.Arg("timestamp", timestamp)
 
 	return &File{
+		query: q,
+	}
+}
+
+type Frontend struct { // frontend (../../../frontend/.dagger/main.go:26:6)
+	query *querybuilder.Selection
+
+	id      *FrontendID
+	publish *Void
+}
+
+func (r *Frontend) WithGraphQLQuery(q *querybuilder.Selection) *Frontend {
+	return &Frontend{
+		query: q,
+	}
+}
+
+func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dagger/main.go:39:1)
+	q := r.query.Select("buildCheck")
+
+	return &Container{
+		query: q,
+	}
+}
+
+// A unique identifier for this Frontend.
+func (r *Frontend) ID(ctx context.Context) (FrontendID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response FrontendID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *Frontend) XXX_GraphQLType() string {
+	return "Frontend"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *Frontend) XXX_GraphQLIDType() string {
+	return "FrontendID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *Frontend) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *Frontend) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+func (r *Frontend) UnmarshalJSON(bs []byte) error {
+	var id string
+	err := json.Unmarshal(bs, &id)
+	if err != nil {
+		return err
+	}
+	*r = *dag.LoadFrontendFromID(FrontendID(id))
+	return nil
+}
+
+func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../frontend/.dagger/main.go:76:1)
+	assertNotNil("registryPassword", registryPassword)
+	if r.publish != nil {
+		return nil
+	}
+	q := r.query.Select("publish")
+	q = q.Arg("tag", tag)
+	q = q.Arg("registryPassword", registryPassword)
+
+	return q.Execute(ctx)
+}
+
+func (r *Frontend) Src() *Directory { // frontend (../../../frontend/.dagger/main.go:27:2)
+	q := r.query.Select("src")
+
+	return &Directory{
 		query: q,
 	}
 }
@@ -12454,96 +12544,6 @@ func (r *ModuleSource) WithoutToolchains(toolchains []string) *ModuleSource {
 	}
 }
 
-type MyApp struct { // my-app (../../../my-app/.dagger/main.go:26:6)
-	query *querybuilder.Selection
-
-	id      *MyAppID
-	publish *Void
-}
-
-func (r *MyApp) WithGraphQLQuery(q *querybuilder.Selection) *MyApp {
-	return &MyApp{
-		query: q,
-	}
-}
-
-func (r *MyApp) BuildCheck() *Container { // my-app (../../../my-app/.dagger/main.go:39:1)
-	q := r.query.Select("buildCheck")
-
-	return &Container{
-		query: q,
-	}
-}
-
-// A unique identifier for this MyApp.
-func (r *MyApp) ID(ctx context.Context) (MyAppID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response MyAppID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *MyApp) XXX_GraphQLType() string {
-	return "MyApp"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *MyApp) XXX_GraphQLIDType() string {
-	return "MyAppID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *MyApp) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *MyApp) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(marshalCtx)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *MyApp) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadMyAppFromID(MyAppID(id))
-	return nil
-}
-
-func (r *MyApp) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // my-app (../../../my-app/.dagger/main.go:76:1)
-	assertNotNil("registryPassword", registryPassword)
-	if r.publish != nil {
-		return nil
-	}
-	q := r.query.Select("publish")
-	q = q.Arg("tag", tag)
-	q = q.Arg("registryPassword", registryPassword)
-
-	return q.Execute(ctx)
-}
-
-func (r *MyApp) Src() *Directory { // my-app (../../../my-app/.dagger/main.go:27:2)
-	q := r.query.Select("src")
-
-	return &Directory{
-		query: q,
-	}
-}
-
 // A definition of a custom object defined in a Module.
 type ObjectTypeDef struct {
 	query *querybuilder.Selection
@@ -13147,6 +13147,25 @@ func (r *Client) File(name string, contents string, opts ...FileOpts) *File {
 	}
 }
 
+// FrontendOpts contains options for Client.Frontend
+type FrontendOpts struct {
+	Ws *Workspace // frontend (../../../frontend/.dagger/main.go:31:2)
+}
+
+func (r *Client) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../../frontend/.dagger/main.go:30:1)
+	q := r.query.Select("frontend")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `ws` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Ws) {
+			q = q.Arg("ws", opts[i].Ws)
+		}
+	}
+
+	return &Frontend{
+		query: q,
+	}
+}
+
 // Creates a function.
 func (r *Client) Function(name string, returnType *TypeDef) *Function {
 	assertNotNil("returnType", returnType)
@@ -13539,6 +13558,16 @@ func (r *Client) LoadFileFromID(id FileID) *File {
 	}
 }
 
+// Load a Frontend from its ID.
+func (r *Client) LoadFrontendFromID(id FrontendID) *Frontend { // frontend (../../../frontend/.dagger/main.go:26:6)
+	q := r.query.Select("loadFrontendFromID")
+	q = q.Arg("id", id)
+
+	return &Frontend{
+		query: q,
+	}
+}
+
 // Load a FunctionArg from its ID.
 func (r *Client) LoadFunctionArgFromID(id FunctionArgID) *FunctionArg {
 	q := r.query.Select("loadFunctionArgFromID")
@@ -13779,16 +13808,6 @@ func (r *Client) LoadModuleSourceFromID(id ModuleSourceID) *ModuleSource {
 	}
 }
 
-// Load a MyApp from its ID.
-func (r *Client) LoadMyAppFromID(id MyAppID) *MyApp { // my-app (../../../my-app/.dagger/main.go:26:6)
-	q := r.query.Select("loadMyAppFromID")
-	q = q.Arg("id", id)
-
-	return &MyApp{
-		query: q,
-	}
-}
-
 // Load a ObjectTypeDef from its ID.
 func (r *Client) LoadObjectTypeDefFromID(id ObjectTypeDefID) *ObjectTypeDef {
 	q := r.query.Select("loadObjectTypeDefFromID")
@@ -13974,25 +13993,6 @@ func (r *Client) ModuleSource(refString string, opts ...ModuleSourceOpts) *Modul
 	q = q.Arg("refString", refString)
 
 	return &ModuleSource{
-		query: q,
-	}
-}
-
-// MyAppOpts contains options for Client.MyApp
-type MyAppOpts struct {
-	Ws *Workspace // my-app (../../../my-app/.dagger/main.go:31:2)
-}
-
-func (r *Client) MyApp(opts ...MyAppOpts) *MyApp { // my-app (../../../my-app/.dagger/main.go:30:1)
-	q := r.query.Select("myApp")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `ws` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Ws) {
-			q = q.Arg("ws", opts[i].Ws)
-		}
-	}
-
-	return &MyApp{
 		query: q,
 	}
 }

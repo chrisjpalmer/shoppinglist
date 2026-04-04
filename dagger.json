@@ -10,8 +10,8 @@
       "source": "backend"
     },
     {
-      "name": "my-app",
-      "source": "my-app"
+      "name": "frontend",
+      "source": "frontend"
     }
   ],
   "dependencies": [
