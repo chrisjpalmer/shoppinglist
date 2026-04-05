@@ -9,14 +9,14 @@ import (
 // WantPage - the main page for the hello server
 templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 	@base() {
-		<div>
+		<header>
 			@components.Nav(pageContext)
-		</div>
-		
-		<div class="content">
-			<header>
+			<div class="page-menu">
 				<h1>Want</h1>
-			</header>
+			</div>
+		</header>
+		
+		<div id="content">
 			<div class="table-content">
 				<table>
 					<tr class="table-header">
@@ -33,7 +33,7 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 					}
 					
 				</table>
-			</div> 
+			</div>
 		</div>
 	}
 }

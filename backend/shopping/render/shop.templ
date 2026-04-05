@@ -9,10 +9,12 @@ import (
 // ShopPage - the main page for the hello server
 templ ShopPage(pageContext page.Context) {
 	@base() {
-		<div>
+		<header>
 			@components.Nav(pageContext)
-			<div id="title">Shop</div>
-		</div>
+			<div class="page-menu">
+				<h1>Shop</h1>
+			</div>
+		</header>
 	}
 }
 
