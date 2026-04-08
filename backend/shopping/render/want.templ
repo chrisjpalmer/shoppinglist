@@ -2,6 +2,8 @@
 package render
 
 import (
+	"fmt"
+
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render/components"
 )
@@ -13,9 +15,11 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 			@components.Nav(pageContext)
 			<div class="page-menu">
 				<h1>Want</h1>
+				<button id="save-button" class="button" hx-post="/want?fragment=content" hx-swap="outerHTML" hx-include=".col-override" hx-target="#content" hx-on:click="setClean()">Save</button>
 			</div>
 		</header>
 		
+		@templ.Fragment("content") {
 		<div id="content">
 			<div class="table-content">
 				<table>
@@ -28,13 +32,14 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 					<tr>
 						<td class="col-item">{w.Ingredient}</td>
 						<td class="col-number">{w.Count}</td>
-						<td class="col-override"><input max="999" type="number"/></td>
+						<td class="col-override"><input name={fmt.Sprintf("col-override.%d", w.ID)} hx-on:change="setDirty()" value={w.OverrideCount} max="999" type="number"/></td>
 					</tr>
 					}
 					
 				</table>
 			</div>
 		</div>
+		}
 	}
 }
 

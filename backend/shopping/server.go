@@ -13,6 +13,10 @@ import (
 	"github.com/chrisjpalmer/shoppinglist/backend/sql"
 )
 
+const (
+	fragmentParam = "fragment"
+)
+
 //go:embed assets/*
 var assets embed.FS
 

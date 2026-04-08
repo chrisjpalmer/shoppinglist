@@ -12,5 +12,6 @@ CREATE TABLE meals (
 
 CREATE TABLE ingredients (
   id INTEGER PRIMARY KEY,
-  name text NOT NULL
+  name text NOT NULL,
+  want_override_count INTEGER NOT NULL DEFAULT 0
 )
