@@ -35,13 +35,15 @@ func (m *Backend) GenerateSqlc() *dagger.Changeset {
 }
 
 // +check
-func (m *Backend) CheckTempl(ctx context.Context) error {
-	chgset, err := m.GenerateTempl(ctx)
-	if err != nil {
-		return fmt.Errorf("error generating templates: %w", err)
-	}
+func (m *Backend) CheckProtos(ctx context.Context) error {
+  chgset := m.GenerateProtos()
+  return assertEmpty(ctx, chgset)
+}
 
-	return assertEmpty(ctx, chgset)
+// +check
+func (m *Backend) CheckSqlc(ctx context.Context) error {
+  chgset := m.GenerateSqlc()
+  return assertEmpty(ctx, chgset)
 }
 
 // +generate
