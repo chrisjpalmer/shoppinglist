@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// GenerateProtos - generate protobuf codegen from .proto files
 // +generate
 func (m *Backend) GenerateProtos() *dagger.Changeset {
 	gen := dag.Container().
@@ -20,7 +21,7 @@ func (m *Backend) GenerateProtos() *dagger.Changeset {
 	return m.Src.WithDirectory("gen", gen).Changes(m.Src)
 }
 
-// Returns lines that match a pattern in the files of the provided Directory
+// GenerateSqlc - generate sqlc codegen from .sql files
 // +generate
 func (m *Backend) GenerateSqlc() *dagger.Changeset {
 	generated := dag.Container().
@@ -34,6 +35,7 @@ func (m *Backend) GenerateSqlc() *dagger.Changeset {
 	return m.Src.WithDirectory("generated", generated).Changes(m.Src)
 }
 
+// CheckTempl - check that the working tree's generated files are up to date.
 // +check
 func (m *Backend) CheckTempl(ctx context.Context) error {
 	chgset, err := m.GenerateTempl(ctx)
@@ -44,6 +46,7 @@ func (m *Backend) CheckTempl(ctx context.Context) error {
 	return assertEmpty(ctx, chgset)
 }
 
+// GenerateTempl - generate templ codegen from .templ files
 // +generate
 func (m *Backend) GenerateTempl(ctx context.Context) (*dagger.Changeset, error) {
 	ctr, err := m.buildCtr(ctx)
