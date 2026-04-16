@@ -178,7 +178,7 @@ func (m *MainModule) GenerateTestData(ctx context.Context) (*dagger.Changeset, e
 To run all dagger generate functions, use the this command:
 
 ```bash
-dagger generate
+dagger generate -y
 ```
 
 To list generate functions, use the this command:
