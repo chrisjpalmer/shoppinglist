@@ -41,17 +41,13 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	mux.Handle("/shopping/assets/", http.StripPrefix("/shopping", http.FileServerFS(assets)))
 	mux.HandleFunc("/shopping/want", s.handleWantPage)
 	mux.HandleFunc("/shopping/got", s.handleGotPage)
+	mux.HandleFunc("/shopping/got/reset", s.handleGotResetPage)
 	mux.HandleFunc("/shopping/shop", s.handleShopPage)
 }
 
 func handleRootPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Location", "/shopping/want")
 	w.WriteHeader(http.StatusFound)
-}
-
-func (s *Server) handleGotPage(w http.ResponseWriter, r *http.Request) {
-	pctx := s.pageContext(r)
-	templ.Handler(render.GotPage(pctx)).ServeHTTP(w, r)
 }
 
 func (s *Server) handleShopPage(w http.ResponseWriter, r *http.Request) {

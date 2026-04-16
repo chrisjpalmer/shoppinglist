@@ -2,12 +2,59 @@
 package render
 
 import (
+	"fmt"
+
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
+	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render/components"
 )
 
-// GotPage - the main page for the hello server
-templ GotPage(pageContext page.Context) {
-	@base(pageContext) { }
+// GotPage - the got page for tracking what has been picked up
+templ GotPage(pageContext page.Context, gotItems []page.GotItem) {
+	@base(pageContext) {
+		@templ.Fragment("content") {
+		<div id="content">
+			@components.Table() {
+				@components.TrTitle() {
+					@components.Td(components.TdOpts{Title: true}) { Got }
+					@components.Td(components.TdOpts{Title: true})
+				}
+				@components.TrHeader() {
+					@components.Td(components.TdOpts{Header: true}){Item}
+					@components.Td(components.TdOpts{Header: true}){Got}
+				}
+				for _, g := range gotItems {
+				@components.Tr() {
+					@components.Td(){ {g.Ingredient} }
+					@components.Td(){ @components.NumericInput(
+						fmt.Sprintf("col-got.%d", g.ID),
+						g.GotCount,
+						components.NumericInputOpts{Classes: []string{"col-got"}},
+					) }
+				}
+				}
+
+			}
+
+			<div class="flex flex-row items-center justify-between mt-5">
+				<div class="flex flex-row">
+					@components.Button(components.ButtonOpts{
+						ID: "save-button",
+						Title: "Save",
+						HxPost: "/shopping/got?fragment=content",
+						HxInclude: ".col-got",
+						HxTarget: "#content",
+						HxOnClick: "setClean",
+						Classes: []string{"invisible", "mr-2"},
+					})
+					@components.Button(components.ButtonOpts{
+						ID: "reset-button",
+						Title: "Reset",
+						HxPost: "/shopping/got/reset?fragment=content",
+						HxTarget: "#content",
+					})
+				</div>
+			</div>
+		</div>
+		}
+	}
 }
-
-
