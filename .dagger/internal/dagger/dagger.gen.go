@@ -7264,7 +7264,7 @@ func (r *Frontend) WithGraphQLQuery(q *querybuilder.Selection) *Frontend {
 	}
 }
 
-func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dagger/main.go:41:1)
+func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dagger/main.go:44:1)
 	q := r.query.Select("buildCheck")
 
 	return &Container{
@@ -7321,7 +7321,7 @@ func (r *Frontend) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../frontend/.dagger/main.go:80:1)
+func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../frontend/.dagger/main.go:88:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -7333,7 +7333,7 @@ func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Se
 	return q.Execute(ctx)
 }
 
-func (r *Frontend) Src() *Directory { // frontend (../../../frontend/.dagger/main.go:29:2)
+func (r *Frontend) Src() *Directory { // frontend (../../../frontend/.dagger/main.go:31:2)
 	q := r.query.Select("src")
 
 	return &Directory{
@@ -13176,10 +13176,10 @@ func (r *Client) File(name string, contents string, opts ...FileOpts) *File {
 
 // FrontendOpts contains options for Client.Frontend
 type FrontendOpts struct {
-	Ws *Workspace // frontend (../../../frontend/.dagger/main.go:33:2)
+	Ws *Workspace // frontend (../../../frontend/.dagger/main.go:35:2)
 }
 
-func (r *Client) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../../frontend/.dagger/main.go:32:1)
+func (r *Client) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../../frontend/.dagger/main.go:34:1)
 	q := r.query.Select("frontend")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `ws` optional argument
