@@ -25,3 +25,22 @@ IMPORTANT: Dont update generated code directly. Use `dagger generate -y` if you 
 
 - Directories: `**/.dagger`
 - Load the dagger skill when working with these.
+
+## Making commits
+
+A commit message should contain a subject line stating what is changing.
+It should contain a body that restates the subject line but adds the
+reason *why* the code is changing. Avoid explaining how the code is changing.
+
+When writing commit messages, use the gitmoji skill to pick a gitmoji that
+is appropriate for the change occuring.
+
+Here is an example:
+
+```
+🚚 Rename generated protobuf code
+    
+Rename generated protobuf code from `gen` to `genpb`
+to align with the approach taken to generated sqlc code
+as well as provide better clarity.
+```
