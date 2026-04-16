@@ -23,6 +23,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+const nodeVersion = "node:22.18.0"
+
 type Frontend struct {
 	Src *dagger.Directory
 }
@@ -53,7 +55,7 @@ func (m *Frontend) build(
 	defer telemetry.EndWithCause(span, &rerr)
 
 	build := dag.Container().
-		From("node:latest").
+		From(nodeVersion).
 		WithWorkdir("/app").
 		WithDirectory(".", m.Src).
 		WithExec([]string{"npm", "install"}).
@@ -64,7 +66,7 @@ func (m *Frontend) build(
 	return dag.Container(dagger.ContainerOpts{
 		Platform: platform,
 	}).
-		From("node:latest").
+		From(nodeVersion).
 		WithWorkdir("/app").
 		WithFiles(".", []*dagger.File{m.Src.File("package.json"), m.Src.File("package-lock.json")}).
 		WithExec([]string{"npm", "install"}).
