@@ -90,7 +90,7 @@ func parseOverrideColumns(r *http.Request) (map[int64]int64, error) {
 
 		idstr := strings.TrimPrefix(k, prefix)
 
-		id, ct, err := parseOverrideColumn(idstr, v)
+		id, ct, err := parseNumericFormValue(idstr, v)
 		if err != nil {
 			return nil, fmt.Errorf("could not parse override column %q: %w", k, err)
 		}
@@ -101,14 +101,14 @@ func parseOverrideColumns(r *http.Request) (map[int64]int64, error) {
 	return ovCt, nil
 }
 
-func parseOverrideColumn(idstr string, value []string) (id int64, ct int64, err error) {
+func parseNumericFormValue(idstr string, value []string) (id int64, ct int64, err error) {
 	id, err = strconv.ParseInt(idstr, 10, 64)
 	if err != nil {
 		return 0, 0, fmt.Errorf("could not parse id %q as int64: %w", idstr, err)
 	}
 
 	if len(value) == 0 {
-		return 0, 0, fmt.Errorf("expected value slice not to be empty", err)
+		return 0, 0, fmt.Errorf("expected value slice not to be empty: %w", err)
 	}
 
 	v := value[0]
