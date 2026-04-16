@@ -56,6 +56,7 @@ func (m *Frontend) build(
 
 	build := dag.Container().
 		From(nodeVersion).
+		WithMountedCache("/root/.npm", dag.CacheVolume("npm-build-cache")).
 		WithWorkdir("/app").
 		WithDirectory(".", m.Src).
 		WithExec([]string{"npm", "install"}).
@@ -67,9 +68,10 @@ func (m *Frontend) build(
 		Platform: platform,
 	}).
 		From(nodeVersion).
+		WithMountedCache("/root/.npm", dag.CacheVolume("npm-build-cache")).
 		WithWorkdir("/app").
 		WithFiles(".", []*dagger.File{m.Src.File("package.json"), m.Src.File("package-lock.json")}).
-		WithExec([]string{"npm", "install"}).
+		WithExec([]string{"npm", "install", "--omit=dev"}).
 		WithDirectory("build", build).
 		WithEntrypoint([]string{"node", "build"}).Sync(ctx)
 }

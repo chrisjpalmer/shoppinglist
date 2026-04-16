@@ -7321,7 +7321,7 @@ func (r *Frontend) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../frontend/.dagger/main.go:78:1)
+func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../frontend/.dagger/main.go:80:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
