@@ -21,6 +21,13 @@ func (m *Backend) GenerateProtos() *dagger.Changeset {
 	return m.Src.WithDirectory("gen", gen).Changes(m.Src)
 }
 
+// CheckProtos - check that the working tree's proto generated files are in sync.
+// +check
+func (m *Backend) CheckProtos(ctx context.Context) error {
+	chgset := m.GenerateProtos()
+	return assertEmpty(ctx, chgset)
+}
+
 // GenerateSqlc - generate sqlc codegen from .sql files
 // +generate
 func (m *Backend) GenerateSqlc() *dagger.Changeset {
@@ -35,17 +42,11 @@ func (m *Backend) GenerateSqlc() *dagger.Changeset {
 	return m.Src.WithDirectory("generated", generated).Changes(m.Src)
 }
 
-// CheckTempl - check that the working tree's generated files are up to date.
-// +check
-func (m *Backend) CheckProtos(ctx context.Context) error {
-  chgset := m.GenerateProtos()
-  return assertEmpty(ctx, chgset)
-}
-
+// CheckSqlc - check that the working tree's sqlc generated files are in sync.
 // +check
 func (m *Backend) CheckSqlc(ctx context.Context) error {
-  chgset := m.GenerateSqlc()
-  return assertEmpty(ctx, chgset)
+	chgset := m.GenerateSqlc()
+	return assertEmpty(ctx, chgset)
 }
 
 // GenerateTempl - generate templ codegen from .templ files
@@ -61,6 +62,17 @@ func (m *Backend) GenerateTempl(ctx context.Context) (*dagger.Changeset, error) 
 	return m.Src.WithDirectory(".", gen).Changes(m.Src), nil
 }
 
+// CheckTempl - check that the working tree's templ generated files are in sync.
+// +check
+func (m *Backend) CheckTempl(ctx context.Context) error {
+	chgset, err := m.GenerateTempl(ctx)
+	if err != nil {
+		return fmt.Errorf("error generating templ sources: %w", err)
+	}
+
+	return assertEmpty(ctx, chgset)
+}
+
 func withTemplGenerate(ctr *dagger.Container) *dagger.Container {
 	return ctr.WithExec([]string{"go", "tool", "templ", "generate"})
 }
@@ -72,7 +84,7 @@ func assertEmpty(ctx context.Context, chgset *dagger.Changeset) error {
 	}
 
 	if !empty {
-		return fmt.Errorf("templates are not up to date")
+		return fmt.Errorf("generated files are out of sync")
 	}
 
 	return nil
