@@ -206,7 +206,7 @@ type FieldTypeDefID string
 type FileID string
 
 // The `FrontendID` scalar type represents an identifier for an object of type Frontend.
-type FrontendID string // frontend (../../../frontend/.dagger/main.go:26:6)
+type FrontendID string // frontend (../../../frontend/.dagger/main.go:28:6)
 
 // The `FunctionArgID` scalar type represents an identifier for an object of type FunctionArg.
 type FunctionArgID string
@@ -910,7 +910,7 @@ func (r *Binding) AsFile() *File {
 }
 
 // Retrieve the binding value, as type Frontend
-func (r *Binding) AsFrontend() *Frontend { // frontend (../../../frontend/.dagger/main.go:26:6)
+func (r *Binding) AsFrontend() *Frontend { // frontend (../../../frontend/.dagger/main.go:28:6)
 	q := r.query.Select("asFrontend")
 
 	return &Frontend{
@@ -5660,7 +5660,7 @@ func (r *Env) WithFileOutput(name string, description string) *Env {
 }
 
 // Create or update a binding of type Frontend in the environment
-func (r *Env) WithFrontendInput(name string, value *Frontend, description string) *Env { // frontend (../../../frontend/.dagger/main.go:26:6)
+func (r *Env) WithFrontendInput(name string, value *Frontend, description string) *Env { // frontend (../../../frontend/.dagger/main.go:28:6)
 	assertNotNil("value", value)
 	q := r.query.Select("withFrontendInput")
 	q = q.Arg("name", name)
@@ -5673,7 +5673,7 @@ func (r *Env) WithFrontendInput(name string, value *Frontend, description string
 }
 
 // Declare a desired Frontend output to be assigned in the environment
-func (r *Env) WithFrontendOutput(name string, description string) *Env { // frontend (../../../frontend/.dagger/main.go:26:6)
+func (r *Env) WithFrontendOutput(name string, description string) *Env { // frontend (../../../frontend/.dagger/main.go:28:6)
 	q := r.query.Select("withFrontendOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
@@ -7251,7 +7251,7 @@ func (r *File) WithTimestamps(timestamp int) *File {
 	}
 }
 
-type Frontend struct { // frontend (../../../frontend/.dagger/main.go:26:6)
+type Frontend struct { // frontend (../../../frontend/.dagger/main.go:28:6)
 	query *querybuilder.Selection
 
 	id      *FrontendID
@@ -7264,7 +7264,7 @@ func (r *Frontend) WithGraphQLQuery(q *querybuilder.Selection) *Frontend {
 	}
 }
 
-func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dagger/main.go:39:1)
+func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dagger/main.go:41:1)
 	q := r.query.Select("buildCheck")
 
 	return &Container{
@@ -7321,7 +7321,7 @@ func (r *Frontend) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../frontend/.dagger/main.go:76:1)
+func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../frontend/.dagger/main.go:78:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -7333,7 +7333,7 @@ func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Se
 	return q.Execute(ctx)
 }
 
-func (r *Frontend) Src() *Directory { // frontend (../../../frontend/.dagger/main.go:27:2)
+func (r *Frontend) Src() *Directory { // frontend (../../../frontend/.dagger/main.go:29:2)
 	q := r.query.Select("src")
 
 	return &Directory{
@@ -13176,10 +13176,10 @@ func (r *Client) File(name string, contents string, opts ...FileOpts) *File {
 
 // FrontendOpts contains options for Client.Frontend
 type FrontendOpts struct {
-	Ws *Workspace // frontend (../../../frontend/.dagger/main.go:31:2)
+	Ws *Workspace // frontend (../../../frontend/.dagger/main.go:33:2)
 }
 
-func (r *Client) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../../frontend/.dagger/main.go:30:1)
+func (r *Client) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../../frontend/.dagger/main.go:32:1)
 	q := r.query.Select("frontend")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `ws` optional argument
@@ -13586,7 +13586,7 @@ func (r *Client) LoadFileFromID(id FileID) *File {
 }
 
 // Load a Frontend from its ID.
-func (r *Client) LoadFrontendFromID(id FrontendID) *Frontend { // frontend (../../../frontend/.dagger/main.go:26:6)
+func (r *Client) LoadFrontendFromID(id FrontendID) *Frontend { // frontend (../../../frontend/.dagger/main.go:28:6)
 	q := r.query.Select("loadFrontendFromID")
 	q = q.Arg("id", id)
 
