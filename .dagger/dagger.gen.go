@@ -205,6 +205,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
+			var ws *dagger.Workspace
+			if inputArgs["ws"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["ws"]), &ws)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ws", err))
+				}
+			}
 			var tag string
 			if inputArgs["tag"] != nil {
 				err = json.Unmarshal([]byte(inputArgs["tag"]), &tag)
@@ -219,12 +226,19 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
 				}
 			}
-			return nil, (*Shoppinglist).Build(&parent, ctx, tag, registryPassword)
+			return nil, (*Shoppinglist).Build(&parent, ctx, ws, tag, registryPassword)
 		case "BuildAndDeploy":
 			var parent Shoppinglist
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var ws *dagger.Workspace
+			if inputArgs["ws"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["ws"]), &ws)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ws", err))
+				}
 			}
 			var registryPassword *dagger.Secret
 			if inputArgs["registryPassword"] != nil {
@@ -247,7 +261,7 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubeEnv2", err))
 				}
 			}
-			return nil, (*Shoppinglist).BuildAndDeploy(&parent, ctx, registryPassword, kubeEnv1, kubeEnv2)
+			return nil, (*Shoppinglist).BuildAndDeploy(&parent, ctx, ws, registryPassword, kubeEnv1, kubeEnv2)
 		case "Deploy":
 			var parent Shoppinglist
 			err = json.Unmarshal(parentJSON, &parent)

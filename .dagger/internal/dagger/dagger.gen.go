@@ -574,7 +574,8 @@ func (r *Address) Value(ctx context.Context) (string, error) {
 type Backend struct { // backend (../../../backend/.dagger/main.go:25:6)
 	query *querybuilder.Selection
 
-	checkTempl              *Void
+	checkProtos             *Void
+	checkSqlc               *Void
 	id                      *BackendID
 	migrateCheck            *Void
 	publish                 *Void
@@ -598,16 +599,27 @@ func (r *Backend) BuildCheck() *Container { // backend (../../../backend/.dagger
 	}
 }
 
-func (r *Backend) CheckTempl(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:38:1)
-	if r.checkTempl != nil {
+// CheckTempl - check that the working tree's generated files are up to date.
+func (r *Backend) CheckProtos(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:40:1)
+	if r.checkProtos != nil {
 		return nil
 	}
-	q := r.query.Select("checkTempl")
+	q := r.query.Select("checkProtos")
 
 	return q.Execute(ctx)
 }
 
-func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.dagger/generated.go:10:1)
+func (r *Backend) CheckSqlc(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:46:1)
+	if r.checkSqlc != nil {
+		return nil
+	}
+	q := r.query.Select("checkSqlc")
+
+	return q.Execute(ctx)
+}
+
+// GenerateProtos - generate protobuf codegen from .proto files
+func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.dagger/generated.go:11:1)
 	q := r.query.Select("generateProtos")
 
 	return &Changeset{
@@ -615,8 +627,8 @@ func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.da
 	}
 }
 
-// Returns lines that match a pattern in the files of the provided Directory
-func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagger/generated.go:25:1)
+// GenerateSqlc - generate sqlc codegen from .sql files
+func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagger/generated.go:26:1)
 	q := r.query.Select("generateSqlc")
 
 	return &Changeset{
@@ -624,7 +636,8 @@ func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagg
 	}
 }
 
-func (r *Backend) GenerateTempl() *Changeset { // backend (../../../backend/.dagger/generated.go:48:1)
+// GenerateTempl - generate templ codegen from .templ files
+func (r *Backend) GenerateTempl() *Changeset { // backend (../../../backend/.dagger/generated.go:53:1)
 	q := r.query.Select("generateTempl")
 
 	return &Changeset{
@@ -715,7 +728,9 @@ func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Sec
 	return q.Execute(ctx)
 }
 
-func (r *Backend) PublishMigrateImage(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/migrate_image.go:11:1)
+// PublishMigrateImage - builds an image that contains the atlas migration tool
+// as well as the new schema that the database needs to be migrated to
+func (r *Backend) PublishMigrateImage(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/migrate_image.go:13:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publishMigrateImage != nil {
 		return nil
@@ -728,7 +743,7 @@ func (r *Backend) PublishMigrateImage(ctx context.Context, tag string, registryP
 }
 
 // TestMigrateImageNODB - tests that the migrate image works if the DB exists
-func (r *Backend) TestMigrateImageNodb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:71:1)
+func (r *Backend) TestMigrateImageNodb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:78:1)
 	if r.testMigrateImageNodb != nil {
 		return nil
 	}
@@ -738,7 +753,7 @@ func (r *Backend) TestMigrateImageNodb(ctx context.Context) error { // backend (
 }
 
 // TestMigrateImageNoDBEnv - tests that the migrate image correctly fails if the DATABASE_FILE var isn't present
-func (r *Backend) TestMigrateImageNodbenv(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:87:1)
+func (r *Backend) TestMigrateImageNodbenv(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:95:1)
 	if r.testMigrateImageNodbenv != nil {
 		return nil
 	}
@@ -748,7 +763,7 @@ func (r *Backend) TestMigrateImageNodbenv(ctx context.Context) error { // backen
 }
 
 // TestMigrateImageWithDB - tests that the migrate image works if the DB exists
-func (r *Backend) TestMigrateImageWithDb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:52:1)
+func (r *Backend) TestMigrateImageWithDb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:55:1)
 	if r.testMigrateImageWithDb != nil {
 		return nil
 	}
