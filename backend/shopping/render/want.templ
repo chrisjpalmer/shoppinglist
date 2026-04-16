@@ -15,7 +15,9 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 			@components.Nav(pageContext)
 			<div class="page-menu">
 				<h1>Want</h1>
-				<button id="save-button" class="button" hx-post="/want?fragment=content" hx-swap="outerHTML" hx-include=".col-override" hx-target="#content" hx-on:click="setClean()">Save</button>
+				<div class="button-container">
+					<button id="save-button" class="button" hx-post="/want?fragment=content" hx-swap="outerHTML" hx-include=".col-override" hx-target="#content" hx-on:click="setClean()">Save</button>
+				</div>
 			</div>
 		</header>
 		

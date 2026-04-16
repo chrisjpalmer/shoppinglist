@@ -22,3 +22,10 @@ type WantItem struct {
 	Count         int
 	OverrideCount int
 }
+
+// GotItem - an item to display on the got page
+type GotItem struct {
+	ID         int64
+	Ingredient string
+	GotCount   int
+}

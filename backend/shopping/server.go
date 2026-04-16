@@ -49,7 +49,7 @@ func NewServer(port int) (*Server, error) {
 	mux.HandleFunc("/", handleRootPage)
 	mux.Handle("/assets/", http.FileServerFS(assets))
 	mux.HandleFunc("/want", srv.handleWantPage)
-	mux.HandleFunc("/got", handleGotPage)
+	mux.HandleFunc("/got", srv.handleGotPage)
 	mux.HandleFunc("/shop", handleShopPage)
 
 	return srv, nil
@@ -58,11 +58,6 @@ func NewServer(port int) (*Server, error) {
 func handleRootPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Location", "/want")
 	w.WriteHeader(http.StatusFound)
-}
-
-func handleGotPage(w http.ResponseWriter, r *http.Request) {
-	pctx := page.NewContext(r)
-	templ.Handler(render.GotPage(pctx)).ServeHTTP(w, r)
 }
 
 func handleShopPage(w http.ResponseWriter, r *http.Request) {
