@@ -16,9 +16,9 @@ func (m *Backend) GenerateProtos() *dagger.Changeset {
 		WithDirectory("proto", m.Src.Directory("proto")).
 		WithFiles(".", []*dagger.File{m.Src.File("buf.yaml"), m.Src.File("buf.gen.yaml")}).
 		WithExec([]string{"buf", "generate"}).
-		Directory("gen")
+		Directory("genpb")
 
-	return m.Src.WithDirectory("gen", gen).Changes(m.Src)
+	return m.Src.WithDirectory("genpb", gen).Changes(m.Src)
 }
 
 // CheckProtos - check that the working tree's proto generated files are in sync.

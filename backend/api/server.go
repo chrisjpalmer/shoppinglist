@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/chrisjpalmer/shoppinglist/backend/gen/genconnect"
+	"github.com/chrisjpalmer/shoppinglist/backend/genpb/genpbconnect"
 	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 	"github.com/chrisjpalmer/shoppinglist/backend/sql"
 	"github.com/rs/cors"
@@ -27,7 +27,7 @@ func NewServer() (*Server, error) {
 
 func (s *Server) Listen() error {
 	mux := http.NewServeMux()
-	path, handler := genconnect.NewShoppingListServiceHandler(s)
+	path, handler := genpbconnect.NewShoppingListServiceHandler(s)
 	mux.Handle(path, handler)
 
 	return http.ListenAndServe(":8080", h2c.NewHandler(cors.AllowAll().Handler(mux), &http2.Server{}))

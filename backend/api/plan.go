@@ -7,11 +7,11 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	"github.com/chrisjpalmer/shoppinglist/backend/gen"
+	"github.com/chrisjpalmer/shoppinglist/backend/genpb"
 	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 )
 
-func (s *Server) GetPlan(ctx context.Context, rq *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error) {
+func (s *Server) GetPlan(ctx context.Context, rq *connect.Request[genpb.GetPlanRequest]) (*connect.Response[genpb.GetPlanResponse], error) {
 	p, err := s.sql.GetPlan(ctx)
 
 	if errors.Is(err, sql.ErrNoRows) {
@@ -20,14 +20,14 @@ func (s *Server) GetPlan(ctx context.Context, rq *connect.Request[gen.GetPlanReq
 			return nil, err
 		}
 
-		return connect.NewResponse(&gen.GetPlanResponse{Plan: gp}), nil
+		return connect.NewResponse(&genpb.GetPlanResponse{Plan: gp}), nil
 	}
 
 	if err != nil {
 		return nil, err
 	}
 
-	var gp gen.Plan
+	var gp genpb.Plan
 	err = unmarshalJSON(p.PlanData, &gp)
 	if err != nil {
 		return nil, err
@@ -38,10 +38,10 @@ func (s *Server) GetPlan(ctx context.Context, rq *connect.Request[gen.GetPlanReq
 		return nil, err
 	}
 
-	return connect.NewResponse(&gen.GetPlanResponse{Plan: &gp, PlanSummary: sum}), nil
+	return connect.NewResponse(&genpb.GetPlanResponse{Plan: &gp, PlanSummary: sum}), nil
 }
 
-func (s *Server) UpdatePlan(ctx context.Context, rq *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error) {
+func (s *Server) UpdatePlan(ctx context.Context, rq *connect.Request[genpb.UpdatePlanRequest]) (*connect.Response[genpb.UpdatePlanResponse], error) {
 	p, err := s.sql.GetPlan(ctx)
 	if err != nil {
 		return nil, err
@@ -71,10 +71,10 @@ func (s *Server) UpdatePlan(ctx context.Context, rq *connect.Request[gen.UpdateP
 		return nil, err
 	}
 
-	return connect.NewResponse(&gen.UpdatePlanResponse{}), nil
+	return connect.NewResponse(&genpb.UpdatePlanResponse{}), nil
 }
 
-func (s *Server) createEmptyPlan(ctx context.Context) (*gen.Plan, error) {
+func (s *Server) createEmptyPlan(ctx context.Context) (*genpb.Plan, error) {
 	p := emptyPlan()
 
 	ps, err := marshalJSON(&p)
@@ -90,7 +90,7 @@ func (s *Server) createEmptyPlan(ctx context.Context) (*gen.Plan, error) {
 	return &p, nil
 }
 
-func (s *Server) planSummary(ctx context.Context, p *gen.Plan) (*gen.PlanSummary, error) {
+func (s *Server) planSummary(ctx context.Context, p *genpb.Plan) (*genpb.PlanSummary, error) {
 	meals, err := s.sql.GetMeals(ctx)
 	if err != nil {
 		return nil, err
@@ -122,20 +122,20 @@ func (s *Server) planSummary(ctx context.Context, p *gen.Plan) (*gen.PlanSummary
 		}
 	}
 
-	var igrefs []*gen.IngredientRef
+	var igrefs []*genpb.IngredientRef
 	for _, ing := range ingg {
 		ct := ingredientCounts[ing.ID]
 		if ct > 0 {
-			igrefs = append(igrefs, &gen.IngredientRef{IngredientId: ing.ID, Number: ct})
+			igrefs = append(igrefs, &genpb.IngredientRef{IngredientId: ing.ID, Number: ct})
 		}
 	}
 
-	return &gen.PlanSummary{
+	return &genpb.PlanSummary{
 		IngredientRef: igrefs,
 	}, nil
 }
 
-func selectedMealIds(p *gen.Plan) []int64 {
+func selectedMealIds(p *genpb.Plan) []int64 {
 	var meals []int64
 	for _, d := range p.Days {
 		for _, cm := range d.CategoryMeals {
@@ -149,17 +149,17 @@ func selectedMealIds(p *gen.Plan) []int64 {
 	return meals
 }
 
-func mealsMap(meals []gensql.GetMealsRow) (map[int64]*gen.Meal, error) {
-	mealsmap := make(map[int64]*gen.Meal)
+func mealsMap(meals []gensql.GetMealsRow) (map[int64]*genpb.Meal, error) {
+	mealsmap := make(map[int64]*genpb.Meal)
 	for _, m := range meals {
-		var igrefs []*gen.IngredientRef
+		var igrefs []*genpb.IngredientRef
 
 		err := unmarshalJSON(m.Ingredients, &igrefs)
 		if err != nil {
 			return nil, err
 		}
 
-		mealsmap[m.ID] = &gen.Meal{
+		mealsmap[m.ID] = &genpb.Meal{
 			Name:           m.Name,
 			Id:             m.ID,
 			IngredientRefs: igrefs,
@@ -170,17 +170,17 @@ func mealsMap(meals []gensql.GetMealsRow) (map[int64]*gen.Meal, error) {
 	return mealsmap, nil
 }
 
-func emptyPlan() gen.Plan {
-	var days []*gen.Day
+func emptyPlan() genpb.Plan {
+	var days []*genpb.Day
 	for range 7 {
-		days = append(days, &gen.Day{
-			CategoryMeals: []*gen.CategoryMeal{
+		days = append(days, &genpb.Day{
+			CategoryMeals: []*genpb.CategoryMeal{
 				// 0 = lunch, 1 = dinner, 2 = snack
-				{Category: gen.Category_CATEGORY_LUNCH}, {Category: gen.Category_CATEGORY_DINNER}, {Category: gen.Category_CATEGORY_SNACK},
+				{Category: genpb.Category_CATEGORY_LUNCH}, {Category: genpb.Category_CATEGORY_DINNER}, {Category: genpb.Category_CATEGORY_SNACK},
 			},
 		})
 	}
-	return gen.Plan{
+	return genpb.Plan{
 		Days: days,
 	}
 }

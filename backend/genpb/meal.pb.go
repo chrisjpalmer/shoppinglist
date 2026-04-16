@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: meal.proto
 
-package gen
+package genpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -155,7 +155,7 @@ const file_meal_proto_rawDesc = "" +
 	"recipe_url\x18\x04 \x01(\tR\trecipeUrl\"L\n" +
 	"\rIngredientRef\x12#\n" +
 	"\ringredient_id\x18\x01 \x01(\x03R\fingredientId\x12\x16\n" +
-	"\x06number\x18\x02 \x01(\x05R\x06numberB?B\tMealProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
+	"\x06number\x18\x02 \x01(\x05R\x06numberBAB\tMealProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
 
 var (
 	file_meal_proto_rawDescOnce sync.Once

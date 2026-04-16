@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
-	"github.com/chrisjpalmer/shoppinglist/backend/gen"
+	"github.com/chrisjpalmer/shoppinglist/backend/genpb"
 	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render"
@@ -179,7 +179,7 @@ func (s *Server) ingredients(ctx context.Context) (map[int64]int32, []gensql.Ing
 	return ingredientCounts, ingg, nil
 }
 
-func (s *Server) plan(ctx context.Context) (*gen.Plan, error) {
+func (s *Server) plan(ctx context.Context) (*genpb.Plan, error) {
 	p, err := s.sql.GetPlan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -189,7 +189,7 @@ func (s *Server) plan(ctx context.Context) (*gen.Plan, error) {
 		return nil, err
 	}
 
-	var plan gen.Plan
+	var plan genpb.Plan
 	err = unmarshalJSON(p.PlanData, &plan)
 	if err != nil {
 		return nil, err
@@ -198,22 +198,22 @@ func (s *Server) plan(ctx context.Context) (*gen.Plan, error) {
 	return &plan, nil
 }
 
-func emptyPlan() *gen.Plan {
-	var days []*gen.Day
+func emptyPlan() *genpb.Plan {
+	var days []*genpb.Day
 	for range 7 {
-		days = append(days, &gen.Day{
-			CategoryMeals: []*gen.CategoryMeal{
+		days = append(days, &genpb.Day{
+			CategoryMeals: []*genpb.CategoryMeal{
 				// 0 = lunch, 1 = dinner, 2 = snack
-				{Category: gen.Category_CATEGORY_LUNCH}, {Category: gen.Category_CATEGORY_DINNER}, {Category: gen.Category_CATEGORY_SNACK},
+				{Category: genpb.Category_CATEGORY_LUNCH}, {Category: genpb.Category_CATEGORY_DINNER}, {Category: genpb.Category_CATEGORY_SNACK},
 			},
 		})
 	}
-	return &gen.Plan{
+	return &genpb.Plan{
 		Days: days,
 	}
 }
 
-func selectedMealIds(p *gen.Plan) []int64 {
+func selectedMealIds(p *genpb.Plan) []int64 {
 	var meals []int64
 	for _, d := range p.Days {
 		for _, cm := range d.CategoryMeals {
@@ -227,17 +227,17 @@ func selectedMealIds(p *gen.Plan) []int64 {
 	return meals
 }
 
-func mealsMap(meals []gensql.GetMealsRow) (map[int64]*gen.Meal, error) {
-	mealsmap := make(map[int64]*gen.Meal)
+func mealsMap(meals []gensql.GetMealsRow) (map[int64]*genpb.Meal, error) {
+	mealsmap := make(map[int64]*genpb.Meal)
 	for _, m := range meals {
-		var igrefs []*gen.IngredientRef
+		var igrefs []*genpb.IngredientRef
 
 		err := unmarshalJSON(m.Ingredients, &igrefs)
 		if err != nil {
 			return nil, err
 		}
 
-		mealsmap[m.ID] = &gen.Meal{
+		mealsmap[m.ID] = &genpb.Meal{
 			Name:           m.Name,
 			Id:             m.ID,
 			IngredientRefs: igrefs,

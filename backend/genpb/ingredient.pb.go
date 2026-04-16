@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: ingredient.proto
 
-package gen
+package genpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -81,7 +81,7 @@ const file_ingredient_proto_rawDesc = "" +
 	"\n" +
 	"Ingredient\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04nameBEB\x0fIngredientProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
+	"\x04name\x18\x02 \x01(\tR\x04nameBGB\x0fIngredientProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
 
 var (
 	file_ingredient_proto_rawDescOnce sync.Once

@@ -2,13 +2,13 @@
 //
 // Source: shopping_list_service.proto
 
-package genconnect
+package genpbconnect
 
 import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	gen "github.com/chrisjpalmer/shoppinglist/backend/gen"
+	genpb "github.com/chrisjpalmer/shoppinglist/backend/genpb"
 	http "net/http"
 	strings "strings"
 )
@@ -68,17 +68,17 @@ const (
 // ShoppingListServiceClient is a client for the ShoppingListService service.
 type ShoppingListServiceClient interface {
 	// plan
-	GetPlan(context.Context, *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error)
-	UpdatePlan(context.Context, *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error)
+	GetPlan(context.Context, *connect.Request[genpb.GetPlanRequest]) (*connect.Response[genpb.GetPlanResponse], error)
+	UpdatePlan(context.Context, *connect.Request[genpb.UpdatePlanRequest]) (*connect.Response[genpb.UpdatePlanResponse], error)
 	// meals
-	GetMeals(context.Context, *connect.Request[gen.GetMealsRequest]) (*connect.Response[gen.GetMealsResponse], error)
-	CreateMeal(context.Context, *connect.Request[gen.CreateMealRequest]) (*connect.Response[gen.CreateMealResponse], error)
-	UpdateMeal(context.Context, *connect.Request[gen.UpdateMealRequest]) (*connect.Response[gen.UpdateMealResponse], error)
-	DeleteMeal(context.Context, *connect.Request[gen.DeleteMealRequest]) (*connect.Response[gen.DeleteMealResponse], error)
-	GetIngredients(context.Context, *connect.Request[gen.GetIngredientsRequest]) (*connect.Response[gen.GetIngredientsResponse], error)
-	CreateIngredient(context.Context, *connect.Request[gen.CreateIngredientRequest]) (*connect.Response[gen.CreateIngredientResponse], error)
-	UpdateIngredient(context.Context, *connect.Request[gen.UpdateIngredientRequest]) (*connect.Response[gen.UpdateIngredientResponse], error)
-	DeleteIngredient(context.Context, *connect.Request[gen.DeleteIngredientRequest]) (*connect.Response[gen.DeleteIngredientResponse], error)
+	GetMeals(context.Context, *connect.Request[genpb.GetMealsRequest]) (*connect.Response[genpb.GetMealsResponse], error)
+	CreateMeal(context.Context, *connect.Request[genpb.CreateMealRequest]) (*connect.Response[genpb.CreateMealResponse], error)
+	UpdateMeal(context.Context, *connect.Request[genpb.UpdateMealRequest]) (*connect.Response[genpb.UpdateMealResponse], error)
+	DeleteMeal(context.Context, *connect.Request[genpb.DeleteMealRequest]) (*connect.Response[genpb.DeleteMealResponse], error)
+	GetIngredients(context.Context, *connect.Request[genpb.GetIngredientsRequest]) (*connect.Response[genpb.GetIngredientsResponse], error)
+	CreateIngredient(context.Context, *connect.Request[genpb.CreateIngredientRequest]) (*connect.Response[genpb.CreateIngredientResponse], error)
+	UpdateIngredient(context.Context, *connect.Request[genpb.UpdateIngredientRequest]) (*connect.Response[genpb.UpdateIngredientResponse], error)
+	DeleteIngredient(context.Context, *connect.Request[genpb.DeleteIngredientRequest]) (*connect.Response[genpb.DeleteIngredientResponse], error)
 }
 
 // NewShoppingListServiceClient constructs a client for the ShoppingListService service. By default,
@@ -90,63 +90,63 @@ type ShoppingListServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewShoppingListServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) ShoppingListServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
-	shoppingListServiceMethods := gen.File_shopping_list_service_proto.Services().ByName("ShoppingListService").Methods()
+	shoppingListServiceMethods := genpb.File_shopping_list_service_proto.Services().ByName("ShoppingListService").Methods()
 	return &shoppingListServiceClient{
-		getPlan: connect.NewClient[gen.GetPlanRequest, gen.GetPlanResponse](
+		getPlan: connect.NewClient[genpb.GetPlanRequest, genpb.GetPlanResponse](
 			httpClient,
 			baseURL+ShoppingListServiceGetPlanProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("GetPlan")),
 			connect.WithClientOptions(opts...),
 		),
-		updatePlan: connect.NewClient[gen.UpdatePlanRequest, gen.UpdatePlanResponse](
+		updatePlan: connect.NewClient[genpb.UpdatePlanRequest, genpb.UpdatePlanResponse](
 			httpClient,
 			baseURL+ShoppingListServiceUpdatePlanProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("UpdatePlan")),
 			connect.WithClientOptions(opts...),
 		),
-		getMeals: connect.NewClient[gen.GetMealsRequest, gen.GetMealsResponse](
+		getMeals: connect.NewClient[genpb.GetMealsRequest, genpb.GetMealsResponse](
 			httpClient,
 			baseURL+ShoppingListServiceGetMealsProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("GetMeals")),
 			connect.WithClientOptions(opts...),
 		),
-		createMeal: connect.NewClient[gen.CreateMealRequest, gen.CreateMealResponse](
+		createMeal: connect.NewClient[genpb.CreateMealRequest, genpb.CreateMealResponse](
 			httpClient,
 			baseURL+ShoppingListServiceCreateMealProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("CreateMeal")),
 			connect.WithClientOptions(opts...),
 		),
-		updateMeal: connect.NewClient[gen.UpdateMealRequest, gen.UpdateMealResponse](
+		updateMeal: connect.NewClient[genpb.UpdateMealRequest, genpb.UpdateMealResponse](
 			httpClient,
 			baseURL+ShoppingListServiceUpdateMealProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("UpdateMeal")),
 			connect.WithClientOptions(opts...),
 		),
-		deleteMeal: connect.NewClient[gen.DeleteMealRequest, gen.DeleteMealResponse](
+		deleteMeal: connect.NewClient[genpb.DeleteMealRequest, genpb.DeleteMealResponse](
 			httpClient,
 			baseURL+ShoppingListServiceDeleteMealProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("DeleteMeal")),
 			connect.WithClientOptions(opts...),
 		),
-		getIngredients: connect.NewClient[gen.GetIngredientsRequest, gen.GetIngredientsResponse](
+		getIngredients: connect.NewClient[genpb.GetIngredientsRequest, genpb.GetIngredientsResponse](
 			httpClient,
 			baseURL+ShoppingListServiceGetIngredientsProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("GetIngredients")),
 			connect.WithClientOptions(opts...),
 		),
-		createIngredient: connect.NewClient[gen.CreateIngredientRequest, gen.CreateIngredientResponse](
+		createIngredient: connect.NewClient[genpb.CreateIngredientRequest, genpb.CreateIngredientResponse](
 			httpClient,
 			baseURL+ShoppingListServiceCreateIngredientProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("CreateIngredient")),
 			connect.WithClientOptions(opts...),
 		),
-		updateIngredient: connect.NewClient[gen.UpdateIngredientRequest, gen.UpdateIngredientResponse](
+		updateIngredient: connect.NewClient[genpb.UpdateIngredientRequest, genpb.UpdateIngredientResponse](
 			httpClient,
 			baseURL+ShoppingListServiceUpdateIngredientProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("UpdateIngredient")),
 			connect.WithClientOptions(opts...),
 		),
-		deleteIngredient: connect.NewClient[gen.DeleteIngredientRequest, gen.DeleteIngredientResponse](
+		deleteIngredient: connect.NewClient[genpb.DeleteIngredientRequest, genpb.DeleteIngredientResponse](
 			httpClient,
 			baseURL+ShoppingListServiceDeleteIngredientProcedure,
 			connect.WithSchema(shoppingListServiceMethods.ByName("DeleteIngredient")),
@@ -157,82 +157,82 @@ func NewShoppingListServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // shoppingListServiceClient implements ShoppingListServiceClient.
 type shoppingListServiceClient struct {
-	getPlan          *connect.Client[gen.GetPlanRequest, gen.GetPlanResponse]
-	updatePlan       *connect.Client[gen.UpdatePlanRequest, gen.UpdatePlanResponse]
-	getMeals         *connect.Client[gen.GetMealsRequest, gen.GetMealsResponse]
-	createMeal       *connect.Client[gen.CreateMealRequest, gen.CreateMealResponse]
-	updateMeal       *connect.Client[gen.UpdateMealRequest, gen.UpdateMealResponse]
-	deleteMeal       *connect.Client[gen.DeleteMealRequest, gen.DeleteMealResponse]
-	getIngredients   *connect.Client[gen.GetIngredientsRequest, gen.GetIngredientsResponse]
-	createIngredient *connect.Client[gen.CreateIngredientRequest, gen.CreateIngredientResponse]
-	updateIngredient *connect.Client[gen.UpdateIngredientRequest, gen.UpdateIngredientResponse]
-	deleteIngredient *connect.Client[gen.DeleteIngredientRequest, gen.DeleteIngredientResponse]
+	getPlan          *connect.Client[genpb.GetPlanRequest, genpb.GetPlanResponse]
+	updatePlan       *connect.Client[genpb.UpdatePlanRequest, genpb.UpdatePlanResponse]
+	getMeals         *connect.Client[genpb.GetMealsRequest, genpb.GetMealsResponse]
+	createMeal       *connect.Client[genpb.CreateMealRequest, genpb.CreateMealResponse]
+	updateMeal       *connect.Client[genpb.UpdateMealRequest, genpb.UpdateMealResponse]
+	deleteMeal       *connect.Client[genpb.DeleteMealRequest, genpb.DeleteMealResponse]
+	getIngredients   *connect.Client[genpb.GetIngredientsRequest, genpb.GetIngredientsResponse]
+	createIngredient *connect.Client[genpb.CreateIngredientRequest, genpb.CreateIngredientResponse]
+	updateIngredient *connect.Client[genpb.UpdateIngredientRequest, genpb.UpdateIngredientResponse]
+	deleteIngredient *connect.Client[genpb.DeleteIngredientRequest, genpb.DeleteIngredientResponse]
 }
 
 // GetPlan calls ShoppingListService.GetPlan.
-func (c *shoppingListServiceClient) GetPlan(ctx context.Context, req *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error) {
+func (c *shoppingListServiceClient) GetPlan(ctx context.Context, req *connect.Request[genpb.GetPlanRequest]) (*connect.Response[genpb.GetPlanResponse], error) {
 	return c.getPlan.CallUnary(ctx, req)
 }
 
 // UpdatePlan calls ShoppingListService.UpdatePlan.
-func (c *shoppingListServiceClient) UpdatePlan(ctx context.Context, req *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error) {
+func (c *shoppingListServiceClient) UpdatePlan(ctx context.Context, req *connect.Request[genpb.UpdatePlanRequest]) (*connect.Response[genpb.UpdatePlanResponse], error) {
 	return c.updatePlan.CallUnary(ctx, req)
 }
 
 // GetMeals calls ShoppingListService.GetMeals.
-func (c *shoppingListServiceClient) GetMeals(ctx context.Context, req *connect.Request[gen.GetMealsRequest]) (*connect.Response[gen.GetMealsResponse], error) {
+func (c *shoppingListServiceClient) GetMeals(ctx context.Context, req *connect.Request[genpb.GetMealsRequest]) (*connect.Response[genpb.GetMealsResponse], error) {
 	return c.getMeals.CallUnary(ctx, req)
 }
 
 // CreateMeal calls ShoppingListService.CreateMeal.
-func (c *shoppingListServiceClient) CreateMeal(ctx context.Context, req *connect.Request[gen.CreateMealRequest]) (*connect.Response[gen.CreateMealResponse], error) {
+func (c *shoppingListServiceClient) CreateMeal(ctx context.Context, req *connect.Request[genpb.CreateMealRequest]) (*connect.Response[genpb.CreateMealResponse], error) {
 	return c.createMeal.CallUnary(ctx, req)
 }
 
 // UpdateMeal calls ShoppingListService.UpdateMeal.
-func (c *shoppingListServiceClient) UpdateMeal(ctx context.Context, req *connect.Request[gen.UpdateMealRequest]) (*connect.Response[gen.UpdateMealResponse], error) {
+func (c *shoppingListServiceClient) UpdateMeal(ctx context.Context, req *connect.Request[genpb.UpdateMealRequest]) (*connect.Response[genpb.UpdateMealResponse], error) {
 	return c.updateMeal.CallUnary(ctx, req)
 }
 
 // DeleteMeal calls ShoppingListService.DeleteMeal.
-func (c *shoppingListServiceClient) DeleteMeal(ctx context.Context, req *connect.Request[gen.DeleteMealRequest]) (*connect.Response[gen.DeleteMealResponse], error) {
+func (c *shoppingListServiceClient) DeleteMeal(ctx context.Context, req *connect.Request[genpb.DeleteMealRequest]) (*connect.Response[genpb.DeleteMealResponse], error) {
 	return c.deleteMeal.CallUnary(ctx, req)
 }
 
 // GetIngredients calls ShoppingListService.GetIngredients.
-func (c *shoppingListServiceClient) GetIngredients(ctx context.Context, req *connect.Request[gen.GetIngredientsRequest]) (*connect.Response[gen.GetIngredientsResponse], error) {
+func (c *shoppingListServiceClient) GetIngredients(ctx context.Context, req *connect.Request[genpb.GetIngredientsRequest]) (*connect.Response[genpb.GetIngredientsResponse], error) {
 	return c.getIngredients.CallUnary(ctx, req)
 }
 
 // CreateIngredient calls ShoppingListService.CreateIngredient.
-func (c *shoppingListServiceClient) CreateIngredient(ctx context.Context, req *connect.Request[gen.CreateIngredientRequest]) (*connect.Response[gen.CreateIngredientResponse], error) {
+func (c *shoppingListServiceClient) CreateIngredient(ctx context.Context, req *connect.Request[genpb.CreateIngredientRequest]) (*connect.Response[genpb.CreateIngredientResponse], error) {
 	return c.createIngredient.CallUnary(ctx, req)
 }
 
 // UpdateIngredient calls ShoppingListService.UpdateIngredient.
-func (c *shoppingListServiceClient) UpdateIngredient(ctx context.Context, req *connect.Request[gen.UpdateIngredientRequest]) (*connect.Response[gen.UpdateIngredientResponse], error) {
+func (c *shoppingListServiceClient) UpdateIngredient(ctx context.Context, req *connect.Request[genpb.UpdateIngredientRequest]) (*connect.Response[genpb.UpdateIngredientResponse], error) {
 	return c.updateIngredient.CallUnary(ctx, req)
 }
 
 // DeleteIngredient calls ShoppingListService.DeleteIngredient.
-func (c *shoppingListServiceClient) DeleteIngredient(ctx context.Context, req *connect.Request[gen.DeleteIngredientRequest]) (*connect.Response[gen.DeleteIngredientResponse], error) {
+func (c *shoppingListServiceClient) DeleteIngredient(ctx context.Context, req *connect.Request[genpb.DeleteIngredientRequest]) (*connect.Response[genpb.DeleteIngredientResponse], error) {
 	return c.deleteIngredient.CallUnary(ctx, req)
 }
 
 // ShoppingListServiceHandler is an implementation of the ShoppingListService service.
 type ShoppingListServiceHandler interface {
 	// plan
-	GetPlan(context.Context, *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error)
-	UpdatePlan(context.Context, *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error)
+	GetPlan(context.Context, *connect.Request[genpb.GetPlanRequest]) (*connect.Response[genpb.GetPlanResponse], error)
+	UpdatePlan(context.Context, *connect.Request[genpb.UpdatePlanRequest]) (*connect.Response[genpb.UpdatePlanResponse], error)
 	// meals
-	GetMeals(context.Context, *connect.Request[gen.GetMealsRequest]) (*connect.Response[gen.GetMealsResponse], error)
-	CreateMeal(context.Context, *connect.Request[gen.CreateMealRequest]) (*connect.Response[gen.CreateMealResponse], error)
-	UpdateMeal(context.Context, *connect.Request[gen.UpdateMealRequest]) (*connect.Response[gen.UpdateMealResponse], error)
-	DeleteMeal(context.Context, *connect.Request[gen.DeleteMealRequest]) (*connect.Response[gen.DeleteMealResponse], error)
-	GetIngredients(context.Context, *connect.Request[gen.GetIngredientsRequest]) (*connect.Response[gen.GetIngredientsResponse], error)
-	CreateIngredient(context.Context, *connect.Request[gen.CreateIngredientRequest]) (*connect.Response[gen.CreateIngredientResponse], error)
-	UpdateIngredient(context.Context, *connect.Request[gen.UpdateIngredientRequest]) (*connect.Response[gen.UpdateIngredientResponse], error)
-	DeleteIngredient(context.Context, *connect.Request[gen.DeleteIngredientRequest]) (*connect.Response[gen.DeleteIngredientResponse], error)
+	GetMeals(context.Context, *connect.Request[genpb.GetMealsRequest]) (*connect.Response[genpb.GetMealsResponse], error)
+	CreateMeal(context.Context, *connect.Request[genpb.CreateMealRequest]) (*connect.Response[genpb.CreateMealResponse], error)
+	UpdateMeal(context.Context, *connect.Request[genpb.UpdateMealRequest]) (*connect.Response[genpb.UpdateMealResponse], error)
+	DeleteMeal(context.Context, *connect.Request[genpb.DeleteMealRequest]) (*connect.Response[genpb.DeleteMealResponse], error)
+	GetIngredients(context.Context, *connect.Request[genpb.GetIngredientsRequest]) (*connect.Response[genpb.GetIngredientsResponse], error)
+	CreateIngredient(context.Context, *connect.Request[genpb.CreateIngredientRequest]) (*connect.Response[genpb.CreateIngredientResponse], error)
+	UpdateIngredient(context.Context, *connect.Request[genpb.UpdateIngredientRequest]) (*connect.Response[genpb.UpdateIngredientResponse], error)
+	DeleteIngredient(context.Context, *connect.Request[genpb.DeleteIngredientRequest]) (*connect.Response[genpb.DeleteIngredientResponse], error)
 }
 
 // NewShoppingListServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -241,7 +241,7 @@ type ShoppingListServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewShoppingListServiceHandler(svc ShoppingListServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	shoppingListServiceMethods := gen.File_shopping_list_service_proto.Services().ByName("ShoppingListService").Methods()
+	shoppingListServiceMethods := genpb.File_shopping_list_service_proto.Services().ByName("ShoppingListService").Methods()
 	shoppingListServiceGetPlanHandler := connect.NewUnaryHandler(
 		ShoppingListServiceGetPlanProcedure,
 		svc.GetPlan,
@@ -333,42 +333,42 @@ func NewShoppingListServiceHandler(svc ShoppingListServiceHandler, opts ...conne
 // UnimplementedShoppingListServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedShoppingListServiceHandler struct{}
 
-func (UnimplementedShoppingListServiceHandler) GetPlan(context.Context, *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error) {
+func (UnimplementedShoppingListServiceHandler) GetPlan(context.Context, *connect.Request[genpb.GetPlanRequest]) (*connect.Response[genpb.GetPlanResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.GetPlan is not implemented"))
 }
 
-func (UnimplementedShoppingListServiceHandler) UpdatePlan(context.Context, *connect.Request[gen.UpdatePlanRequest]) (*connect.Response[gen.UpdatePlanResponse], error) {
+func (UnimplementedShoppingListServiceHandler) UpdatePlan(context.Context, *connect.Request[genpb.UpdatePlanRequest]) (*connect.Response[genpb.UpdatePlanResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.UpdatePlan is not implemented"))
 }
 
-func (UnimplementedShoppingListServiceHandler) GetMeals(context.Context, *connect.Request[gen.GetMealsRequest]) (*connect.Response[gen.GetMealsResponse], error) {
+func (UnimplementedShoppingListServiceHandler) GetMeals(context.Context, *connect.Request[genpb.GetMealsRequest]) (*connect.Response[genpb.GetMealsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.GetMeals is not implemented"))
 }
 
-func (UnimplementedShoppingListServiceHandler) CreateMeal(context.Context, *connect.Request[gen.CreateMealRequest]) (*connect.Response[gen.CreateMealResponse], error) {
+func (UnimplementedShoppingListServiceHandler) CreateMeal(context.Context, *connect.Request[genpb.CreateMealRequest]) (*connect.Response[genpb.CreateMealResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.CreateMeal is not implemented"))
 }
 
-func (UnimplementedShoppingListServiceHandler) UpdateMeal(context.Context, *connect.Request[gen.UpdateMealRequest]) (*connect.Response[gen.UpdateMealResponse], error) {
+func (UnimplementedShoppingListServiceHandler) UpdateMeal(context.Context, *connect.Request[genpb.UpdateMealRequest]) (*connect.Response[genpb.UpdateMealResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.UpdateMeal is not implemented"))
 }
 
-func (UnimplementedShoppingListServiceHandler) DeleteMeal(context.Context, *connect.Request[gen.DeleteMealRequest]) (*connect.Response[gen.DeleteMealResponse], error) {
+func (UnimplementedShoppingListServiceHandler) DeleteMeal(context.Context, *connect.Request[genpb.DeleteMealRequest]) (*connect.Response[genpb.DeleteMealResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.DeleteMeal is not implemented"))
 }
 
-func (UnimplementedShoppingListServiceHandler) GetIngredients(context.Context, *connect.Request[gen.GetIngredientsRequest]) (*connect.Response[gen.GetIngredientsResponse], error) {
+func (UnimplementedShoppingListServiceHandler) GetIngredients(context.Context, *connect.Request[genpb.GetIngredientsRequest]) (*connect.Response[genpb.GetIngredientsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.GetIngredients is not implemented"))
 }
 
-func (UnimplementedShoppingListServiceHandler) CreateIngredient(context.Context, *connect.Request[gen.CreateIngredientRequest]) (*connect.Response[gen.CreateIngredientResponse], error) {
+func (UnimplementedShoppingListServiceHandler) CreateIngredient(context.Context, *connect.Request[genpb.CreateIngredientRequest]) (*connect.Response[genpb.CreateIngredientResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.CreateIngredient is not implemented"))
 }
 
-func (UnimplementedShoppingListServiceHandler) UpdateIngredient(context.Context, *connect.Request[gen.UpdateIngredientRequest]) (*connect.Response[gen.UpdateIngredientResponse], error) {
+func (UnimplementedShoppingListServiceHandler) UpdateIngredient(context.Context, *connect.Request[genpb.UpdateIngredientRequest]) (*connect.Response[genpb.UpdateIngredientResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.UpdateIngredient is not implemented"))
 }
 
-func (UnimplementedShoppingListServiceHandler) DeleteIngredient(context.Context, *connect.Request[gen.DeleteIngredientRequest]) (*connect.Response[gen.DeleteIngredientResponse], error) {
+func (UnimplementedShoppingListServiceHandler) DeleteIngredient(context.Context, *connect.Request[genpb.DeleteIngredientRequest]) (*connect.Response[genpb.DeleteIngredientResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.DeleteIngredient is not implemented"))
 }

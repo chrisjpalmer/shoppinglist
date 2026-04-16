@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: shopping_list_service.proto
 
-package gen
+package genpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -903,7 +903,7 @@ const file_shopping_list_service_proto_rawDesc = "" +
 	"\x0eGetIngredients\x12\x16.GetIngredientsRequest\x1a\x17.GetIngredientsResponse\x12G\n" +
 	"\x10CreateIngredient\x12\x18.CreateIngredientRequest\x1a\x19.CreateIngredientResponse\x12G\n" +
 	"\x10UpdateIngredient\x12\x18.UpdateIngredientRequest\x1a\x19.UpdateIngredientResponse\x12G\n" +
-	"\x10DeleteIngredient\x12\x18.DeleteIngredientRequest\x1a\x19.DeleteIngredientResponseBNB\x18ShoppingListServiceProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
+	"\x10DeleteIngredient\x12\x18.DeleteIngredientRequest\x1a\x19.DeleteIngredientResponseBPB\x18ShoppingListServiceProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
 
 var (
 	file_shopping_list_service_proto_rawDescOnce sync.Once
