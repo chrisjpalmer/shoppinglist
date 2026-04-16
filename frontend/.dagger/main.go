@@ -26,14 +26,17 @@ import (
 const nodeVersion = "node:22.18.0"
 
 type Frontend struct {
-	Src *dagger.Directory
+	// +private
+	RootSrc *dagger.Directory
+	Src     *dagger.Directory
 }
 
 func New(
 	ws *dagger.Workspace,
 ) *Frontend {
 	return &Frontend{
-		Src: ws.Directory("/frontend", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
+		RootSrc: ws.Directory("/", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
+		Src:     ws.Directory("/frontend", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
 	}
 }
 
@@ -54,11 +57,7 @@ func (m *Frontend) build(
 	ctx, span := Tracer().Start(ctx, "build: "+string(platform))
 	defer telemetry.EndWithCause(span, &rerr)
 
-	build := dag.Container().
-		From(nodeVersion).
-		WithMountedCache("/root/.npm", dag.CacheVolume("npm-build-cache")).
-		WithWorkdir("/app").
-		WithDirectory(".", m.Src).
+	build := m.buildCtr().
 		WithExec([]string{"npm", "install"}).
 		WithEnvVariable("PUBLIC_BACKEND_PORT", "30001").
 		WithExec([]string{"npm", "run", "build"}).
@@ -74,6 +73,15 @@ func (m *Frontend) build(
 		WithExec([]string{"npm", "install", "--omit=dev"}).
 		WithDirectory("build", build).
 		WithEntrypoint([]string{"node", "build"}).Sync(ctx)
+}
+
+func (m *Frontend) buildCtr() *dagger.Container {
+	return dag.Container().
+		From(nodeVersion).
+		WithMountedCache("/root/.npm", dag.CacheVolume("npm-build-cache")).
+		WithWorkdir("/app").
+		WithDirectory(".", m.RootSrc).
+		WithWorkdir("frontend")
 }
 
 // +cache="never"

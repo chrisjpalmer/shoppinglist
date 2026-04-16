@@ -58,20 +58,24 @@ func convertSlice[I any, O any](in []I, f func(I) O) []O {
 
 func (r Frontend) MarshalJSON() ([]byte, error) {
 	var concrete struct {
-		Src *dagger.Directory
+		RootSrc *dagger.Directory
+		Src     *dagger.Directory
 	}
+	concrete.RootSrc = r.RootSrc
 	concrete.Src = r.Src
 	return json.Marshal(&concrete)
 }
 
 func (r *Frontend) UnmarshalJSON(bs []byte) error {
 	var concrete struct {
-		Src *dagger.Directory
+		RootSrc *dagger.Directory
+		Src     *dagger.Directory
 	}
 	err := json.Unmarshal(bs, &concrete)
 	if err != nil {
 		return err
 	}
+	r.RootSrc = concrete.RootSrc
 	r.Src = concrete.Src
 	return nil
 }
