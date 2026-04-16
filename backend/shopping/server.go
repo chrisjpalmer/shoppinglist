@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/a-h/templ"
-	"github.com/chrisjpalmer/shoppinglist/backend/generated"
+	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render"
 	"github.com/chrisjpalmer/shoppinglist/backend/sql"
@@ -24,7 +24,7 @@ var assets embed.FS
 type Server struct {
 	srv  http.Server
 	done chan struct{}
-	sql  *generated.Queries
+	sql  *gensql.Queries
 }
 
 // NewServer - creates a new server

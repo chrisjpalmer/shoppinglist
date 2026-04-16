@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.29.0
 
-package generated
+package gensql
 
 type Ingredient struct {
 	ID                int64

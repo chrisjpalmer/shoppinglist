@@ -31,15 +31,15 @@ func (m *Backend) CheckProtos(ctx context.Context) error {
 // GenerateSqlc - generate sqlc codegen from .sql files
 // +generate
 func (m *Backend) GenerateSqlc() *dagger.Changeset {
-	generated := dag.Container().
+	gensql := dag.Container().
 		From("sqlc/sqlc:1.29.0").
 		WithWorkdir("workdir").
 		WithDirectory("sql", m.Src.Directory("sql")).
 		WithFile("sqlc.yaml", m.Src.File("sqlc.yaml")).
 		WithExec([]string{"generate"}, dagger.ContainerWithExecOpts{UseEntrypoint: true}).
-		Directory("generated")
+		Directory("gensql")
 
-	return m.Src.WithDirectory("generated", generated).Changes(m.Src)
+	return m.Src.WithDirectory("gensql", gensql).Changes(m.Src)
 }
 
 // CheckSqlc - check that the working tree's sqlc generated files are in sync.

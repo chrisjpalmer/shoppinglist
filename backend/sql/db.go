@@ -8,7 +8,7 @@ import (
 
 	_ "embed"
 
-	"github.com/chrisjpalmer/shoppinglist/backend/generated"
+	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 	_ "github.com/ncruces/go-sqlite3/driver"
 	_ "github.com/ncruces/go-sqlite3/embed"
 )
@@ -16,7 +16,7 @@ import (
 //go:embed schema.sql
 var ddl string
 
-func Connect(ctx context.Context) (*generated.Queries, error) {
+func Connect(ctx context.Context) (*gensql.Queries, error) {
 	dbPath := "local/local.db"
 
 	db, err := sql.Open("sqlite3", fmt.Sprintf("file:%s", dbPath))
@@ -36,7 +36,7 @@ func Connect(ctx context.Context) (*generated.Queries, error) {
 		}
 	}
 
-	return generated.New(db), nil
+	return gensql.New(db), nil
 }
 
 func dbExists(dbPath string) (bool, error) {
