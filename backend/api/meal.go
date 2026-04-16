@@ -4,26 +4,26 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
-	"github.com/chrisjpalmer/shoppinglist/backend/gen"
+	"github.com/chrisjpalmer/shoppinglist/backend/genpb"
 	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 )
 
-func (s *Server) GetMeals(ctx context.Context, rq *connect.Request[gen.GetMealsRequest]) (*connect.Response[gen.GetMealsResponse], error) {
+func (s *Server) GetMeals(ctx context.Context, rq *connect.Request[genpb.GetMealsRequest]) (*connect.Response[genpb.GetMealsResponse], error) {
 	mm, err := s.sql.GetMeals(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	var gmm []*gen.Meal
+	var gmm []*genpb.Meal
 
 	for _, m := range mm {
-		var ig []*gen.IngredientRef
+		var ig []*genpb.IngredientRef
 		err := unmarshalJSON(m.Ingredients, &ig)
 		if err != nil {
 			return nil, err
 		}
 
-		gmm = append(gmm, &gen.Meal{
+		gmm = append(gmm, &genpb.Meal{
 			Id:             m.ID,
 			Name:           m.Name,
 			IngredientRefs: ig,
@@ -31,9 +31,9 @@ func (s *Server) GetMeals(ctx context.Context, rq *connect.Request[gen.GetMealsR
 		})
 	}
 
-	return connect.NewResponse(&gen.GetMealsResponse{Meals: gmm}), nil
+	return connect.NewResponse(&genpb.GetMealsResponse{Meals: gmm}), nil
 }
-func (s *Server) CreateMeal(ctx context.Context, rq *connect.Request[gen.CreateMealRequest]) (*connect.Response[gen.CreateMealResponse], error) {
+func (s *Server) CreateMeal(ctx context.Context, rq *connect.Request[genpb.CreateMealRequest]) (*connect.Response[genpb.CreateMealResponse], error) {
 	igstr, err := marshalJSON(rq.Msg.Meal.IngredientRefs)
 	if err != nil {
 		return nil, err
@@ -48,9 +48,9 @@ func (s *Server) CreateMeal(ctx context.Context, rq *connect.Request[gen.CreateM
 		return nil, err
 	}
 
-	return connect.NewResponse(&gen.CreateMealResponse{MealId: id}), nil
+	return connect.NewResponse(&genpb.CreateMealResponse{MealId: id}), nil
 }
-func (s *Server) UpdateMeal(ctx context.Context, rq *connect.Request[gen.UpdateMealRequest]) (*connect.Response[gen.UpdateMealResponse], error) {
+func (s *Server) UpdateMeal(ctx context.Context, rq *connect.Request[genpb.UpdateMealRequest]) (*connect.Response[genpb.UpdateMealResponse], error) {
 	igstr, err := marshalJSON(rq.Msg.Meal.IngredientRefs)
 	if err != nil {
 		return nil, err
@@ -66,13 +66,13 @@ func (s *Server) UpdateMeal(ctx context.Context, rq *connect.Request[gen.UpdateM
 		return nil, err
 	}
 
-	return connect.NewResponse(&gen.UpdateMealResponse{}), nil
+	return connect.NewResponse(&genpb.UpdateMealResponse{}), nil
 }
-func (s *Server) DeleteMeal(ctx context.Context, rq *connect.Request[gen.DeleteMealRequest]) (*connect.Response[gen.DeleteMealResponse], error) {
+func (s *Server) DeleteMeal(ctx context.Context, rq *connect.Request[genpb.DeleteMealRequest]) (*connect.Response[genpb.DeleteMealResponse], error) {
 	err := s.sql.DeleteMeal(ctx, rq.Msg.MealId)
 	if err != nil {
 		return nil, err
 	}
 
-	return connect.NewResponse(&gen.DeleteMealResponse{}), nil
+	return connect.NewResponse(&genpb.DeleteMealResponse{}), nil
 }

@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: plan.proto
 
-package gen
+package genpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -273,7 +273,7 @@ const file_plan_proto_rawDesc = "" +
 	"\bCategory\x12\x12\n" +
 	"\x0eCATEGORY_LUNCH\x10\x00\x12\x13\n" +
 	"\x0fCATEGORY_DINNER\x10\x01\x12\x12\n" +
-	"\x0eCATEGORY_SNACK\x10\x02B?B\tPlanProtoP\x01Z0github.com/chrisjpalmer/shoppinglist/backend/genb\x06proto3"
+	"\x0eCATEGORY_SNACK\x10\x02BAB\tPlanProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
 
 var (
 	file_plan_proto_rawDescOnce sync.Once
