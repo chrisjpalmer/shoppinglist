@@ -7254,8 +7254,9 @@ func (r *File) WithTimestamps(timestamp int) *File {
 type Frontend struct { // frontend (../../../frontend/.dagger/main.go:28:6)
 	query *querybuilder.Selection
 
-	id      *FrontendID
-	publish *Void
+	checkProtos *Void
+	id          *FrontendID
+	publish     *Void
 }
 
 func (r *Frontend) WithGraphQLQuery(q *querybuilder.Selection) *Frontend {
@@ -7268,6 +7269,25 @@ func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dag
 	q := r.query.Select("buildCheck")
 
 	return &Container{
+		query: q,
+	}
+}
+
+// CheckProtos - check that the working tree's proto generated files are in sync.
+func (r *Frontend) CheckProtos(ctx context.Context) error { // frontend (../../../frontend/.dagger/generated.go:22:1)
+	if r.checkProtos != nil {
+		return nil
+	}
+	q := r.query.Select("checkProtos")
+
+	return q.Execute(ctx)
+}
+
+// GenerateProtos - generate protobuf codegen from .proto files
+func (r *Frontend) GenerateProtos() *Changeset { // frontend (../../../frontend/.dagger/generated.go:11:1)
+	q := r.query.Select("generateProtos")
+
+	return &Changeset{
 		query: q,
 	}
 }
