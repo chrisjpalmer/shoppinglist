@@ -122,41 +122,9 @@ func parseNumericFormValue(idstr string, value []string) (id int64, ct int64, er
 }
 
 func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
-	plan, err := s.plan(ctx)
+	ingredientCounts, ingg, err := s.ingredients(ctx)
 	if err != nil {
 		return nil, err
-	}
-
-	meals, err := s.sql.GetMeals(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	mealsmap, err := mealsMap(meals)
-	if err != nil {
-		return nil, err
-	}
-
-	ingg, err := s.sql.GetIngredients(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	smIds := selectedMealIds(plan)
-
-	ingredientCounts := make(map[int64]int32)
-
-	for _, smId := range smIds {
-
-		meal, ok := mealsmap[smId]
-		if !ok {
-			log.Printf("ignored selected meal id %d as it couldnt be found in the meals map", smId)
-			continue
-		}
-
-		for _, igref := range meal.IngredientRefs {
-			ingredientCounts[igref.IngredientId] += igref.Number
-		}
 	}
 
 	var ww []page.WantItem
@@ -171,6 +139,46 @@ func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
 	}
 
 	return ww, nil
+}
+
+func (s *Server) ingredients(ctx context.Context) (map[int64]int32, []generated.Ingredient, error) {
+	plan, err := s.plan(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	meals, err := s.sql.GetMeals(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	mealsmap, err := mealsMap(meals)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	ingg, err := s.sql.GetIngredients(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	smIds := selectedMealIds(plan)
+
+	ingredientCounts := make(map[int64]int32)
+
+	for _, smId := range smIds {
+		meal, ok := mealsmap[smId]
+		if !ok {
+			log.Printf("ignored selected meal id %d as it couldnt be found in the meals map", smId)
+			continue
+		}
+
+		for _, igref := range meal.IngredientRefs {
+			ingredientCounts[igref.IngredientId] += igref.Number
+		}
+	}
+
+	return ingredientCounts, ingg, nil
 }
 
 func (s *Server) plan(ctx context.Context) (*gen.Plan, error) {
