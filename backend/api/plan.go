@@ -8,7 +8,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/chrisjpalmer/shoppinglist/backend/gen"
-	"github.com/chrisjpalmer/shoppinglist/backend/generated"
+	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 )
 
 func (s *Server) GetPlan(ctx context.Context, rq *connect.Request[gen.GetPlanRequest]) (*connect.Response[gen.GetPlanResponse], error) {
@@ -62,7 +62,7 @@ func (s *Server) UpdatePlan(ctx context.Context, rq *connect.Request[gen.UpdateP
 		return nil, err
 	}
 
-	err = s.sql.UpdatePlan(ctx, generated.UpdatePlanParams{
+	err = s.sql.UpdatePlan(ctx, gensql.UpdatePlanParams{
 		ID:       p.ID,
 		PlanData: pstr,
 	})
@@ -149,7 +149,7 @@ func selectedMealIds(p *gen.Plan) []int64 {
 	return meals
 }
 
-func mealsMap(meals []generated.GetMealsRow) (map[int64]*gen.Meal, error) {
+func mealsMap(meals []gensql.GetMealsRow) (map[int64]*gen.Meal, error) {
 	mealsmap := make(map[int64]*gen.Meal)
 	for _, m := range meals {
 		var igrefs []*gen.IngredientRef

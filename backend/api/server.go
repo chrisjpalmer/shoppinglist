@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/chrisjpalmer/shoppinglist/backend/gen/genconnect"
-	"github.com/chrisjpalmer/shoppinglist/backend/generated"
+	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 	"github.com/chrisjpalmer/shoppinglist/backend/sql"
 	"github.com/rs/cors"
 	"golang.org/x/net/http2"
@@ -13,7 +13,7 @@ import (
 )
 
 type Server struct {
-	sql *generated.Queries
+	sql *gensql.Queries
 }
 
 func NewServer() (*Server, error) {

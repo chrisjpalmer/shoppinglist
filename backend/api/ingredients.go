@@ -5,7 +5,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/chrisjpalmer/shoppinglist/backend/gen"
-	"github.com/chrisjpalmer/shoppinglist/backend/generated"
+	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 )
 
 func (s *Server) GetIngredients(ctx context.Context, rq *connect.Request[gen.GetIngredientsRequest]) (*connect.Response[gen.GetIngredientsResponse], error) {
@@ -34,7 +34,7 @@ func (s *Server) CreateIngredient(ctx context.Context, rq *connect.Request[gen.C
 	return connect.NewResponse(&gen.CreateIngredientResponse{IngredientId: id}), nil
 }
 func (s *Server) UpdateIngredient(ctx context.Context, rq *connect.Request[gen.UpdateIngredientRequest]) (*connect.Response[gen.UpdateIngredientResponse], error) {
-	err := s.sql.UpdateIngredient(ctx, generated.UpdateIngredientParams{
+	err := s.sql.UpdateIngredient(ctx, gensql.UpdateIngredientParams{
 		ID:   rq.Msg.Ingredient.Id,
 		Name: rq.Msg.Ingredient.Name,
 	})

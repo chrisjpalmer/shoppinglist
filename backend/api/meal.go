@@ -5,7 +5,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/chrisjpalmer/shoppinglist/backend/gen"
-	"github.com/chrisjpalmer/shoppinglist/backend/generated"
+	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 )
 
 func (s *Server) GetMeals(ctx context.Context, rq *connect.Request[gen.GetMealsRequest]) (*connect.Response[gen.GetMealsResponse], error) {
@@ -39,7 +39,7 @@ func (s *Server) CreateMeal(ctx context.Context, rq *connect.Request[gen.CreateM
 		return nil, err
 	}
 
-	id, err := s.sql.CreateMeal(ctx, generated.CreateMealParams{
+	id, err := s.sql.CreateMeal(ctx, gensql.CreateMealParams{
 		Name:        rq.Msg.Meal.Name,
 		Ingredients: igstr,
 		RecipeUrl:   rq.Msg.Meal.RecipeUrl,
@@ -56,7 +56,7 @@ func (s *Server) UpdateMeal(ctx context.Context, rq *connect.Request[gen.UpdateM
 		return nil, err
 	}
 
-	err = s.sql.UpdateMeal(ctx, generated.UpdateMealParams{
+	err = s.sql.UpdateMeal(ctx, gensql.UpdateMealParams{
 		ID:          rq.Msg.Meal.Id,
 		Name:        rq.Msg.Meal.Name,
 		Ingredients: igstr,

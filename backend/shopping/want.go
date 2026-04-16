@@ -12,7 +12,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/chrisjpalmer/shoppinglist/backend/gen"
-	"github.com/chrisjpalmer/shoppinglist/backend/generated"
+	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render"
 )
@@ -60,7 +60,7 @@ func (m *Server) renderWantPage(w http.ResponseWriter, r *http.Request) {
 
 func (m *Server) saveOverrideColumns(ctx context.Context, ovCt map[int64]int64) error {
 	for id, ct := range ovCt {
-		err := m.sql.UpdateIngredientWantOverrideCount(ctx, generated.UpdateIngredientWantOverrideCountParams{
+		err := m.sql.UpdateIngredientWantOverrideCount(ctx, gensql.UpdateIngredientWantOverrideCountParams{
 			ID:                id,
 			WantOverrideCount: ct,
 		})
@@ -140,7 +140,7 @@ func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
 	return ww, nil
 }
 
-func (s *Server) ingredients(ctx context.Context) (map[int64]int32, []generated.Ingredient, error) {
+func (s *Server) ingredients(ctx context.Context) (map[int64]int32, []gensql.Ingredient, error) {
 	plan, err := s.plan(ctx)
 	if err != nil {
 		return nil, nil, err
@@ -227,7 +227,7 @@ func selectedMealIds(p *gen.Plan) []int64 {
 	return meals
 }
 
-func mealsMap(meals []generated.GetMealsRow) (map[int64]*gen.Meal, error) {
+func mealsMap(meals []gensql.GetMealsRow) (map[int64]*gen.Meal, error) {
 	mealsmap := make(map[int64]*gen.Meal)
 	for _, m := range meals {
 		var igrefs []*gen.IngredientRef
