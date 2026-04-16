@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -169,7 +168,6 @@ func (s *Server) ingredients(ctx context.Context) (map[int64]int32, []generated.
 	for _, smId := range smIds {
 		meal, ok := mealsmap[smId]
 		if !ok {
-			log.Printf("ignored selected meal id %d as it couldnt be found in the meals map", smId)
 			continue
 		}
 
@@ -219,6 +217,10 @@ func selectedMealIds(p *gen.Plan) []int64 {
 	var meals []int64
 	for _, d := range p.Days {
 		for _, cm := range d.CategoryMeals {
+			if cm.MealId == 0 {
+				// this is a valid case if the plan is uninitialised
+				continue
+			}
 			meals = append(meals, cm.MealId)
 		}
 	}
