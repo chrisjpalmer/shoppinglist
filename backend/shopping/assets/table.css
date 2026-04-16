@@ -77,11 +77,11 @@ tr:not(:first-child) td {
     min-width: 300px;
 }
 
-.table-header .col-override {
+.table-header .col-numeric-input {
     min-width: 200px
 }
 
-.col-override input {
+.col-numeric-input input {
     width: 70px;
     border-radius: 8px;
     border-style: solid;
@@ -93,7 +93,7 @@ tr:not(:first-child) td {
     font-size: 20px;
 }
 
-.col-override input::-webkit-inner-spin-button {
+.col-numeric-input input::-webkit-inner-spin-button {
     appearance:none;
 }
 

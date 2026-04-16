@@ -26,13 +26,13 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 					<tr class="table-header">
 						<td class="col-item">Item</td>
 						<td class="col-number">Number</td>
-						<td class="col-override">Override</td>
+						<td class="col-numeric-input">Override</td>
 					</tr>
 					for _, w := range wantItems {
 					<tr>
 						<td class="col-item">{w.Ingredient}</td>
 						<td class="col-number">{w.Count}</td>
-						<td class="col-override"><input name={fmt.Sprintf("col-override.%d", w.ID)} hx-on:change="setDirty()" value={w.OverrideCount} max="999" type="number"/></td>
+						<td class="col-override col-numeric-input"><input name={fmt.Sprintf("col-override.%d", w.ID)} hx-on:change="setDirty()" value={w.OverrideCount} max="999" type="number"/></td>
 					</tr>
 					}
 					
