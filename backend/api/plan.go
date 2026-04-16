@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"log"
 
 	"connectrpc.com/connect"
 	"github.com/chrisjpalmer/shoppinglist/backend/gen"
@@ -115,7 +114,6 @@ func (s *Server) planSummary(ctx context.Context, p *gen.Plan) (*gen.PlanSummary
 
 		meal, ok := mealsmap[smId]
 		if !ok {
-			log.Printf("ignored selected meal id %d as it couldnt be found in the meals map", smId)
 			continue
 		}
 
@@ -141,6 +139,10 @@ func selectedMealIds(p *gen.Plan) []int64 {
 	var meals []int64
 	for _, d := range p.Days {
 		for _, cm := range d.CategoryMeals {
+			if cm.MealId == 0 {
+				// this is a valid case if the plan is uninitialised
+				continue
+			}
 			meals = append(meals, cm.MealId)
 		}
 	}
