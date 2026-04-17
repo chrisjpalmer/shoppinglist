@@ -1,3 +1,0 @@
-#!/usr/bin/env dagger
-
-. | deploy $(secret file://local/GH_API_KEY) $(secret file://local/kubecfg.yaml)
