@@ -20,7 +20,7 @@ jobs:
       - name: Install dagger
         uses: dagger/dagger-for-github@8.0.0
         with:
-          version: "0.20.3"
+          version: "0.20.6"
         
       - name: Checks
         run:

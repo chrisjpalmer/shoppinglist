@@ -148,9 +148,6 @@ func (e *ExecError) Unwrap() error {
 // The `AddressID` scalar type represents an identifier for an object of type Address.
 type AddressID string
 
-// The `BackendID` scalar type represents an identifier for an object of type Backend.
-type BackendID string // backend (../../../backend/.dagger/main.go:25:6)
-
 // The `BindingID` scalar type represents an identifier for an object of type Binding.
 type BindingID string
 
@@ -174,6 +171,9 @@ type ContainerID string
 
 // The `CurrentModuleID` scalar type represents an identifier for an object of type CurrentModule.
 type CurrentModuleID string
+
+// The `DiffStatID` scalar type represents an identifier for an object of type DiffStat.
+type DiffStatID string
 
 // The `DirectoryID` scalar type represents an identifier for an object of type Directory.
 type DirectoryID string
@@ -205,9 +205,6 @@ type FieldTypeDefID string
 // The `FileID` scalar type represents an identifier for an object of type File.
 type FileID string
 
-// The `FrontendID` scalar type represents an identifier for an object of type Frontend.
-type FrontendID string // frontend (../../../frontend/.dagger/main.go:28:6)
-
 // The `FunctionArgID` scalar type represents an identifier for an object of type FunctionArg.
 type FunctionArgID string
 
@@ -237,18 +234,6 @@ type GitRepositoryID string
 
 // The `HealthcheckConfigID` scalar type represents an identifier for an object of type HealthcheckConfig.
 type HealthcheckConfigID string
-
-// The `HelmChartID` scalar type represents an identifier for an object of type HelmChart.
-type HelmChartID string // helm (../../../dagger-helm/chart.go:20:6)
-
-// The `HelmID` scalar type represents an identifier for an object of type Helm.
-type HelmID string // helm (../../../dagger-helm/main.go:17:6)
-
-// The `HelmPackageID` scalar type represents an identifier for an object of type HelmPackage.
-type HelmPackageID string // helm (../../../dagger-helm/chart.go:33:6)
-
-// The `HelmReleaseID` scalar type represents an identifier for an object of type HelmRelease.
-type HelmReleaseID string // helm (../../../dagger-helm/release.go:637:6)
 
 // The `InputTypeDefID` scalar type represents an identifier for an object of type InputTypeDef.
 type InputTypeDefID string
@@ -294,6 +279,9 @@ type Platform string
 // The `PortID` scalar type represents an identifier for an object of type Port.
 type PortID string
 
+// The `QueryID` scalar type represents an identifier for an object of type Query.
+type QueryID string
+
 // The `SDKConfigID` scalar type represents an identifier for an object of type SDKConfig.
 type SDKConfigID string
 
@@ -326,6 +314,12 @@ type TerminalID string
 
 // The `TypeDefID` scalar type represents an identifier for an object of type TypeDef.
 type TypeDefID string
+
+// The `UpGroupID` scalar type represents an identifier for an object of type UpGroup.
+type UpGroupID string
+
+// The `UpID` scalar type represents an identifier for an object of type Up.
+type UpID string
 
 // The absence of a value.
 //
@@ -571,219 +565,6 @@ func (r *Address) Value(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
-type Backend struct { // backend (../../../backend/.dagger/main.go:25:6)
-	query *querybuilder.Selection
-
-	checkProtos             *Void
-	checkSqlc               *Void
-	checkTempl              *Void
-	id                      *BackendID
-	migrateCheck            *Void
-	publish                 *Void
-	publishMigrateImage     *Void
-	testMigrateImageNodb    *Void
-	testMigrateImageNodbenv *Void
-	testMigrateImageWithDb  *Void
-}
-
-func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
-	return &Backend{
-		query: q,
-	}
-}
-
-func (r *Backend) BuildCheck() *Container { // backend (../../../backend/.dagger/build.go:14:1)
-	q := r.query.Select("buildCheck")
-
-	return &Container{
-		query: q,
-	}
-}
-
-// CheckProtos - check that the working tree's proto generated files are in sync.
-func (r *Backend) CheckProtos(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:26:1)
-	if r.checkProtos != nil {
-		return nil
-	}
-	q := r.query.Select("checkProtos")
-
-	return q.Execute(ctx)
-}
-
-// CheckSqlc - check that the working tree's sqlc generated files are in sync.
-func (r *Backend) CheckSqlc(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:47:1)
-	if r.checkSqlc != nil {
-		return nil
-	}
-	q := r.query.Select("checkSqlc")
-
-	return q.Execute(ctx)
-}
-
-// CheckTempl - check that the working tree's templ generated files are in sync.
-func (r *Backend) CheckTempl(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:67:1)
-	if r.checkTempl != nil {
-		return nil
-	}
-	q := r.query.Select("checkTempl")
-
-	return q.Execute(ctx)
-}
-
-// GenerateProtos - generate protobuf codegen from .proto files
-func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.dagger/generated.go:11:1)
-	q := r.query.Select("generateProtos")
-
-	return &Changeset{
-		query: q,
-	}
-}
-
-// GenerateSqlc - generate sqlc codegen from .sql files
-func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagger/generated.go:33:1)
-	q := r.query.Select("generateSqlc")
-
-	return &Changeset{
-		query: q,
-	}
-}
-
-// GenerateTempl - generate templ codegen from .templ files
-func (r *Backend) GenerateTempl() *Changeset { // backend (../../../backend/.dagger/generated.go:54:1)
-	q := r.query.Select("generateTempl")
-
-	return &Changeset{
-		query: q,
-	}
-}
-
-// A unique identifier for this Backend.
-func (r *Backend) ID(ctx context.Context) (BackendID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response BackendID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *Backend) XXX_GraphQLType() string {
-	return "Backend"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *Backend) XXX_GraphQLIDType() string {
-	return "BackendID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *Backend) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *Backend) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(marshalCtx)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *Backend) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadBackendFromID(BackendID(id))
-	return nil
-}
-
-// MigrateCheck - checks whether the previous schema on the master branch
-// can be successfully migrated to the new schema
-func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../../backend/.dagger/migrate.go:22:1)
-	if r.migrateCheck != nil {
-		return nil
-	}
-	q := r.query.Select("migrateCheck")
-
-	return q.Execute(ctx)
-}
-
-// MigrateLocal - migrates the passed in database and returns it
-func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../backend/.dagger/migrate.go:13:1)
-	assertNotNil("localdb", localdb)
-	q := r.query.Select("migrateLocal")
-	q = q.Arg("localdb", localdb)
-
-	return &File{
-		query: q,
-	}
-}
-
-func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/main.go:42:1)
-	assertNotNil("registryPassword", registryPassword)
-	if r.publish != nil {
-		return nil
-	}
-	q := r.query.Select("publish")
-	q = q.Arg("tag", tag)
-	q = q.Arg("registryPassword", registryPassword)
-
-	return q.Execute(ctx)
-}
-
-// PublishMigrateImage - builds an image that contains the atlas migration tool
-// as well as the new schema that the database needs to be migrated to
-func (r *Backend) PublishMigrateImage(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/migrate_image.go:13:1)
-	assertNotNil("registryPassword", registryPassword)
-	if r.publishMigrateImage != nil {
-		return nil
-	}
-	q := r.query.Select("publishMigrateImage")
-	q = q.Arg("tag", tag)
-	q = q.Arg("registryPassword", registryPassword)
-
-	return q.Execute(ctx)
-}
-
-// TestMigrateImageNODB - tests that the migrate image works if the DB exists
-func (r *Backend) TestMigrateImageNodb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:78:1)
-	if r.testMigrateImageNodb != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrateImageNodb")
-
-	return q.Execute(ctx)
-}
-
-// TestMigrateImageNoDBEnv - tests that the migrate image correctly fails if the DATABASE_FILE var isn't present
-func (r *Backend) TestMigrateImageNodbenv(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:95:1)
-	if r.testMigrateImageNodbenv != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrateImageNodbenv")
-
-	return q.Execute(ctx)
-}
-
-// TestMigrateImageWithDB - tests that the migrate image works if the DB exists
-func (r *Backend) TestMigrateImageWithDb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:55:1)
-	if r.testMigrateImageWithDb != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrateImageWithDb")
-
-	return q.Execute(ctx)
-}
-
 type Binding struct {
 	query *querybuilder.Selection
 
@@ -806,15 +587,6 @@ func (r *Binding) AsAddress() *Address {
 	q := r.query.Select("asAddress")
 
 	return &Address{
-		query: q,
-	}
-}
-
-// Retrieve the binding value, as type Backend
-func (r *Binding) AsBackend() *Backend { // backend (../../../backend/.dagger/main.go:25:6)
-	q := r.query.Select("asBackend")
-
-	return &Backend{
 		query: q,
 	}
 }
@@ -873,6 +645,15 @@ func (r *Binding) AsContainer() *Container {
 	}
 }
 
+// Retrieve the binding value, as type DiffStat
+func (r *Binding) AsDiffStat() *DiffStat {
+	q := r.query.Select("asDiffStat")
+
+	return &DiffStat{
+		query: q,
+	}
+}
+
 // Retrieve the binding value, as type Directory
 func (r *Binding) AsDirectory() *Directory {
 	q := r.query.Select("asDirectory")
@@ -909,15 +690,6 @@ func (r *Binding) AsFile() *File {
 	}
 }
 
-// Retrieve the binding value, as type Frontend
-func (r *Binding) AsFrontend() *Frontend { // frontend (../../../frontend/.dagger/main.go:28:6)
-	q := r.query.Select("asFrontend")
-
-	return &Frontend{
-		query: q,
-	}
-}
-
 // Retrieve the binding value, as type Generator
 func (r *Binding) AsGenerator() *Generator {
 	q := r.query.Select("asGenerator")
@@ -950,42 +722,6 @@ func (r *Binding) AsGitRepository() *GitRepository {
 	q := r.query.Select("asGitRepository")
 
 	return &GitRepository{
-		query: q,
-	}
-}
-
-// Retrieve the binding value, as type Helm
-func (r *Binding) AsHelm() *Helm { // helm (../../../dagger-helm/main.go:17:6)
-	q := r.query.Select("asHelm")
-
-	return &Helm{
-		query: q,
-	}
-}
-
-// Retrieve the binding value, as type HelmChart
-func (r *Binding) AsHelmChart() *HelmChart { // helm (../../../dagger-helm/chart.go:20:6)
-	q := r.query.Select("asHelmChart")
-
-	return &HelmChart{
-		query: q,
-	}
-}
-
-// Retrieve the binding value, as type HelmPackage
-func (r *Binding) AsHelmPackage() *HelmPackage { // helm (../../../dagger-helm/chart.go:33:6)
-	q := r.query.Select("asHelmPackage")
-
-	return &HelmPackage{
-		query: q,
-	}
-}
-
-// Retrieve the binding value, as type HelmRelease
-func (r *Binding) AsHelmRelease() *HelmRelease { // helm (../../../dagger-helm/release.go:637:6)
-	q := r.query.Select("asHelmRelease")
-
-	return &HelmRelease{
 		query: q,
 	}
 }
@@ -1091,6 +827,24 @@ func (r *Binding) AsString(ctx context.Context) (string, error) {
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
+}
+
+// Retrieve the binding value, as type Up
+func (r *Binding) AsUp() *Up {
+	q := r.query.Select("asUp")
+
+	return &Up{
+		query: q,
+	}
+}
+
+// Retrieve the binding value, as type UpGroup
+func (r *Binding) AsUpGroup() *UpGroup {
+	q := r.query.Select("asUpGroup")
+
+	return &UpGroup{
+		query: q,
+	}
 }
 
 // Retrieve the binding value, as type Workspace
@@ -1324,6 +1078,39 @@ func (r *Changeset) Before() *Directory {
 	return &Directory{
 		query: q,
 	}
+}
+
+// Structured per-path diff statistics (kind and line counts) for this changeset.
+func (r *Changeset) DiffStats(ctx context.Context) ([]DiffStat, error) {
+	q := r.query.Select("diffStats")
+
+	q = q.Select("id")
+
+	type diffStats struct {
+		Id DiffStatID
+	}
+
+	convert := func(fields []diffStats) []DiffStat {
+		out := []DiffStat{}
+
+		for i := range fields {
+			val := DiffStat{id: &fields[i].Id}
+			val.query = q.Root().Select("loadDiffStatFromID").Arg("id", fields[i].Id)
+			out = append(out, val)
+		}
+
+		return out
+	}
+	var response []diffStats
+
+	q = q.Bind(&response)
+
+	err := q.Execute(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return convert(response), nil
 }
 
 // Applies the diff represented by this changeset to a path on the host.
@@ -1786,9 +1573,21 @@ func (r *CheckGroup) Report() *File {
 	}
 }
 
+// CheckGroupRunOpts contains options for CheckGroup.Run
+type CheckGroupRunOpts struct {
+	// If true, stop running checks as soon as any check fails.
+	FailFast bool
+}
+
 // Execute all selected checks
-func (r *CheckGroup) Run() *CheckGroup {
+func (r *CheckGroup) Run(opts ...CheckGroupRunOpts) *CheckGroup {
 	q := r.query.Select("run")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `failFast` optional argument
+		if !querybuilder.IsZeroValue(opts[i].FailFast) {
+			q = q.Arg("failFast", opts[i].FailFast)
+		}
+	}
 
 	return &CheckGroup{
 		query: q,
@@ -4017,6 +3816,137 @@ func (r *CurrentModule) WorkdirFile(path string) *File {
 	}
 }
 
+type DiffStat struct {
+	query *querybuilder.Selection
+
+	addedLines   *int
+	id           *DiffStatID
+	kind         *DiffStatKind
+	oldPath      *string
+	path         *string
+	removedLines *int
+}
+
+func (r *DiffStat) WithGraphQLQuery(q *querybuilder.Selection) *DiffStat {
+	return &DiffStat{
+		query: q,
+	}
+}
+
+// Number of added lines for this path.
+func (r *DiffStat) AddedLines(ctx context.Context) (int, error) {
+	if r.addedLines != nil {
+		return *r.addedLines, nil
+	}
+	q := r.query.Select("addedLines")
+
+	var response int
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// A unique identifier for this DiffStat.
+func (r *DiffStat) ID(ctx context.Context) (DiffStatID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response DiffStatID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *DiffStat) XXX_GraphQLType() string {
+	return "DiffStat"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *DiffStat) XXX_GraphQLIDType() string {
+	return "DiffStatID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *DiffStat) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *DiffStat) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+func (r *DiffStat) UnmarshalJSON(bs []byte) error {
+	var id string
+	err := json.Unmarshal(bs, &id)
+	if err != nil {
+		return err
+	}
+	*r = *dag.LoadDiffStatFromID(DiffStatID(id))
+	return nil
+}
+
+// Type of change.
+func (r *DiffStat) Kind(ctx context.Context) (DiffStatKind, error) {
+	if r.kind != nil {
+		return *r.kind, nil
+	}
+	q := r.query.Select("kind")
+
+	var response DiffStatKind
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Previous path of the file, set only for renames.
+func (r *DiffStat) OldPath(ctx context.Context) (string, error) {
+	if r.oldPath != nil {
+		return *r.oldPath, nil
+	}
+	q := r.query.Select("oldPath")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Path of the changed file or directory.
+func (r *DiffStat) Path(ctx context.Context) (string, error) {
+	if r.path != nil {
+		return *r.path, nil
+	}
+	q := r.query.Select("path")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Number of removed lines for this path.
+func (r *DiffStat) RemovedLines(ctx context.Context) (int, error) {
+	if r.removedLines != nil {
+		return *r.removedLines, nil
+	}
+	q := r.query.Select("removedLines")
+
+	var response int
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
 // A directory.
 type Directory struct {
 	query *querybuilder.Selection
@@ -5360,6 +5290,29 @@ func (r *Env) Outputs(ctx context.Context) ([]Binding, error) {
 	return convert(response), nil
 }
 
+// EnvServicesOpts contains options for Env.Services
+type EnvServicesOpts struct {
+	// Only include services matching the specified patterns
+	Include []string
+}
+
+// Return all services defined by the installed modules
+//
+// Experimental: Services API is highly experimental and may be removed or replaced entirely.
+func (r *Env) Services(opts ...EnvServicesOpts) *UpGroup {
+	q := r.query.Select("services")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `include` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Include) {
+			q = q.Arg("include", opts[i].Include)
+		}
+	}
+
+	return &UpGroup{
+		query: q,
+	}
+}
+
 // Create or update a binding of type Address in the environment
 func (r *Env) WithAddressInput(name string, value *Address, description string) *Env {
 	assertNotNil("value", value)
@@ -5376,30 +5329,6 @@ func (r *Env) WithAddressInput(name string, value *Address, description string) 
 // Declare a desired Address output to be assigned in the environment
 func (r *Env) WithAddressOutput(name string, description string) *Env {
 	q := r.query.Select("withAddressOutput")
-	q = q.Arg("name", name)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Create or update a binding of type Backend in the environment
-func (r *Env) WithBackendInput(name string, value *Backend, description string) *Env { // backend (../../../backend/.dagger/main.go:25:6)
-	assertNotNil("value", value)
-	q := r.query.Select("withBackendInput")
-	q = q.Arg("name", name)
-	q = q.Arg("value", value)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Declare a desired Backend output to be assigned in the environment
-func (r *Env) WithBackendOutput(name string, description string) *Env { // backend (../../../backend/.dagger/main.go:25:6)
-	q := r.query.Select("withBackendOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
 
@@ -5563,6 +5492,30 @@ func (r *Env) WithCurrentModule() *Env {
 	}
 }
 
+// Create or update a binding of type DiffStat in the environment
+func (r *Env) WithDiffStatInput(name string, value *DiffStat, description string) *Env {
+	assertNotNil("value", value)
+	q := r.query.Select("withDiffStatInput")
+	q = q.Arg("name", name)
+	q = q.Arg("value", value)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
+// Declare a desired DiffStat output to be assigned in the environment
+func (r *Env) WithDiffStatOutput(name string, description string) *Env {
+	q := r.query.Select("withDiffStatOutput")
+	q = q.Arg("name", name)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
 // Create or update a binding of type Directory in the environment
 func (r *Env) WithDirectoryInput(name string, value *Directory, description string) *Env {
 	assertNotNil("value", value)
@@ -5659,30 +5612,6 @@ func (r *Env) WithFileOutput(name string, description string) *Env {
 	}
 }
 
-// Create or update a binding of type Frontend in the environment
-func (r *Env) WithFrontendInput(name string, value *Frontend, description string) *Env { // frontend (../../../frontend/.dagger/main.go:28:6)
-	assertNotNil("value", value)
-	q := r.query.Select("withFrontendInput")
-	q = q.Arg("name", name)
-	q = q.Arg("value", value)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Declare a desired Frontend output to be assigned in the environment
-func (r *Env) WithFrontendOutput(name string, description string) *Env { // frontend (../../../frontend/.dagger/main.go:28:6)
-	q := r.query.Select("withFrontendOutput")
-	q = q.Arg("name", name)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
 // Create or update a binding of type GeneratorGroup in the environment
 func (r *Env) WithGeneratorGroupInput(name string, value *GeneratorGroup, description string) *Env {
 	assertNotNil("value", value)
@@ -5771,102 +5700,6 @@ func (r *Env) WithGitRepositoryInput(name string, value *GitRepository, descript
 // Declare a desired GitRepository output to be assigned in the environment
 func (r *Env) WithGitRepositoryOutput(name string, description string) *Env {
 	q := r.query.Select("withGitRepositoryOutput")
-	q = q.Arg("name", name)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Create or update a binding of type HelmChart in the environment
-func (r *Env) WithHelmChartInput(name string, value *HelmChart, description string) *Env { // helm (../../../dagger-helm/chart.go:20:6)
-	assertNotNil("value", value)
-	q := r.query.Select("withHelmChartInput")
-	q = q.Arg("name", name)
-	q = q.Arg("value", value)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Declare a desired HelmChart output to be assigned in the environment
-func (r *Env) WithHelmChartOutput(name string, description string) *Env { // helm (../../../dagger-helm/chart.go:20:6)
-	q := r.query.Select("withHelmChartOutput")
-	q = q.Arg("name", name)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Create or update a binding of type Helm in the environment
-func (r *Env) WithHelmInput(name string, value *Helm, description string) *Env { // helm (../../../dagger-helm/main.go:17:6)
-	assertNotNil("value", value)
-	q := r.query.Select("withHelmInput")
-	q = q.Arg("name", name)
-	q = q.Arg("value", value)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Declare a desired Helm output to be assigned in the environment
-func (r *Env) WithHelmOutput(name string, description string) *Env { // helm (../../../dagger-helm/main.go:17:6)
-	q := r.query.Select("withHelmOutput")
-	q = q.Arg("name", name)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Create or update a binding of type HelmPackage in the environment
-func (r *Env) WithHelmPackageInput(name string, value *HelmPackage, description string) *Env { // helm (../../../dagger-helm/chart.go:33:6)
-	assertNotNil("value", value)
-	q := r.query.Select("withHelmPackageInput")
-	q = q.Arg("name", name)
-	q = q.Arg("value", value)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Declare a desired HelmPackage output to be assigned in the environment
-func (r *Env) WithHelmPackageOutput(name string, description string) *Env { // helm (../../../dagger-helm/chart.go:33:6)
-	q := r.query.Select("withHelmPackageOutput")
-	q = q.Arg("name", name)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Create or update a binding of type HelmRelease in the environment
-func (r *Env) WithHelmReleaseInput(name string, value *HelmRelease, description string) *Env { // helm (../../../dagger-helm/release.go:637:6)
-	assertNotNil("value", value)
-	q := r.query.Select("withHelmReleaseInput")
-	q = q.Arg("name", name)
-	q = q.Arg("value", value)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Declare a desired HelmRelease output to be assigned in the environment
-func (r *Env) WithHelmReleaseOutput(name string, description string) *Env { // helm (../../../dagger-helm/release.go:637:6)
-	q := r.query.Select("withHelmReleaseOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
 
@@ -6158,6 +5991,54 @@ func (r *Env) WithStringInput(name string, value string, description string) *En
 // Declares a desired string output binding
 func (r *Env) WithStringOutput(name string, description string) *Env {
 	q := r.query.Select("withStringOutput")
+	q = q.Arg("name", name)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
+// Create or update a binding of type UpGroup in the environment
+func (r *Env) WithUpGroupInput(name string, value *UpGroup, description string) *Env {
+	assertNotNil("value", value)
+	q := r.query.Select("withUpGroupInput")
+	q = q.Arg("name", name)
+	q = q.Arg("value", value)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
+// Declare a desired UpGroup output to be assigned in the environment
+func (r *Env) WithUpGroupOutput(name string, description string) *Env {
+	q := r.query.Select("withUpGroupOutput")
+	q = q.Arg("name", name)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
+// Create or update a binding of type Up in the environment
+func (r *Env) WithUpInput(name string, value *Up, description string) *Env {
+	assertNotNil("value", value)
+	q := r.query.Select("withUpInput")
+	q = q.Arg("name", name)
+	q = q.Arg("value", value)
+	q = q.Arg("description", description)
+
+	return &Env{
+		query: q,
+	}
+}
+
+// Declare a desired Up output to be assigned in the environment
+func (r *Env) WithUpOutput(name string, description string) *Env {
+	q := r.query.Select("withUpOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
 
@@ -7251,126 +7132,17 @@ func (r *File) WithTimestamps(timestamp int) *File {
 	}
 }
 
-type Frontend struct { // frontend (../../../frontend/.dagger/main.go:28:6)
-	query *querybuilder.Selection
-
-	checkProtos *Void
-	id          *FrontendID
-	publish     *Void
-}
-
-func (r *Frontend) WithGraphQLQuery(q *querybuilder.Selection) *Frontend {
-	return &Frontend{
-		query: q,
-	}
-}
-
-func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dagger/main.go:44:1)
-	q := r.query.Select("buildCheck")
-
-	return &Container{
-		query: q,
-	}
-}
-
-// CheckProtos - check that the working tree's proto generated files are in sync.
-func (r *Frontend) CheckProtos(ctx context.Context) error { // frontend (../../../frontend/.dagger/generated.go:22:1)
-	if r.checkProtos != nil {
-		return nil
-	}
-	q := r.query.Select("checkProtos")
-
-	return q.Execute(ctx)
-}
-
-// GenerateProtos - generate protobuf codegen from .proto files
-func (r *Frontend) GenerateProtos() *Changeset { // frontend (../../../frontend/.dagger/generated.go:11:1)
-	q := r.query.Select("generateProtos")
-
-	return &Changeset{
-		query: q,
-	}
-}
-
-// A unique identifier for this Frontend.
-func (r *Frontend) ID(ctx context.Context) (FrontendID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response FrontendID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *Frontend) XXX_GraphQLType() string {
-	return "Frontend"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *Frontend) XXX_GraphQLIDType() string {
-	return "FrontendID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *Frontend) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *Frontend) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(marshalCtx)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *Frontend) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadFrontendFromID(FrontendID(id))
-	return nil
-}
-
-func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../frontend/.dagger/main.go:88:1)
-	assertNotNil("registryPassword", registryPassword)
-	if r.publish != nil {
-		return nil
-	}
-	q := r.query.Select("publish")
-	q = q.Arg("tag", tag)
-	q = q.Arg("registryPassword", registryPassword)
-
-	return q.Execute(ctx)
-}
-
-func (r *Frontend) Src() *Directory { // frontend (../../../frontend/.dagger/main.go:31:2)
-	q := r.query.Select("src")
-
-	return &Directory{
-		query: q,
-	}
-}
-
 // Function represents a resolver provided by a Module.
 //
 // A function always evaluates against a parent object and is given a set of named arguments.
 type Function struct {
 	query *querybuilder.Selection
 
-	deprecated  *string
-	description *string
-	id          *FunctionID
-	name        *string
+	deprecated       *string
+	description      *string
+	id               *FunctionID
+	name             *string
+	sourceModuleName *string
 }
 type WithFunctionFunc func(r *Function) *Function
 
@@ -7526,6 +7298,19 @@ func (r *Function) SourceMap() *SourceMap {
 	}
 }
 
+// If this function is provided by a module, the name of the module. Unset otherwise.
+func (r *Function) SourceModuleName(ctx context.Context) (string, error) {
+	if r.sourceModuleName != nil {
+		return *r.sourceModuleName, nil
+	}
+	q := r.query.Select("sourceModuleName")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
 // FunctionWithArgOpts contains options for Function.WithArg
 type FunctionWithArgOpts struct {
 	// A doc string for the argument, if any
@@ -7662,6 +7447,15 @@ func (r *Function) WithSourceMap(sourceMap *SourceMap) *Function {
 	assertNotNil("sourceMap", sourceMap)
 	q := r.query.Select("withSourceMap")
 	q = q.Arg("sourceMap", sourceMap)
+
+	return &Function{
+		query: q,
+	}
+}
+
+// Returns the function with a flag indicating it returns a service for dagger up.
+func (r *Function) WithUp() *Function {
+	q := r.query.Select("withUp")
 
 	return &Function{
 		query: q,
@@ -8239,7 +8033,7 @@ func (r *Generator) WithGraphQLQuery(q *querybuilder.Selection) *Generator {
 	}
 }
 
-// The generated changeset
+// The generated changeset from the last run
 func (r *Generator) Changes() *Changeset {
 	q := r.query.Select("changes")
 
@@ -8323,7 +8117,7 @@ func (r *Generator) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-// Wether changeset from the generator execution is empty or not
+// Whether changeset from the last generator run is empty or not
 func (r *Generator) IsEmpty(ctx context.Context) (bool, error) {
 	if r.isEmpty != nil {
 		return *r.isEmpty, nil
@@ -8406,7 +8200,7 @@ type GeneratorGroupChangesOpts struct {
 	OnConflict ChangesetsMergeConflict
 }
 
-// The combined changes from the generators execution
+// The combined changes from the last run of the generators
 //
 // If any conflict occurs, for instance if the same file is modified by multiple generators, or if a file is both modified and deleted, an error is raised and the merge of the changesets will failed.
 //
@@ -8474,7 +8268,7 @@ func (r *GeneratorGroup) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-// Whether the generated changeset is empty or not
+// Whether the generated changeset from the last run is empty or not
 func (r *GeneratorGroup) IsEmpty(ctx context.Context) (bool, error) {
 	if r.isEmpty != nil {
 		return *r.isEmpty, nil
@@ -9009,1196 +8803,6 @@ func (r *HealthcheckConfig) Timeout(ctx context.Context) (string, error) {
 		return *r.timeout, nil
 	}
 	q := r.query.Select("timeout")
-
-	var response string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-type Helm struct { // helm (../../../dagger-helm/main.go:17:6)
-	query *querybuilder.Selection
-
-	id   *HelmID
-	push *Void
-}
-type WithHelmFunc func(r *Helm) *Helm
-
-// With calls the provided function with current Helm.
-//
-// This is useful for reusability and readability by not breaking the calling chain.
-func (r *Helm) With(f WithHelmFunc) *Helm {
-	return f(r)
-}
-
-func (r *Helm) WithGraphQLQuery(q *querybuilder.Selection) *Helm {
-	return &Helm{
-		query: q,
-	}
-}
-
-// Returns a Helm chart from a source directory.
-func (r *Helm) Chart(source *Directory) *HelmChart { // helm (../../../dagger-helm/chart.go:9:1)
-	assertNotNil("source", source)
-	q := r.query.Select("chart")
-	q = q.Arg("source", source)
-
-	return &HelmChart{
-		query: q,
-	}
-}
-
-func (r *Helm) Container() *Container { // helm (../../../dagger-helm/main.go:18:2)
-	q := r.query.Select("container")
-
-	return &Container{
-		query: q,
-	}
-}
-
-// Create a new chart directory along with the common files and directories used in a chart.
-func (r *Helm) Create(name string) *HelmChart { // helm (../../../dagger-helm/main.go:108:1)
-	q := r.query.Select("create")
-	q = q.Arg("name", name)
-
-	return &HelmChart{
-		query: q,
-	}
-}
-
-// A unique identifier for this Helm.
-func (r *Helm) ID(ctx context.Context) (HelmID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response HelmID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *Helm) XXX_GraphQLType() string {
-	return "Helm"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *Helm) XXX_GraphQLIDType() string {
-	return "HelmID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *Helm) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *Helm) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(marshalCtx)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *Helm) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadHelmFromID(HelmID(id))
-	return nil
-}
-
-// Lint a Helm chart directory.
-func (r *Helm) Lint(chart *Directory) *Container { // helm (../../../dagger-helm/main.go:122:1)
-	assertNotNil("chart", chart)
-	q := r.query.Select("lint")
-	q = q.Arg("chart", chart)
-
-	return &Container{
-		query: q,
-	}
-}
-
-// HelmLoginOpts contains options for Helm.Login
-type HelmLoginOpts struct {
-	//
-	// Allow connections to TLS registry without certs.
-	//
-	Insecure bool // helm (../../../dagger-helm/main.go:229:2)
-}
-
-// Authenticate to an OCI registry.
-//
-// Note: Login stores credentials in the filesystem in plain text. Use WithRegistryAuth as a safer alternative.
-func (r *Helm) Login(host string, username string, password *Secret, opts ...HelmLoginOpts) *Helm { // helm (../../../dagger-helm/main.go:214:1)
-	assertNotNil("password", password)
-	q := r.query.Select("login")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `insecure` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Insecure) {
-			q = q.Arg("insecure", opts[i].Insecure)
-		}
-	}
-	q = q.Arg("host", host)
-	q = q.Arg("username", username)
-	q = q.Arg("password", password)
-
-	return &Helm{
-		query: q,
-	}
-}
-
-// Remove credentials stored for an OCI registry.
-func (r *Helm) Logout(host string) *Helm { // helm (../../../dagger-helm/main.go:253:1)
-	q := r.query.Select("logout")
-	q = q.Arg("host", host)
-
-	return &Helm{
-		query: q,
-	}
-}
-
-// HelmPackageOpts contains options for Helm.Package
-type HelmPackageOpts struct {
-	//
-	// Set the appVersion on the chart to this version.
-	//
-	AppVersion string // helm (../../../dagger-helm/main.go:159:2)
-	//
-	// Set the version on the chart to this semver version.
-	//
-	Version string // helm (../../../dagger-helm/main.go:164:2)
-	//
-	// Update dependencies from "Chart.yaml" to dir "charts/" before packaging.
-	//
-	DependencyUpdate bool // helm (../../../dagger-helm/main.go:169:2)
-}
-
-// Build a Helm chart package.
-func (r *Helm) Package(chart *Directory, opts ...HelmPackageOpts) *File { // helm (../../../dagger-helm/main.go:150:1)
-	assertNotNil("chart", chart)
-	q := r.query.Select("package")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `appVersion` optional argument
-		if !querybuilder.IsZeroValue(opts[i].AppVersion) {
-			q = q.Arg("appVersion", opts[i].AppVersion)
-		}
-		// `version` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Version) {
-			q = q.Arg("version", opts[i].Version)
-		}
-		// `dependencyUpdate` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DependencyUpdate) {
-			q = q.Arg("dependencyUpdate", opts[i].DependencyUpdate)
-		}
-	}
-	q = q.Arg("chart", chart)
-
-	return &File{
-		query: q,
-	}
-}
-
-// HelmPushOpts contains options for Helm.Push
-type HelmPushOpts struct {
-	//
-	// Use insecure HTTP connections for the chart upload.
-	//
-	PlainHTTP bool // helm (../../../dagger-helm/main.go:279:2)
-	//
-	// Skip tls certificate checks for the chart upload.
-	//
-	InsecureSkipTLSVerify bool // helm (../../../dagger-helm/main.go:284:2)
-	//
-	// Verify certificates of HTTPS-enabled servers using this CA bundle.
-	//
-	CaFile *File // helm (../../../dagger-helm/main.go:289:2)
-	//
-	// Identify registry client using this SSL certificate file.
-	//
-	CertFile *File // helm (../../../dagger-helm/main.go:294:2)
-	//
-	// Identify registry client using this SSL key file.
-	//
-	KeyFile *Secret // helm (../../../dagger-helm/main.go:299:2)
-}
-
-// Push a Helm chart package to an OCI registry.
-func (r *Helm) Push(ctx context.Context, pkg *File, registry string, opts ...HelmPushOpts) error { // helm (../../../dagger-helm/main.go:267:1)
-	assertNotNil("pkg", pkg)
-	if r.push != nil {
-		return nil
-	}
-	q := r.query.Select("push")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `plainHttp` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PlainHTTP) {
-			q = q.Arg("plainHttp", opts[i].PlainHTTP)
-		}
-		// `insecureSkipTlsVerify` optional argument
-		if !querybuilder.IsZeroValue(opts[i].InsecureSkipTLSVerify) {
-			q = q.Arg("insecureSkipTlsVerify", opts[i].InsecureSkipTLSVerify)
-		}
-		// `caFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CaFile) {
-			q = q.Arg("caFile", opts[i].CaFile)
-		}
-		// `certFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CertFile) {
-			q = q.Arg("certFile", opts[i].CertFile)
-		}
-		// `keyFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].KeyFile) {
-			q = q.Arg("keyFile", opts[i].KeyFile)
-		}
-	}
-	q = q.Arg("pkg", pkg)
-	q = q.Arg("registry", registry)
-
-	return q.Execute(ctx)
-}
-
-// Mount a file as the kubeconfig file.
-func (r *Helm) WithKubeconfigFile(file *File) *Helm { // helm (../../../dagger-helm/main.go:90:1)
-	assertNotNil("file", file)
-	q := r.query.Select("withKubeconfigFile")
-	q = q.Arg("file", file)
-
-	return &Helm{
-		query: q,
-	}
-}
-
-// Mount a secret as the kubeconfig file.
-func (r *Helm) WithKubeconfigSecret(secret *Secret) *Helm { // helm (../../../dagger-helm/main.go:99:1)
-	assertNotNil("secret", secret)
-	q := r.query.Select("withKubeconfigSecret")
-	q = q.Arg("secret", secret)
-
-	return &Helm{
-		query: q,
-	}
-}
-
-// Add credentials for a registry.
-//
-// Note: WithRegistryAuth overrides any previous or subsequent calls to Login/Logout.
-func (r *Helm) WithRegistryAuth(address string, username string, secret *Secret) *Helm { // helm (../../../dagger-helm/main.go:76:1)
-	assertNotNil("secret", secret)
-	q := r.query.Select("withRegistryAuth")
-	q = q.Arg("address", address)
-	q = q.Arg("username", username)
-	q = q.Arg("secret", secret)
-
-	return &Helm{
-		query: q,
-	}
-}
-
-// Removes credentials for a registry.
-func (r *Helm) WithoutRegistryAuth(address string) *Helm { // helm (../../../dagger-helm/main.go:83:1)
-	q := r.query.Select("withoutRegistryAuth")
-	q = q.Arg("address", address)
-
-	return &Helm{
-		query: q,
-	}
-}
-
-// A Helm chart.
-type HelmChart struct { // helm (../../../dagger-helm/chart.go:20:6)
-	query *querybuilder.Selection
-
-	id *HelmChartID
-}
-
-func (r *HelmChart) WithGraphQLQuery(q *querybuilder.Selection) *HelmChart {
-	return &HelmChart{
-		query: q,
-	}
-}
-
-func (r *HelmChart) Directory() *Directory { // helm (../../../dagger-helm/chart.go:21:2)
-	q := r.query.Select("directory")
-
-	return &Directory{
-		query: q,
-	}
-}
-
-// A unique identifier for this HelmChart.
-func (r *HelmChart) ID(ctx context.Context) (HelmChartID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response HelmChartID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *HelmChart) XXX_GraphQLType() string {
-	return "HelmChart"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *HelmChart) XXX_GraphQLIDType() string {
-	return "HelmChartID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *HelmChart) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *HelmChart) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(marshalCtx)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *HelmChart) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadHelmChartFromID(HelmChartID(id))
-	return nil
-}
-
-// HelmChartInstallOpts contains options for HelmChart.Install
-type HelmChartInstallOpts struct {
-	//
-	// If set, the installation process deletes the installation on failure. Wait flag will be set automatically if atomic is used.
-	//
-	Atomic bool // helm (../../../dagger-helm/release.go:22:2)
-	//
-	// Verify certificates of HTTPS-enabled servers using this CA bundle.
-	//
-	CaFile *File // helm (../../../dagger-helm/release.go:27:2)
-	//
-	// Identify HTTPS client using this SSL certificate file.
-	//
-	CertFile *File // helm (../../../dagger-helm/release.go:32:2)
-	//
-	// Create the release namespace if not present.
-	//
-	CreateNamespace bool // helm (../../../dagger-helm/release.go:37:2)
-	//
-	// Update dependencies if they are missing before installing the chart.
-	//
-	DependencyUpdate bool // helm (../../../dagger-helm/release.go:42:2)
-	//
-	// Add a custom description.
-	//
-	Description string // helm (../../../dagger-helm/release.go:47:2)
-	//
-	// If set, the installation process will not validate rendered templates against the Kubernetes OpenAPI Schema.
-	//
-	DisableOpenapiValidation bool // helm (../../../dagger-helm/release.go:52:2)
-	//
-	// Enable DNS lookups when rendering templates.
-	//
-	EnableDNS bool // helm (../../../dagger-helm/release.go:62:2)
-	//
-	// Force resource updates through a replacement strategy.
-	//
-	Force bool // helm (../../../dagger-helm/release.go:67:2)
-	//
-	// Generate the name.
-	//
-	GenerateName bool // helm (../../../dagger-helm/release.go:72:2)
-	//
-	// Skip tls certificate checks for the chart download.
-	//
-	InsecureSkipTLSVerify bool // helm (../../../dagger-helm/release.go:82:2)
-	//
-	// Identify HTTPS client using this SSL key file.
-	//
-	KeyFile *Secret // helm (../../../dagger-helm/release.go:87:2)
-	//
-	// Labels that would be added to release metadata.
-	//
-	Labels []string // helm (../../../dagger-helm/release.go:92:2)
-	//
-	// Specify template used to name the release.
-	//
-	NameTemplate string // helm (../../../dagger-helm/release.go:97:2)
-	//
-	// Prevent hooks from running during install.
-	//
-	NoHooks bool // helm (../../../dagger-helm/release.go:102:2)
-	//
-	// Use insecure HTTP connections for the chart download.
-	//
-	PlainHTTP bool // helm (../../../dagger-helm/release.go:111:2)
-	//
-	// The path to an executable to be used for post rendering. If it exists in $PATH, the binary will be used, otherwise it will try to look for the executable at the given path.
-	//
-	PostRenderer string // helm (../../../dagger-helm/release.go:116:2)
-	//
-	// Arguments to the post-renderer.
-	//
-	PostRendererArgs []string // helm (../../../dagger-helm/release.go:121:2)
-	//
-	// If set, render subchart notes along with the parent.
-	//
-	RenderSubchartNotes bool // helm (../../../dagger-helm/release.go:126:2)
-	//
-	// Re-use the given name, only if that name is a deleted release which remains in the history. This is unsafe in production.
-	//
-	Replace bool // helm (../../../dagger-helm/release.go:131:2)
-	//
-	// If set, no CRDs will be installed. By default, CRDs are installed if not already present.
-	//
-	SkipCrds bool // helm (../../../dagger-helm/release.go:144:2)
-	//
-	// Time to wait for any individual Kubernetes operation (like Jobs for hooks).
-	//
-	Timeout string // helm (../../../dagger-helm/release.go:149:2)
-	//
-	// Specify values in a YAML file.
-	//
-	Values []*File // helm (../../../dagger-helm/release.go:156:2)
-	//
-	// Verify the package before using it.
-	//
-	Verify bool // helm (../../../dagger-helm/release.go:161:2)
-	//
-	// If set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment, StatefulSet, or ReplicaSet are in a ready state before marking the release as successful. It will wait for as long as timeout.
-	//
-	Wait bool // helm (../../../dagger-helm/release.go:166:2)
-	//
-	// If set and wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as timeout.
-	//
-	WaitForJobs bool // helm (../../../dagger-helm/release.go:171:2)
-	//
-	// Namespace scope for this request.
-	//
-	Namespace string // helm (../../../dagger-helm/release.go:178:2)
-}
-
-// Install a Helm chart.
-func (r *HelmChart) Install(name string, opts ...HelmChartInstallOpts) *HelmRelease { // helm (../../../dagger-helm/release.go:13:1)
-	q := r.query.Select("install")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `atomic` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Atomic) {
-			q = q.Arg("atomic", opts[i].Atomic)
-		}
-		// `caFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CaFile) {
-			q = q.Arg("caFile", opts[i].CaFile)
-		}
-		// `certFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CertFile) {
-			q = q.Arg("certFile", opts[i].CertFile)
-		}
-		// `createNamespace` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CreateNamespace) {
-			q = q.Arg("createNamespace", opts[i].CreateNamespace)
-		}
-		// `dependencyUpdate` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DependencyUpdate) {
-			q = q.Arg("dependencyUpdate", opts[i].DependencyUpdate)
-		}
-		// `description` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Description) {
-			q = q.Arg("description", opts[i].Description)
-		}
-		// `disableOpenapiValidation` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DisableOpenapiValidation) {
-			q = q.Arg("disableOpenapiValidation", opts[i].DisableOpenapiValidation)
-		}
-		// `enableDns` optional argument
-		if !querybuilder.IsZeroValue(opts[i].EnableDNS) {
-			q = q.Arg("enableDns", opts[i].EnableDNS)
-		}
-		// `force` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Force) {
-			q = q.Arg("force", opts[i].Force)
-		}
-		// `generateName` optional argument
-		if !querybuilder.IsZeroValue(opts[i].GenerateName) {
-			q = q.Arg("generateName", opts[i].GenerateName)
-		}
-		// `insecureSkipTlsVerify` optional argument
-		if !querybuilder.IsZeroValue(opts[i].InsecureSkipTLSVerify) {
-			q = q.Arg("insecureSkipTlsVerify", opts[i].InsecureSkipTLSVerify)
-		}
-		// `keyFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].KeyFile) {
-			q = q.Arg("keyFile", opts[i].KeyFile)
-		}
-		// `labels` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Labels) {
-			q = q.Arg("labels", opts[i].Labels)
-		}
-		// `nameTemplate` optional argument
-		if !querybuilder.IsZeroValue(opts[i].NameTemplate) {
-			q = q.Arg("nameTemplate", opts[i].NameTemplate)
-		}
-		// `noHooks` optional argument
-		if !querybuilder.IsZeroValue(opts[i].NoHooks) {
-			q = q.Arg("noHooks", opts[i].NoHooks)
-		}
-		// `plainHttp` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PlainHTTP) {
-			q = q.Arg("plainHttp", opts[i].PlainHTTP)
-		}
-		// `postRenderer` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PostRenderer) {
-			q = q.Arg("postRenderer", opts[i].PostRenderer)
-		}
-		// `postRendererArgs` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PostRendererArgs) {
-			q = q.Arg("postRendererArgs", opts[i].PostRendererArgs)
-		}
-		// `renderSubchartNotes` optional argument
-		if !querybuilder.IsZeroValue(opts[i].RenderSubchartNotes) {
-			q = q.Arg("renderSubchartNotes", opts[i].RenderSubchartNotes)
-		}
-		// `replace` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Replace) {
-			q = q.Arg("replace", opts[i].Replace)
-		}
-		// `skipCrds` optional argument
-		if !querybuilder.IsZeroValue(opts[i].SkipCrds) {
-			q = q.Arg("skipCrds", opts[i].SkipCrds)
-		}
-		// `timeout` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Timeout) {
-			q = q.Arg("timeout", opts[i].Timeout)
-		}
-		// `values` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Values) {
-			q = q.Arg("values", opts[i].Values)
-		}
-		// `verify` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Verify) {
-			q = q.Arg("verify", opts[i].Verify)
-		}
-		// `wait` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Wait) {
-			q = q.Arg("wait", opts[i].Wait)
-		}
-		// `waitForJobs` optional argument
-		if !querybuilder.IsZeroValue(opts[i].WaitForJobs) {
-			q = q.Arg("waitForJobs", opts[i].WaitForJobs)
-		}
-		// `namespace` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Namespace) {
-			q = q.Arg("namespace", opts[i].Namespace)
-		}
-	}
-	q = q.Arg("name", name)
-
-	return &HelmRelease{
-		query: q,
-	}
-}
-
-// Lint a Helm chart.
-func (r *HelmChart) Lint() *Container { // helm (../../../dagger-helm/chart.go:28:1)
-	q := r.query.Select("lint")
-
-	return &Container{
-		query: q,
-	}
-}
-
-// HelmChartPackageOpts contains options for HelmChart.Package
-type HelmChartPackageOpts struct {
-	//
-	// Set the appVersion on the chart to this version.
-	//
-	AppVersion string // helm (../../../dagger-helm/chart.go:50:2)
-	//
-	// Set the version on the chart to this semver version.
-	//
-	Version string // helm (../../../dagger-helm/chart.go:55:2)
-	//
-	// Update dependencies from "Chart.yaml" to dir "charts/" before packaging.
-	//
-	DependencyUpdate bool // helm (../../../dagger-helm/chart.go:60:2)
-}
-
-// Build a Helm chart package.
-func (r *HelmChart) Package(opts ...HelmChartPackageOpts) *HelmPackage { // helm (../../../dagger-helm/chart.go:44:1)
-	q := r.query.Select("package")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `appVersion` optional argument
-		if !querybuilder.IsZeroValue(opts[i].AppVersion) {
-			q = q.Arg("appVersion", opts[i].AppVersion)
-		}
-		// `version` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Version) {
-			q = q.Arg("version", opts[i].Version)
-		}
-		// `dependencyUpdate` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DependencyUpdate) {
-			q = q.Arg("dependencyUpdate", opts[i].DependencyUpdate)
-		}
-	}
-
-	return &HelmPackage{
-		query: q,
-	}
-}
-
-// A Helm chart package.
-type HelmPackage struct { // helm (../../../dagger-helm/chart.go:33:6)
-	query *querybuilder.Selection
-
-	id      *HelmPackageID
-	publish *Void
-}
-type WithHelmPackageFunc func(r *HelmPackage) *HelmPackage
-
-// With calls the provided function with current HelmPackage.
-//
-// This is useful for reusability and readability by not breaking the calling chain.
-func (r *HelmPackage) With(f WithHelmPackageFunc) *HelmPackage {
-	return f(r)
-}
-
-func (r *HelmPackage) WithGraphQLQuery(q *querybuilder.Selection) *HelmPackage {
-	return &HelmPackage{
-		query: q,
-	}
-}
-
-func (r *HelmPackage) File() *File { // helm (../../../dagger-helm/chart.go:34:2)
-	q := r.query.Select("file")
-
-	return &File{
-		query: q,
-	}
-}
-
-// A unique identifier for this HelmPackage.
-func (r *HelmPackage) ID(ctx context.Context) (HelmPackageID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response HelmPackageID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *HelmPackage) XXX_GraphQLType() string {
-	return "HelmPackage"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *HelmPackage) XXX_GraphQLIDType() string {
-	return "HelmPackageID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *HelmPackage) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *HelmPackage) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(marshalCtx)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *HelmPackage) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadHelmPackageFromID(HelmPackageID(id))
-	return nil
-}
-
-// HelmPackageInstallOpts contains options for HelmPackage.Install
-type HelmPackageInstallOpts struct {
-	//
-	// If set, the installation process deletes the installation on failure. Wait flag will be set automatically if atomic is used.
-	//
-	Atomic bool // helm (../../../dagger-helm/release.go:241:2)
-	//
-	// Verify certificates of HTTPS-enabled servers using this CA bundle.
-	//
-	CaFile *File // helm (../../../dagger-helm/release.go:246:2)
-	//
-	// Identify HTTPS client using this SSL certificate file.
-	//
-	CertFile *File // helm (../../../dagger-helm/release.go:251:2)
-	//
-	// Create the release namespace if not present.
-	//
-	CreateNamespace bool // helm (../../../dagger-helm/release.go:256:2)
-	//
-	// Update dependencies if they are missing before installing the chart.
-	//
-	DependencyUpdate bool // helm (../../../dagger-helm/release.go:261:2)
-	//
-	// Add a custom description.
-	//
-	Description string // helm (../../../dagger-helm/release.go:266:2)
-	//
-	// If set, the installation process will not validate rendered templates against the Kubernetes OpenAPI Schema.
-	//
-	DisableOpenapiValidation bool // helm (../../../dagger-helm/release.go:271:2)
-	//
-	// Enable DNS lookups when rendering templates.
-	//
-	EnableDNS bool // helm (../../../dagger-helm/release.go:281:2)
-	//
-	// Force resource updates through a replacement strategy.
-	//
-	Force bool // helm (../../../dagger-helm/release.go:286:2)
-	//
-	// Generate the name.
-	//
-	GenerateName bool // helm (../../../dagger-helm/release.go:291:2)
-	//
-	// Skip tls certificate checks for the chart download.
-	//
-	InsecureSkipTLSVerify bool // helm (../../../dagger-helm/release.go:301:2)
-	//
-	// Identify HTTPS client using this SSL key file.
-	//
-	KeyFile *Secret // helm (../../../dagger-helm/release.go:306:2)
-	//
-	// Labels that would be added to release metadata.
-	//
-	Labels []string // helm (../../../dagger-helm/release.go:311:2)
-	//
-	// Specify template used to name the release.
-	//
-	NameTemplate string // helm (../../../dagger-helm/release.go:316:2)
-	//
-	// Prevent hooks from running during install.
-	//
-	NoHooks bool // helm (../../../dagger-helm/release.go:321:2)
-	//
-	// Use insecure HTTP connections for the chart download.
-	//
-	PlainHTTP bool // helm (../../../dagger-helm/release.go:330:2)
-	//
-	// The path to an executable to be used for post rendering. If it exists in $PATH, the binary will be used, otherwise it will try to look for the executable at the given path.
-	//
-	PostRenderer string // helm (../../../dagger-helm/release.go:335:2)
-	//
-	// Arguments to the post-renderer.
-	//
-	PostRendererArgs []string // helm (../../../dagger-helm/release.go:340:2)
-	//
-	// If set, render subchart notes along with the parent.
-	//
-	RenderSubchartNotes bool // helm (../../../dagger-helm/release.go:345:2)
-	//
-	// Re-use the given name, only if that name is a deleted release which remains in the history. This is unsafe in production.
-	//
-	Replace bool // helm (../../../dagger-helm/release.go:350:2)
-	//
-	// If set, no CRDs will be installed. By default, CRDs are installed if not already present.
-	//
-	SkipCrds bool // helm (../../../dagger-helm/release.go:363:2)
-	//
-	// Time to wait for any individual Kubernetes operation (like Jobs for hooks).
-	//
-	Timeout string // helm (../../../dagger-helm/release.go:368:2)
-	//
-	// Specify values in a YAML file.
-	//
-	Values []*File // helm (../../../dagger-helm/release.go:375:2)
-	//
-	// Verify the package before using it.
-	//
-	Verify bool // helm (../../../dagger-helm/release.go:380:2)
-	//
-	// If set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment, StatefulSet, or ReplicaSet are in a ready state before marking the release as successful. It will wait for as long as timeout.
-	//
-	Wait bool // helm (../../../dagger-helm/release.go:385:2)
-	//
-	// If set and wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as timeout.
-	//
-	WaitForJobs bool // helm (../../../dagger-helm/release.go:390:2)
-	//
-	// Namespace scope for this request.
-	//
-	Namespace string // helm (../../../dagger-helm/release.go:397:2)
-}
-
-// Install a Helm chart.
-func (r *HelmPackage) Install(name string, opts ...HelmPackageInstallOpts) *HelmRelease { // helm (../../../dagger-helm/release.go:232:1)
-	q := r.query.Select("install")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `atomic` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Atomic) {
-			q = q.Arg("atomic", opts[i].Atomic)
-		}
-		// `caFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CaFile) {
-			q = q.Arg("caFile", opts[i].CaFile)
-		}
-		// `certFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CertFile) {
-			q = q.Arg("certFile", opts[i].CertFile)
-		}
-		// `createNamespace` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CreateNamespace) {
-			q = q.Arg("createNamespace", opts[i].CreateNamespace)
-		}
-		// `dependencyUpdate` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DependencyUpdate) {
-			q = q.Arg("dependencyUpdate", opts[i].DependencyUpdate)
-		}
-		// `description` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Description) {
-			q = q.Arg("description", opts[i].Description)
-		}
-		// `disableOpenapiValidation` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DisableOpenapiValidation) {
-			q = q.Arg("disableOpenapiValidation", opts[i].DisableOpenapiValidation)
-		}
-		// `enableDns` optional argument
-		if !querybuilder.IsZeroValue(opts[i].EnableDNS) {
-			q = q.Arg("enableDns", opts[i].EnableDNS)
-		}
-		// `force` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Force) {
-			q = q.Arg("force", opts[i].Force)
-		}
-		// `generateName` optional argument
-		if !querybuilder.IsZeroValue(opts[i].GenerateName) {
-			q = q.Arg("generateName", opts[i].GenerateName)
-		}
-		// `insecureSkipTlsVerify` optional argument
-		if !querybuilder.IsZeroValue(opts[i].InsecureSkipTLSVerify) {
-			q = q.Arg("insecureSkipTlsVerify", opts[i].InsecureSkipTLSVerify)
-		}
-		// `keyFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].KeyFile) {
-			q = q.Arg("keyFile", opts[i].KeyFile)
-		}
-		// `labels` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Labels) {
-			q = q.Arg("labels", opts[i].Labels)
-		}
-		// `nameTemplate` optional argument
-		if !querybuilder.IsZeroValue(opts[i].NameTemplate) {
-			q = q.Arg("nameTemplate", opts[i].NameTemplate)
-		}
-		// `noHooks` optional argument
-		if !querybuilder.IsZeroValue(opts[i].NoHooks) {
-			q = q.Arg("noHooks", opts[i].NoHooks)
-		}
-		// `plainHttp` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PlainHTTP) {
-			q = q.Arg("plainHttp", opts[i].PlainHTTP)
-		}
-		// `postRenderer` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PostRenderer) {
-			q = q.Arg("postRenderer", opts[i].PostRenderer)
-		}
-		// `postRendererArgs` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PostRendererArgs) {
-			q = q.Arg("postRendererArgs", opts[i].PostRendererArgs)
-		}
-		// `renderSubchartNotes` optional argument
-		if !querybuilder.IsZeroValue(opts[i].RenderSubchartNotes) {
-			q = q.Arg("renderSubchartNotes", opts[i].RenderSubchartNotes)
-		}
-		// `replace` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Replace) {
-			q = q.Arg("replace", opts[i].Replace)
-		}
-		// `skipCrds` optional argument
-		if !querybuilder.IsZeroValue(opts[i].SkipCrds) {
-			q = q.Arg("skipCrds", opts[i].SkipCrds)
-		}
-		// `timeout` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Timeout) {
-			q = q.Arg("timeout", opts[i].Timeout)
-		}
-		// `values` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Values) {
-			q = q.Arg("values", opts[i].Values)
-		}
-		// `verify` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Verify) {
-			q = q.Arg("verify", opts[i].Verify)
-		}
-		// `wait` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Wait) {
-			q = q.Arg("wait", opts[i].Wait)
-		}
-		// `waitForJobs` optional argument
-		if !querybuilder.IsZeroValue(opts[i].WaitForJobs) {
-			q = q.Arg("waitForJobs", opts[i].WaitForJobs)
-		}
-		// `namespace` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Namespace) {
-			q = q.Arg("namespace", opts[i].Namespace)
-		}
-	}
-	q = q.Arg("name", name)
-
-	return &HelmRelease{
-		query: q,
-	}
-}
-
-// HelmPackagePublishOpts contains options for HelmPackage.Publish
-type HelmPackagePublishOpts struct {
-	//
-	// Use insecure HTTP connections for the chart upload.
-	//
-	PlainHTTP bool // helm (../../../dagger-helm/chart.go:112:2)
-	//
-	// Skip tls certificate checks for the chart upload.
-	//
-	InsecureSkipTLSVerify bool // helm (../../../dagger-helm/chart.go:117:2)
-	//
-	// Verify certificates of HTTPS-enabled servers using this CA bundle.
-	//
-	CaFile *File // helm (../../../dagger-helm/chart.go:122:2)
-	//
-	// Identify registry client using this SSL certificate file.
-	//
-	CertFile *File // helm (../../../dagger-helm/chart.go:127:2)
-	//
-	// Identify registry client using this SSL key file.
-	//
-	KeyFile *Secret // helm (../../../dagger-helm/chart.go:132:2)
-}
-
-// Publishes this Helm chart package to an OCI registry.
-func (r *HelmPackage) Publish(ctx context.Context, registry string, opts ...HelmPackagePublishOpts) error { // helm (../../../dagger-helm/chart.go:103:1)
-	if r.publish != nil {
-		return nil
-	}
-	q := r.query.Select("publish")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `plainHttp` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PlainHTTP) {
-			q = q.Arg("plainHttp", opts[i].PlainHTTP)
-		}
-		// `insecureSkipTlsVerify` optional argument
-		if !querybuilder.IsZeroValue(opts[i].InsecureSkipTLSVerify) {
-			q = q.Arg("insecureSkipTlsVerify", opts[i].InsecureSkipTLSVerify)
-		}
-		// `caFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CaFile) {
-			q = q.Arg("caFile", opts[i].CaFile)
-		}
-		// `certFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].CertFile) {
-			q = q.Arg("certFile", opts[i].CertFile)
-		}
-		// `keyFile` optional argument
-		if !querybuilder.IsZeroValue(opts[i].KeyFile) {
-			q = q.Arg("keyFile", opts[i].KeyFile)
-		}
-	}
-	q = q.Arg("registry", registry)
-
-	return q.Execute(ctx)
-}
-
-// Mount a file as the kubeconfig file.
-func (r *HelmPackage) WithKubeconfigFile(file *File) *HelmPackage { // helm (../../../dagger-helm/chart.go:89:1)
-	assertNotNil("file", file)
-	q := r.query.Select("withKubeconfigFile")
-	q = q.Arg("file", file)
-
-	return &HelmPackage{
-		query: q,
-	}
-}
-
-// Mount a secret as the kubeconfig file.
-func (r *HelmPackage) WithKubeconfigSecret(secret *Secret) *HelmPackage { // helm (../../../dagger-helm/chart.go:96:1)
-	assertNotNil("secret", secret)
-	q := r.query.Select("withKubeconfigSecret")
-	q = q.Arg("secret", secret)
-
-	return &HelmPackage{
-		query: q,
-	}
-}
-
-// Add credentials for a registry.
-func (r *HelmPackage) WithRegistryAuth(address string, username string, secret *Secret) *HelmPackage { // helm (../../../dagger-helm/chart.go:75:1)
-	assertNotNil("secret", secret)
-	q := r.query.Select("withRegistryAuth")
-	q = q.Arg("address", address)
-	q = q.Arg("username", username)
-	q = q.Arg("secret", secret)
-
-	return &HelmPackage{
-		query: q,
-	}
-}
-
-// Removes credentials for a registry.
-func (r *HelmPackage) WithoutRegistryAuth(address string) *HelmPackage { // helm (../../../dagger-helm/chart.go:82:1)
-	q := r.query.Select("withoutRegistryAuth")
-	q = q.Arg("address", address)
-
-	return &HelmPackage{
-		query: q,
-	}
-}
-
-type HelmRelease struct { // helm (../../../dagger-helm/release.go:637:6)
-	query *querybuilder.Selection
-
-	id        *HelmReleaseID
-	name      *string
-	namespace *string
-	test      *string
-}
-
-func (r *HelmRelease) WithGraphQLQuery(q *querybuilder.Selection) *HelmRelease {
-	return &HelmRelease{
-		query: q,
-	}
-}
-
-// A unique identifier for this HelmRelease.
-func (r *HelmRelease) ID(ctx context.Context) (HelmReleaseID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response HelmReleaseID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *HelmRelease) XXX_GraphQLType() string {
-	return "HelmRelease"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *HelmRelease) XXX_GraphQLIDType() string {
-	return "HelmReleaseID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *HelmRelease) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *HelmRelease) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(marshalCtx)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *HelmRelease) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadHelmReleaseFromID(HelmReleaseID(id))
-	return nil
-}
-
-func (r *HelmRelease) Name(ctx context.Context) (string, error) { // helm (../../../dagger-helm/release.go:638:2)
-	if r.name != nil {
-		return *r.name, nil
-	}
-	q := r.query.Select("name")
-
-	var response string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *HelmRelease) Namespace(ctx context.Context) (string, error) { // helm (../../../dagger-helm/release.go:639:2)
-	if r.namespace != nil {
-		return *r.namespace, nil
-	}
-	q := r.query.Select("namespace")
-
-	var response string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// HelmReleaseTestOpts contains options for HelmRelease.Test
-type HelmReleaseTestOpts struct {
-	//
-	// Specify tests by attribute (currently "name") using attribute=value syntax or '!attribute=value' to exclude a test.
-	//
-	Filter []string // helm (../../../dagger-helm/release.go:652:2)
-	//
-	// Dump the logs from test pods (this runs after all tests are complete, but before any cleanup).
-	//
-	Logs bool // helm (../../../dagger-helm/release.go:657:2)
-	//
-	// Time to wait for any individual Kubernetes operation (like Jobs for hooks) (default 5m0s).
-	//
-	Timeout string // helm (../../../dagger-helm/release.go:662:2)
-}
-
-// Run Helm tests.
-func (r *HelmRelease) Test(ctx context.Context, opts ...HelmReleaseTestOpts) (string, error) { // helm (../../../dagger-helm/release.go:646:1)
-	if r.test != nil {
-		return *r.test, nil
-	}
-	q := r.query.Select("test")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `filter` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Filter) {
-			q = q.Arg("filter", opts[i].Filter)
-		}
-		// `logs` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Logs) {
-			q = q.Arg("logs", opts[i].Logs)
-		}
-		// `timeout` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Timeout) {
-			q = q.Arg("timeout", opts[i].Timeout)
-		}
-	}
 
 	var response string
 
@@ -11696,6 +10300,8 @@ func (r *Module) SDK() *SDKConfig {
 type ModuleServeOpts struct {
 	// Expose the dependencies of this module to the client
 	IncludeDependencies bool
+	// Install the module as the entrypoint, promoting its main-object methods onto the Query root
+	Entrypoint bool
 }
 
 // Serve a module's API in the current session.
@@ -11711,9 +10317,36 @@ func (r *Module) Serve(ctx context.Context, opts ...ModuleServeOpts) error {
 		if !querybuilder.IsZeroValue(opts[i].IncludeDependencies) {
 			q = q.Arg("includeDependencies", opts[i].IncludeDependencies)
 		}
+		// `entrypoint` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Entrypoint) {
+			q = q.Arg("entrypoint", opts[i].Entrypoint)
+		}
 	}
 
 	return q.Execute(ctx)
+}
+
+// ModuleServicesOpts contains options for Module.Services
+type ModuleServicesOpts struct {
+	// Only include services matching the specified patterns
+	Include []string
+}
+
+// Return all services defined by the module
+//
+// Experimental: This API is highly experimental and may be removed or replaced entirely.
+func (r *Module) Services(opts ...ModuleServicesOpts) *UpGroup {
+	q := r.query.Select("services")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `include` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Include) {
+			q = q.Arg("include", opts[i].Include)
+		}
+	}
+
+	return &UpGroup{
+		query: q,
+	}
 }
 
 // The source for the module.
@@ -12911,15 +11544,31 @@ func (r *Port) Protocol(ctx context.Context) (NetworkProtocol, error) {
 	return response, q.Execute(ctx)
 }
 
-func (r *Client) WithGraphQLQuery(q *querybuilder.Selection) *Client {
-	return &Client{
-		query:  q,
-		client: r.client,
+// The root of the DAG.
+type Query struct {
+	query *querybuilder.Selection
+
+	defaultPlatform *Platform
+	id              *QueryID
+	version         *string
+}
+type WithQueryFunc func(r *Query) *Query
+
+// With calls the provided function with current Query.
+//
+// This is useful for reusability and readability by not breaking the calling chain.
+func (r *Query) With(f WithQueryFunc) *Query {
+	return f(r)
+}
+
+func (r *Query) WithGraphQLQuery(q *querybuilder.Selection) *Query {
+	return &Query{
+		query: q,
 	}
 }
 
 // initialize an address to load directories, containers, secrets or other object types.
-func (r *Client) Address(value string) *Address {
+func (r *Query) Address(value string) *Address {
 	q := r.query.Select("address")
 	q = q.Arg("value", value)
 
@@ -12928,27 +11577,8 @@ func (r *Client) Address(value string) *Address {
 	}
 }
 
-// BackendOpts contains options for Client.Backend
-type BackendOpts struct {
-	Ws *Workspace // backend (../../../backend/.dagger/main.go:33:2)
-}
-
-func (r *Client) Backend(opts ...BackendOpts) *Backend { // backend (../../../backend/.dagger/main.go:32:1)
-	q := r.query.Select("backend")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `ws` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Ws) {
-			q = q.Arg("ws", opts[i].Ws)
-		}
-	}
-
-	return &Backend{
-		query: q,
-	}
-}
-
 // Constructs a cache volume for a given cache key.
-func (r *Client) CacheVolume(key string) *CacheVolume {
+func (r *Query) CacheVolume(key string) *CacheVolume {
 	q := r.query.Select("cacheVolume")
 	q = q.Arg("key", key)
 
@@ -12958,7 +11588,7 @@ func (r *Client) CacheVolume(key string) *CacheVolume {
 }
 
 // Creates an empty changeset
-func (r *Client) Changeset() *Changeset {
+func (r *Query) Changeset() *Changeset {
 	q := r.query.Select("changeset")
 
 	return &Changeset{
@@ -12967,7 +11597,7 @@ func (r *Client) Changeset() *Changeset {
 }
 
 // Dagger Cloud configuration and state
-func (r *Client) Cloud() *Cloud {
+func (r *Query) Cloud() *Cloud {
 	q := r.query.Select("cloud")
 
 	return &Cloud{
@@ -12975,7 +11605,7 @@ func (r *Client) Cloud() *Cloud {
 	}
 }
 
-// ContainerOpts contains options for Client.Container
+// ContainerOpts contains options for Query.Container
 type ContainerOpts struct {
 	// Platform to initialize the container with. Defaults to the native platform of the current engine
 	Platform Platform
@@ -12984,7 +11614,7 @@ type ContainerOpts struct {
 // Creates a scratch container, with no image or metadata.
 //
 // To pull an image, follow up with the "from" function.
-func (r *Client) Container(opts ...ContainerOpts) *Container {
+func (r *Query) Container(opts ...ContainerOpts) *Container {
 	q := r.query.Select("container")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `platform` optional argument
@@ -13005,7 +11635,7 @@ func (r *Client) Container(opts ...ContainerOpts) *Container {
 // When called from a module function outside of an LLM, this returns an Env with the current module installed, and with the current module's source directory as its workspace.
 //
 // Experimental: Programmatic env access is speculative and might be replaced.
-func (r *Client) CurrentEnv() *Env {
+func (r *Query) CurrentEnv() *Env {
 	q := r.query.Select("currentEnv")
 
 	return &Env{
@@ -13016,7 +11646,7 @@ func (r *Client) CurrentEnv() *Env {
 // The FunctionCall context that the SDK caller is currently executing in.
 //
 // If the caller is not currently executing in a function, this will return an error.
-func (r *Client) CurrentFunctionCall() *FunctionCall {
+func (r *Query) CurrentFunctionCall() *FunctionCall {
 	q := r.query.Select("currentFunctionCall")
 
 	return &FunctionCall{
@@ -13025,7 +11655,7 @@ func (r *Client) CurrentFunctionCall() *FunctionCall {
 }
 
 // The module currently being served in the session, if any.
-func (r *Client) CurrentModule() *CurrentModule {
+func (r *Query) CurrentModule() *CurrentModule {
 	q := r.query.Select("currentModule")
 
 	return &CurrentModule{
@@ -13033,9 +11663,23 @@ func (r *Client) CurrentModule() *CurrentModule {
 	}
 }
 
+// CurrentTypeDefsOpts contains options for Query.CurrentTypeDefs
+type CurrentTypeDefsOpts struct {
+	// Strip core API functions from the Query type, leaving only module-sourced functions (constructors, entrypoint proxies, etc.).
+	//
+	// Core types (Container, Directory, etc.) are kept so return types and method chaining still work.
+	HideCore bool
+}
+
 // The TypeDef representations of the objects currently being served in the session.
-func (r *Client) CurrentTypeDefs(ctx context.Context) ([]TypeDef, error) {
+func (r *Query) CurrentTypeDefs(ctx context.Context, opts ...CurrentTypeDefsOpts) ([]TypeDef, error) {
 	q := r.query.Select("currentTypeDefs")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `hideCore` optional argument
+		if !querybuilder.IsZeroValue(opts[i].HideCore) {
+			q = q.Arg("hideCore", opts[i].HideCore)
+		}
+	}
 
 	q = q.Select("id")
 
@@ -13066,23 +11710,11 @@ func (r *Client) CurrentTypeDefs(ctx context.Context) ([]TypeDef, error) {
 	return convert(response), nil
 }
 
-// CurrentWorkspaceOpts contains options for Client.CurrentWorkspace
-type CurrentWorkspaceOpts struct {
-	// If true, skip legacy dagger.json migration checks.
-	SkipMigrationCheck bool
-}
-
 // Detect and return the current workspace.
 //
 // Experimental: Highly experimental API extracted from a more ambitious workspace implementation.
-func (r *Client) CurrentWorkspace(opts ...CurrentWorkspaceOpts) *Workspace {
+func (r *Query) CurrentWorkspace() *Workspace {
 	q := r.query.Select("currentWorkspace")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `skipMigrationCheck` optional argument
-		if !querybuilder.IsZeroValue(opts[i].SkipMigrationCheck) {
-			q = q.Arg("skipMigrationCheck", opts[i].SkipMigrationCheck)
-		}
-	}
 
 	return &Workspace{
 		query: q,
@@ -13090,7 +11722,7 @@ func (r *Client) CurrentWorkspace(opts ...CurrentWorkspaceOpts) *Workspace {
 }
 
 // The default platform of the engine.
-func (r *Client) DefaultPlatform(ctx context.Context) (Platform, error) {
+func (r *Query) DefaultPlatform(ctx context.Context) (Platform, error) {
 	q := r.query.Select("defaultPlatform")
 
 	var response Platform
@@ -13100,7 +11732,7 @@ func (r *Client) DefaultPlatform(ctx context.Context) (Platform, error) {
 }
 
 // Creates an empty directory.
-func (r *Client) Directory() *Directory {
+func (r *Query) Directory() *Directory {
 	q := r.query.Select("directory")
 
 	return &Directory{
@@ -13108,7 +11740,7 @@ func (r *Client) Directory() *Directory {
 	}
 }
 
-// EnvOpts contains options for Client.Env
+// EnvOpts contains options for Query.Env
 type EnvOpts struct {
 	// Give the environment the same privileges as the caller: core API including host access, current module, and dependencies
 	Privileged bool
@@ -13119,7 +11751,7 @@ type EnvOpts struct {
 // Initializes a new environment
 //
 // Experimental: Environments are not yet stabilized
-func (r *Client) Env(opts ...EnvOpts) *Env {
+func (r *Query) Env(opts ...EnvOpts) *Env {
 	q := r.query.Select("env")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `privileged` optional argument
@@ -13137,7 +11769,7 @@ func (r *Client) Env(opts ...EnvOpts) *Env {
 	}
 }
 
-// EnvFileOpts contains options for Client.EnvFile
+// EnvFileOpts contains options for Query.EnvFile
 type EnvFileOpts struct {
 	// Replace "${VAR}" or "$VAR" with the value of other vars
 	// Deprecated: Variable expansion is now enabled by default
@@ -13145,7 +11777,7 @@ type EnvFileOpts struct {
 }
 
 // Initialize an environment file
-func (r *Client) EnvFile(opts ...EnvFileOpts) *EnvFile {
+func (r *Query) EnvFile(opts ...EnvFileOpts) *EnvFile {
 	q := r.query.Select("envFile")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `expand` optional argument
@@ -13160,7 +11792,7 @@ func (r *Client) EnvFile(opts ...EnvFileOpts) *EnvFile {
 }
 
 // Create a new error.
-func (r *Client) Error(message string) *Error {
+func (r *Query) Error(message string) *Error {
 	q := r.query.Select("error")
 	q = q.Arg("message", message)
 
@@ -13169,7 +11801,7 @@ func (r *Client) Error(message string) *Error {
 	}
 }
 
-// FileOpts contains options for Client.File
+// FileOpts contains options for Query.File
 type FileOpts struct {
 	// Permissions of the new file. Example: 0600
 	//
@@ -13178,7 +11810,7 @@ type FileOpts struct {
 }
 
 // Creates a file with the specified contents.
-func (r *Client) File(name string, contents string, opts ...FileOpts) *File {
+func (r *Query) File(name string, contents string, opts ...FileOpts) *File {
 	q := r.query.Select("file")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `permissions` optional argument
@@ -13194,27 +11826,8 @@ func (r *Client) File(name string, contents string, opts ...FileOpts) *File {
 	}
 }
 
-// FrontendOpts contains options for Client.Frontend
-type FrontendOpts struct {
-	Ws *Workspace // frontend (../../../frontend/.dagger/main.go:35:2)
-}
-
-func (r *Client) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../../frontend/.dagger/main.go:34:1)
-	q := r.query.Select("frontend")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `ws` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Ws) {
-			q = q.Arg("ws", opts[i].Ws)
-		}
-	}
-
-	return &Frontend{
-		query: q,
-	}
-}
-
 // Creates a function.
-func (r *Client) Function(name string, returnType *TypeDef) *Function {
+func (r *Query) Function(name string, returnType *TypeDef) *Function {
 	assertNotNil("returnType", returnType)
 	q := r.query.Select("function")
 	q = q.Arg("name", name)
@@ -13226,7 +11839,7 @@ func (r *Client) Function(name string, returnType *TypeDef) *Function {
 }
 
 // Create a code generation result, given a directory containing the generated code.
-func (r *Client) GeneratedCode(code *Directory) *GeneratedCode {
+func (r *Query) GeneratedCode(code *Directory) *GeneratedCode {
 	assertNotNil("code", code)
 	q := r.query.Select("generatedCode")
 	q = q.Arg("code", code)
@@ -13236,7 +11849,7 @@ func (r *Client) GeneratedCode(code *Directory) *GeneratedCode {
 	}
 }
 
-// GitOpts contains options for Client.Git
+// GitOpts contains options for Query.Git
 type GitOpts struct {
 	// DEPRECATED: Set to true to keep .git directory.
 	//
@@ -13258,7 +11871,7 @@ type GitOpts struct {
 }
 
 // Queries a Git repository.
-func (r *Client) Git(url string, opts ...GitOpts) *GitRepository {
+func (r *Query) Git(url string, opts ...GitOpts) *GitRepository {
 	q := r.query.Select("git")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `keepGitDir` optional argument
@@ -13297,37 +11910,7 @@ func (r *Client) Git(url string, opts ...GitOpts) *GitRepository {
 	}
 }
 
-// HelmOpts contains options for Client.Helm
-type HelmOpts struct {
-	//
-	// Version (image tag) to use from the official image repository as a base container.
-	//
-	Version string // helm (../../../dagger-helm/main.go:27:2)
-	//
-	// Custom container to use as a base container.
-	//
-	Container *Container // helm (../../../dagger-helm/main.go:31:2)
-}
-
-func (r *Client) Helm(opts ...HelmOpts) *Helm { // helm (../../../dagger-helm/main.go:24:1)
-	q := r.query.Select("helm")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `version` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Version) {
-			q = q.Arg("version", opts[i].Version)
-		}
-		// `container` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Container) {
-			q = q.Arg("container", opts[i].Container)
-		}
-	}
-
-	return &Helm{
-		query: q,
-	}
-}
-
-// HTTPOpts contains options for Client.HTTP
+// HTTPOpts contains options for Query.HTTP
 type HTTPOpts struct {
 	// File name to use for the file. Defaults to the last part of the URL.
 	Name string
@@ -13340,7 +11923,7 @@ type HTTPOpts struct {
 }
 
 // Returns a file containing an http remote url content.
-func (r *Client) HTTP(url string, opts ...HTTPOpts) *File {
+func (r *Query) HTTP(url string, opts ...HTTPOpts) *File {
 	q := r.query.Select("http")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `name` optional argument
@@ -13367,8 +11950,54 @@ func (r *Client) HTTP(url string, opts ...HTTPOpts) *File {
 	}
 }
 
+// A unique identifier for this Query.
+func (r *Query) ID(ctx context.Context) (QueryID, error) {
+	q := r.query.Select("id")
+
+	var response QueryID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *Query) XXX_GraphQLType() string {
+	return "Query"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *Query) XXX_GraphQLIDType() string {
+	return "QueryID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *Query) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *Query) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+func (r *Query) UnmarshalJSON(bs []byte) error {
+	var id string
+	err := json.Unmarshal(bs, &id)
+	if err != nil {
+		return err
+	}
+	*r = *dag.LoadQueryFromID(QueryID(id))
+	return nil
+}
+
 // Initialize a JSON value
-func (r *Client) JSON() *JSONValue {
+func (r *Query) JSON() *JSONValue {
 	q := r.query.Select("json")
 
 	return &JSONValue{
@@ -13376,7 +12005,7 @@ func (r *Client) JSON() *JSONValue {
 	}
 }
 
-// LLMOpts contains options for Client.LLM
+// LLMOpts contains options for Query.LLM
 type LLMOpts struct {
 	// Model to use
 	Model string
@@ -13387,7 +12016,7 @@ type LLMOpts struct {
 // Initialize a Large Language Model (LLM)
 //
 // Experimental: LLM support is not yet stabilized
-func (r *Client) LLM(opts ...LLMOpts) *LLM {
+func (r *Query) LLM(opts ...LLMOpts) *LLM {
 	q := r.query.Select("llm")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `model` optional argument
@@ -13406,7 +12035,7 @@ func (r *Client) LLM(opts ...LLMOpts) *LLM {
 }
 
 // Load a Address from its ID.
-func (r *Client) LoadAddressFromID(id AddressID) *Address {
+func (r *Query) LoadAddressFromID(id AddressID) *Address {
 	q := r.query.Select("loadAddressFromID")
 	q = q.Arg("id", id)
 
@@ -13415,18 +12044,8 @@ func (r *Client) LoadAddressFromID(id AddressID) *Address {
 	}
 }
 
-// Load a Backend from its ID.
-func (r *Client) LoadBackendFromID(id BackendID) *Backend { // backend (../../../backend/.dagger/main.go:25:6)
-	q := r.query.Select("loadBackendFromID")
-	q = q.Arg("id", id)
-
-	return &Backend{
-		query: q,
-	}
-}
-
 // Load a Binding from its ID.
-func (r *Client) LoadBindingFromID(id BindingID) *Binding {
+func (r *Query) LoadBindingFromID(id BindingID) *Binding {
 	q := r.query.Select("loadBindingFromID")
 	q = q.Arg("id", id)
 
@@ -13436,7 +12055,7 @@ func (r *Client) LoadBindingFromID(id BindingID) *Binding {
 }
 
 // Load a CacheVolume from its ID.
-func (r *Client) LoadCacheVolumeFromID(id CacheVolumeID) *CacheVolume {
+func (r *Query) LoadCacheVolumeFromID(id CacheVolumeID) *CacheVolume {
 	q := r.query.Select("loadCacheVolumeFromID")
 	q = q.Arg("id", id)
 
@@ -13446,7 +12065,7 @@ func (r *Client) LoadCacheVolumeFromID(id CacheVolumeID) *CacheVolume {
 }
 
 // Load a Changeset from its ID.
-func (r *Client) LoadChangesetFromID(id ChangesetID) *Changeset {
+func (r *Query) LoadChangesetFromID(id ChangesetID) *Changeset {
 	q := r.query.Select("loadChangesetFromID")
 	q = q.Arg("id", id)
 
@@ -13456,7 +12075,7 @@ func (r *Client) LoadChangesetFromID(id ChangesetID) *Changeset {
 }
 
 // Load a Check from its ID.
-func (r *Client) LoadCheckFromID(id CheckID) *Check {
+func (r *Query) LoadCheckFromID(id CheckID) *Check {
 	q := r.query.Select("loadCheckFromID")
 	q = q.Arg("id", id)
 
@@ -13466,7 +12085,7 @@ func (r *Client) LoadCheckFromID(id CheckID) *Check {
 }
 
 // Load a CheckGroup from its ID.
-func (r *Client) LoadCheckGroupFromID(id CheckGroupID) *CheckGroup {
+func (r *Query) LoadCheckGroupFromID(id CheckGroupID) *CheckGroup {
 	q := r.query.Select("loadCheckGroupFromID")
 	q = q.Arg("id", id)
 
@@ -13476,7 +12095,7 @@ func (r *Client) LoadCheckGroupFromID(id CheckGroupID) *CheckGroup {
 }
 
 // Load a Cloud from its ID.
-func (r *Client) LoadCloudFromID(id CloudID) *Cloud {
+func (r *Query) LoadCloudFromID(id CloudID) *Cloud {
 	q := r.query.Select("loadCloudFromID")
 	q = q.Arg("id", id)
 
@@ -13486,7 +12105,7 @@ func (r *Client) LoadCloudFromID(id CloudID) *Cloud {
 }
 
 // Load a Container from its ID.
-func (r *Client) LoadContainerFromID(id ContainerID) *Container {
+func (r *Query) LoadContainerFromID(id ContainerID) *Container {
 	q := r.query.Select("loadContainerFromID")
 	q = q.Arg("id", id)
 
@@ -13496,7 +12115,7 @@ func (r *Client) LoadContainerFromID(id ContainerID) *Container {
 }
 
 // Load a CurrentModule from its ID.
-func (r *Client) LoadCurrentModuleFromID(id CurrentModuleID) *CurrentModule {
+func (r *Query) LoadCurrentModuleFromID(id CurrentModuleID) *CurrentModule {
 	q := r.query.Select("loadCurrentModuleFromID")
 	q = q.Arg("id", id)
 
@@ -13505,8 +12124,18 @@ func (r *Client) LoadCurrentModuleFromID(id CurrentModuleID) *CurrentModule {
 	}
 }
 
+// Load a DiffStat from its ID.
+func (r *Query) LoadDiffStatFromID(id DiffStatID) *DiffStat {
+	q := r.query.Select("loadDiffStatFromID")
+	q = q.Arg("id", id)
+
+	return &DiffStat{
+		query: q,
+	}
+}
+
 // Load a Directory from its ID.
-func (r *Client) LoadDirectoryFromID(id DirectoryID) *Directory {
+func (r *Query) LoadDirectoryFromID(id DirectoryID) *Directory {
 	q := r.query.Select("loadDirectoryFromID")
 	q = q.Arg("id", id)
 
@@ -13516,7 +12145,7 @@ func (r *Client) LoadDirectoryFromID(id DirectoryID) *Directory {
 }
 
 // Load a EnumTypeDef from its ID.
-func (r *Client) LoadEnumTypeDefFromID(id EnumTypeDefID) *EnumTypeDef {
+func (r *Query) LoadEnumTypeDefFromID(id EnumTypeDefID) *EnumTypeDef {
 	q := r.query.Select("loadEnumTypeDefFromID")
 	q = q.Arg("id", id)
 
@@ -13526,7 +12155,7 @@ func (r *Client) LoadEnumTypeDefFromID(id EnumTypeDefID) *EnumTypeDef {
 }
 
 // Load a EnumValueTypeDef from its ID.
-func (r *Client) LoadEnumValueTypeDefFromID(id EnumValueTypeDefID) *EnumValueTypeDef {
+func (r *Query) LoadEnumValueTypeDefFromID(id EnumValueTypeDefID) *EnumValueTypeDef {
 	q := r.query.Select("loadEnumValueTypeDefFromID")
 	q = q.Arg("id", id)
 
@@ -13536,7 +12165,7 @@ func (r *Client) LoadEnumValueTypeDefFromID(id EnumValueTypeDefID) *EnumValueTyp
 }
 
 // Load a EnvFile from its ID.
-func (r *Client) LoadEnvFileFromID(id EnvFileID) *EnvFile {
+func (r *Query) LoadEnvFileFromID(id EnvFileID) *EnvFile {
 	q := r.query.Select("loadEnvFileFromID")
 	q = q.Arg("id", id)
 
@@ -13546,7 +12175,7 @@ func (r *Client) LoadEnvFileFromID(id EnvFileID) *EnvFile {
 }
 
 // Load a Env from its ID.
-func (r *Client) LoadEnvFromID(id EnvID) *Env {
+func (r *Query) LoadEnvFromID(id EnvID) *Env {
 	q := r.query.Select("loadEnvFromID")
 	q = q.Arg("id", id)
 
@@ -13556,7 +12185,7 @@ func (r *Client) LoadEnvFromID(id EnvID) *Env {
 }
 
 // Load a EnvVariable from its ID.
-func (r *Client) LoadEnvVariableFromID(id EnvVariableID) *EnvVariable {
+func (r *Query) LoadEnvVariableFromID(id EnvVariableID) *EnvVariable {
 	q := r.query.Select("loadEnvVariableFromID")
 	q = q.Arg("id", id)
 
@@ -13566,7 +12195,7 @@ func (r *Client) LoadEnvVariableFromID(id EnvVariableID) *EnvVariable {
 }
 
 // Load a Error from its ID.
-func (r *Client) LoadErrorFromID(id ErrorID) *Error {
+func (r *Query) LoadErrorFromID(id ErrorID) *Error {
 	q := r.query.Select("loadErrorFromID")
 	q = q.Arg("id", id)
 
@@ -13576,7 +12205,7 @@ func (r *Client) LoadErrorFromID(id ErrorID) *Error {
 }
 
 // Load a ErrorValue from its ID.
-func (r *Client) LoadErrorValueFromID(id ErrorValueID) *ErrorValue {
+func (r *Query) LoadErrorValueFromID(id ErrorValueID) *ErrorValue {
 	q := r.query.Select("loadErrorValueFromID")
 	q = q.Arg("id", id)
 
@@ -13586,7 +12215,7 @@ func (r *Client) LoadErrorValueFromID(id ErrorValueID) *ErrorValue {
 }
 
 // Load a FieldTypeDef from its ID.
-func (r *Client) LoadFieldTypeDefFromID(id FieldTypeDefID) *FieldTypeDef {
+func (r *Query) LoadFieldTypeDefFromID(id FieldTypeDefID) *FieldTypeDef {
 	q := r.query.Select("loadFieldTypeDefFromID")
 	q = q.Arg("id", id)
 
@@ -13596,7 +12225,7 @@ func (r *Client) LoadFieldTypeDefFromID(id FieldTypeDefID) *FieldTypeDef {
 }
 
 // Load a File from its ID.
-func (r *Client) LoadFileFromID(id FileID) *File {
+func (r *Query) LoadFileFromID(id FileID) *File {
 	q := r.query.Select("loadFileFromID")
 	q = q.Arg("id", id)
 
@@ -13605,18 +12234,8 @@ func (r *Client) LoadFileFromID(id FileID) *File {
 	}
 }
 
-// Load a Frontend from its ID.
-func (r *Client) LoadFrontendFromID(id FrontendID) *Frontend { // frontend (../../../frontend/.dagger/main.go:28:6)
-	q := r.query.Select("loadFrontendFromID")
-	q = q.Arg("id", id)
-
-	return &Frontend{
-		query: q,
-	}
-}
-
 // Load a FunctionArg from its ID.
-func (r *Client) LoadFunctionArgFromID(id FunctionArgID) *FunctionArg {
+func (r *Query) LoadFunctionArgFromID(id FunctionArgID) *FunctionArg {
 	q := r.query.Select("loadFunctionArgFromID")
 	q = q.Arg("id", id)
 
@@ -13626,7 +12245,7 @@ func (r *Client) LoadFunctionArgFromID(id FunctionArgID) *FunctionArg {
 }
 
 // Load a FunctionCallArgValue from its ID.
-func (r *Client) LoadFunctionCallArgValueFromID(id FunctionCallArgValueID) *FunctionCallArgValue {
+func (r *Query) LoadFunctionCallArgValueFromID(id FunctionCallArgValueID) *FunctionCallArgValue {
 	q := r.query.Select("loadFunctionCallArgValueFromID")
 	q = q.Arg("id", id)
 
@@ -13636,7 +12255,7 @@ func (r *Client) LoadFunctionCallArgValueFromID(id FunctionCallArgValueID) *Func
 }
 
 // Load a FunctionCall from its ID.
-func (r *Client) LoadFunctionCallFromID(id FunctionCallID) *FunctionCall {
+func (r *Query) LoadFunctionCallFromID(id FunctionCallID) *FunctionCall {
 	q := r.query.Select("loadFunctionCallFromID")
 	q = q.Arg("id", id)
 
@@ -13646,7 +12265,7 @@ func (r *Client) LoadFunctionCallFromID(id FunctionCallID) *FunctionCall {
 }
 
 // Load a Function from its ID.
-func (r *Client) LoadFunctionFromID(id FunctionID) *Function {
+func (r *Query) LoadFunctionFromID(id FunctionID) *Function {
 	q := r.query.Select("loadFunctionFromID")
 	q = q.Arg("id", id)
 
@@ -13656,7 +12275,7 @@ func (r *Client) LoadFunctionFromID(id FunctionID) *Function {
 }
 
 // Load a GeneratedCode from its ID.
-func (r *Client) LoadGeneratedCodeFromID(id GeneratedCodeID) *GeneratedCode {
+func (r *Query) LoadGeneratedCodeFromID(id GeneratedCodeID) *GeneratedCode {
 	q := r.query.Select("loadGeneratedCodeFromID")
 	q = q.Arg("id", id)
 
@@ -13666,7 +12285,7 @@ func (r *Client) LoadGeneratedCodeFromID(id GeneratedCodeID) *GeneratedCode {
 }
 
 // Load a Generator from its ID.
-func (r *Client) LoadGeneratorFromID(id GeneratorID) *Generator {
+func (r *Query) LoadGeneratorFromID(id GeneratorID) *Generator {
 	q := r.query.Select("loadGeneratorFromID")
 	q = q.Arg("id", id)
 
@@ -13676,7 +12295,7 @@ func (r *Client) LoadGeneratorFromID(id GeneratorID) *Generator {
 }
 
 // Load a GeneratorGroup from its ID.
-func (r *Client) LoadGeneratorGroupFromID(id GeneratorGroupID) *GeneratorGroup {
+func (r *Query) LoadGeneratorGroupFromID(id GeneratorGroupID) *GeneratorGroup {
 	q := r.query.Select("loadGeneratorGroupFromID")
 	q = q.Arg("id", id)
 
@@ -13686,7 +12305,7 @@ func (r *Client) LoadGeneratorGroupFromID(id GeneratorGroupID) *GeneratorGroup {
 }
 
 // Load a GitRef from its ID.
-func (r *Client) LoadGitRefFromID(id GitRefID) *GitRef {
+func (r *Query) LoadGitRefFromID(id GitRefID) *GitRef {
 	q := r.query.Select("loadGitRefFromID")
 	q = q.Arg("id", id)
 
@@ -13696,7 +12315,7 @@ func (r *Client) LoadGitRefFromID(id GitRefID) *GitRef {
 }
 
 // Load a GitRepository from its ID.
-func (r *Client) LoadGitRepositoryFromID(id GitRepositoryID) *GitRepository {
+func (r *Query) LoadGitRepositoryFromID(id GitRepositoryID) *GitRepository {
 	q := r.query.Select("loadGitRepositoryFromID")
 	q = q.Arg("id", id)
 
@@ -13706,7 +12325,7 @@ func (r *Client) LoadGitRepositoryFromID(id GitRepositoryID) *GitRepository {
 }
 
 // Load a HealthcheckConfig from its ID.
-func (r *Client) LoadHealthcheckConfigFromID(id HealthcheckConfigID) *HealthcheckConfig {
+func (r *Query) LoadHealthcheckConfigFromID(id HealthcheckConfigID) *HealthcheckConfig {
 	q := r.query.Select("loadHealthcheckConfigFromID")
 	q = q.Arg("id", id)
 
@@ -13715,48 +12334,8 @@ func (r *Client) LoadHealthcheckConfigFromID(id HealthcheckConfigID) *Healthchec
 	}
 }
 
-// Load a HelmChart from its ID.
-func (r *Client) LoadHelmChartFromID(id HelmChartID) *HelmChart { // helm (../../../dagger-helm/chart.go:20:6)
-	q := r.query.Select("loadHelmChartFromID")
-	q = q.Arg("id", id)
-
-	return &HelmChart{
-		query: q,
-	}
-}
-
-// Load a Helm from its ID.
-func (r *Client) LoadHelmFromID(id HelmID) *Helm { // helm (../../../dagger-helm/main.go:17:6)
-	q := r.query.Select("loadHelmFromID")
-	q = q.Arg("id", id)
-
-	return &Helm{
-		query: q,
-	}
-}
-
-// Load a HelmPackage from its ID.
-func (r *Client) LoadHelmPackageFromID(id HelmPackageID) *HelmPackage { // helm (../../../dagger-helm/chart.go:33:6)
-	q := r.query.Select("loadHelmPackageFromID")
-	q = q.Arg("id", id)
-
-	return &HelmPackage{
-		query: q,
-	}
-}
-
-// Load a HelmRelease from its ID.
-func (r *Client) LoadHelmReleaseFromID(id HelmReleaseID) *HelmRelease { // helm (../../../dagger-helm/release.go:637:6)
-	q := r.query.Select("loadHelmReleaseFromID")
-	q = q.Arg("id", id)
-
-	return &HelmRelease{
-		query: q,
-	}
-}
-
 // Load a InputTypeDef from its ID.
-func (r *Client) LoadInputTypeDefFromID(id InputTypeDefID) *InputTypeDef {
+func (r *Query) LoadInputTypeDefFromID(id InputTypeDefID) *InputTypeDef {
 	q := r.query.Select("loadInputTypeDefFromID")
 	q = q.Arg("id", id)
 
@@ -13766,7 +12345,7 @@ func (r *Client) LoadInputTypeDefFromID(id InputTypeDefID) *InputTypeDef {
 }
 
 // Load a InterfaceTypeDef from its ID.
-func (r *Client) LoadInterfaceTypeDefFromID(id InterfaceTypeDefID) *InterfaceTypeDef {
+func (r *Query) LoadInterfaceTypeDefFromID(id InterfaceTypeDefID) *InterfaceTypeDef {
 	q := r.query.Select("loadInterfaceTypeDefFromID")
 	q = q.Arg("id", id)
 
@@ -13776,7 +12355,7 @@ func (r *Client) LoadInterfaceTypeDefFromID(id InterfaceTypeDefID) *InterfaceTyp
 }
 
 // Load a JSONValue from its ID.
-func (r *Client) LoadJSONValueFromID(id JSONValueID) *JSONValue {
+func (r *Query) LoadJSONValueFromID(id JSONValueID) *JSONValue {
 	q := r.query.Select("loadJSONValueFromID")
 	q = q.Arg("id", id)
 
@@ -13786,7 +12365,7 @@ func (r *Client) LoadJSONValueFromID(id JSONValueID) *JSONValue {
 }
 
 // Load a LLM from its ID.
-func (r *Client) LoadLLMFromID(id LLMID) *LLM {
+func (r *Query) LoadLLMFromID(id LLMID) *LLM {
 	q := r.query.Select("loadLLMFromID")
 	q = q.Arg("id", id)
 
@@ -13796,7 +12375,7 @@ func (r *Client) LoadLLMFromID(id LLMID) *LLM {
 }
 
 // Load a LLMTokenUsage from its ID.
-func (r *Client) LoadLLMTokenUsageFromID(id LLMTokenUsageID) *LLMTokenUsage {
+func (r *Query) LoadLLMTokenUsageFromID(id LLMTokenUsageID) *LLMTokenUsage {
 	q := r.query.Select("loadLLMTokenUsageFromID")
 	q = q.Arg("id", id)
 
@@ -13806,7 +12385,7 @@ func (r *Client) LoadLLMTokenUsageFromID(id LLMTokenUsageID) *LLMTokenUsage {
 }
 
 // Load a Label from its ID.
-func (r *Client) LoadLabelFromID(id LabelID) *Label {
+func (r *Query) LoadLabelFromID(id LabelID) *Label {
 	q := r.query.Select("loadLabelFromID")
 	q = q.Arg("id", id)
 
@@ -13816,7 +12395,7 @@ func (r *Client) LoadLabelFromID(id LabelID) *Label {
 }
 
 // Load a ListTypeDef from its ID.
-func (r *Client) LoadListTypeDefFromID(id ListTypeDefID) *ListTypeDef {
+func (r *Query) LoadListTypeDefFromID(id ListTypeDefID) *ListTypeDef {
 	q := r.query.Select("loadListTypeDefFromID")
 	q = q.Arg("id", id)
 
@@ -13826,7 +12405,7 @@ func (r *Client) LoadListTypeDefFromID(id ListTypeDefID) *ListTypeDef {
 }
 
 // Load a ModuleConfigClient from its ID.
-func (r *Client) LoadModuleConfigClientFromID(id ModuleConfigClientID) *ModuleConfigClient {
+func (r *Query) LoadModuleConfigClientFromID(id ModuleConfigClientID) *ModuleConfigClient {
 	q := r.query.Select("loadModuleConfigClientFromID")
 	q = q.Arg("id", id)
 
@@ -13836,7 +12415,7 @@ func (r *Client) LoadModuleConfigClientFromID(id ModuleConfigClientID) *ModuleCo
 }
 
 // Load a Module from its ID.
-func (r *Client) LoadModuleFromID(id ModuleID) *Module {
+func (r *Query) LoadModuleFromID(id ModuleID) *Module {
 	q := r.query.Select("loadModuleFromID")
 	q = q.Arg("id", id)
 
@@ -13846,7 +12425,7 @@ func (r *Client) LoadModuleFromID(id ModuleID) *Module {
 }
 
 // Load a ModuleSource from its ID.
-func (r *Client) LoadModuleSourceFromID(id ModuleSourceID) *ModuleSource {
+func (r *Query) LoadModuleSourceFromID(id ModuleSourceID) *ModuleSource {
 	q := r.query.Select("loadModuleSourceFromID")
 	q = q.Arg("id", id)
 
@@ -13856,7 +12435,7 @@ func (r *Client) LoadModuleSourceFromID(id ModuleSourceID) *ModuleSource {
 }
 
 // Load a ObjectTypeDef from its ID.
-func (r *Client) LoadObjectTypeDefFromID(id ObjectTypeDefID) *ObjectTypeDef {
+func (r *Query) LoadObjectTypeDefFromID(id ObjectTypeDefID) *ObjectTypeDef {
 	q := r.query.Select("loadObjectTypeDefFromID")
 	q = q.Arg("id", id)
 
@@ -13866,7 +12445,7 @@ func (r *Client) LoadObjectTypeDefFromID(id ObjectTypeDefID) *ObjectTypeDef {
 }
 
 // Load a Port from its ID.
-func (r *Client) LoadPortFromID(id PortID) *Port {
+func (r *Query) LoadPortFromID(id PortID) *Port {
 	q := r.query.Select("loadPortFromID")
 	q = q.Arg("id", id)
 
@@ -13875,8 +12454,18 @@ func (r *Client) LoadPortFromID(id PortID) *Port {
 	}
 }
 
+// Load a Query from its ID.
+func (r *Query) LoadQueryFromID(id QueryID) *Query {
+	q := r.query.Select("loadQueryFromID")
+	q = q.Arg("id", id)
+
+	return &Query{
+		query: q,
+	}
+}
+
 // Load a SDKConfig from its ID.
-func (r *Client) LoadSDKConfigFromID(id SDKConfigID) *SDKConfig {
+func (r *Query) LoadSDKConfigFromID(id SDKConfigID) *SDKConfig {
 	q := r.query.Select("loadSDKConfigFromID")
 	q = q.Arg("id", id)
 
@@ -13886,7 +12475,7 @@ func (r *Client) LoadSDKConfigFromID(id SDKConfigID) *SDKConfig {
 }
 
 // Load a ScalarTypeDef from its ID.
-func (r *Client) LoadScalarTypeDefFromID(id ScalarTypeDefID) *ScalarTypeDef {
+func (r *Query) LoadScalarTypeDefFromID(id ScalarTypeDefID) *ScalarTypeDef {
 	q := r.query.Select("loadScalarTypeDefFromID")
 	q = q.Arg("id", id)
 
@@ -13896,7 +12485,7 @@ func (r *Client) LoadScalarTypeDefFromID(id ScalarTypeDefID) *ScalarTypeDef {
 }
 
 // Load a SearchResult from its ID.
-func (r *Client) LoadSearchResultFromID(id SearchResultID) *SearchResult {
+func (r *Query) LoadSearchResultFromID(id SearchResultID) *SearchResult {
 	q := r.query.Select("loadSearchResultFromID")
 	q = q.Arg("id", id)
 
@@ -13906,7 +12495,7 @@ func (r *Client) LoadSearchResultFromID(id SearchResultID) *SearchResult {
 }
 
 // Load a SearchSubmatch from its ID.
-func (r *Client) LoadSearchSubmatchFromID(id SearchSubmatchID) *SearchSubmatch {
+func (r *Query) LoadSearchSubmatchFromID(id SearchSubmatchID) *SearchSubmatch {
 	q := r.query.Select("loadSearchSubmatchFromID")
 	q = q.Arg("id", id)
 
@@ -13916,7 +12505,7 @@ func (r *Client) LoadSearchSubmatchFromID(id SearchSubmatchID) *SearchSubmatch {
 }
 
 // Load a Secret from its ID.
-func (r *Client) LoadSecretFromID(id SecretID) *Secret {
+func (r *Query) LoadSecretFromID(id SecretID) *Secret {
 	q := r.query.Select("loadSecretFromID")
 	q = q.Arg("id", id)
 
@@ -13926,7 +12515,7 @@ func (r *Client) LoadSecretFromID(id SecretID) *Secret {
 }
 
 // Load a Service from its ID.
-func (r *Client) LoadServiceFromID(id ServiceID) *Service {
+func (r *Query) LoadServiceFromID(id ServiceID) *Service {
 	q := r.query.Select("loadServiceFromID")
 	q = q.Arg("id", id)
 
@@ -13936,7 +12525,7 @@ func (r *Client) LoadServiceFromID(id ServiceID) *Service {
 }
 
 // Load a Socket from its ID.
-func (r *Client) LoadSocketFromID(id SocketID) *Socket {
+func (r *Query) LoadSocketFromID(id SocketID) *Socket {
 	q := r.query.Select("loadSocketFromID")
 	q = q.Arg("id", id)
 
@@ -13946,7 +12535,7 @@ func (r *Client) LoadSocketFromID(id SocketID) *Socket {
 }
 
 // Load a SourceMap from its ID.
-func (r *Client) LoadSourceMapFromID(id SourceMapID) *SourceMap {
+func (r *Query) LoadSourceMapFromID(id SourceMapID) *SourceMap {
 	q := r.query.Select("loadSourceMapFromID")
 	q = q.Arg("id", id)
 
@@ -13956,7 +12545,7 @@ func (r *Client) LoadSourceMapFromID(id SourceMapID) *SourceMap {
 }
 
 // Load a Stat from its ID.
-func (r *Client) LoadStatFromID(id StatID) *Stat {
+func (r *Query) LoadStatFromID(id StatID) *Stat {
 	q := r.query.Select("loadStatFromID")
 	q = q.Arg("id", id)
 
@@ -13966,7 +12555,7 @@ func (r *Client) LoadStatFromID(id StatID) *Stat {
 }
 
 // Load a Terminal from its ID.
-func (r *Client) LoadTerminalFromID(id TerminalID) *Terminal {
+func (r *Query) LoadTerminalFromID(id TerminalID) *Terminal {
 	q := r.query.Select("loadTerminalFromID")
 	q = q.Arg("id", id)
 
@@ -13976,7 +12565,7 @@ func (r *Client) LoadTerminalFromID(id TerminalID) *Terminal {
 }
 
 // Load a TypeDef from its ID.
-func (r *Client) LoadTypeDefFromID(id TypeDefID) *TypeDef {
+func (r *Query) LoadTypeDefFromID(id TypeDefID) *TypeDef {
 	q := r.query.Select("loadTypeDefFromID")
 	q = q.Arg("id", id)
 
@@ -13985,8 +12574,28 @@ func (r *Client) LoadTypeDefFromID(id TypeDefID) *TypeDef {
 	}
 }
 
+// Load a Up from its ID.
+func (r *Query) LoadUpFromID(id UpID) *Up {
+	q := r.query.Select("loadUpFromID")
+	q = q.Arg("id", id)
+
+	return &Up{
+		query: q,
+	}
+}
+
+// Load a UpGroup from its ID.
+func (r *Query) LoadUpGroupFromID(id UpGroupID) *UpGroup {
+	q := r.query.Select("loadUpGroupFromID")
+	q = q.Arg("id", id)
+
+	return &UpGroup{
+		query: q,
+	}
+}
+
 // Load a Workspace from its ID.
-func (r *Client) LoadWorkspaceFromID(id WorkspaceID) *Workspace {
+func (r *Query) LoadWorkspaceFromID(id WorkspaceID) *Workspace {
 	q := r.query.Select("loadWorkspaceFromID")
 	q = q.Arg("id", id)
 
@@ -13996,7 +12605,7 @@ func (r *Client) LoadWorkspaceFromID(id WorkspaceID) *Workspace {
 }
 
 // Create a new module.
-func (r *Client) Module() *Module {
+func (r *Query) Module() *Module {
 	q := r.query.Select("module")
 
 	return &Module{
@@ -14004,7 +12613,7 @@ func (r *Client) Module() *Module {
 	}
 }
 
-// ModuleSourceOpts contains options for Client.ModuleSource
+// ModuleSourceOpts contains options for Query.ModuleSource
 type ModuleSourceOpts struct {
 	// The pinned version of the module source
 	RefPin string
@@ -14017,7 +12626,7 @@ type ModuleSourceOpts struct {
 }
 
 // Create a new module source instance from a source ref string
-func (r *Client) ModuleSource(refString string, opts ...ModuleSourceOpts) *ModuleSource {
+func (r *Query) ModuleSource(refString string, opts ...ModuleSourceOpts) *ModuleSource {
 	q := r.query.Select("moduleSource")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `refPin` optional argument
@@ -14044,7 +12653,7 @@ func (r *Client) ModuleSource(refString string, opts ...ModuleSourceOpts) *Modul
 	}
 }
 
-// SecretOpts contains options for Client.Secret
+// SecretOpts contains options for Query.Secret
 type SecretOpts struct {
 	// If set, the given string will be used as the cache key for this secret. This means that any secrets with the same cache key will be considered equivalent in terms of cache lookups, even if they have different URIs or plaintext values.
 	//
@@ -14055,7 +12664,7 @@ type SecretOpts struct {
 }
 
 // Creates a new secret.
-func (r *Client) Secret(uri string, opts ...SecretOpts) *Secret {
+func (r *Query) Secret(uri string, opts ...SecretOpts) *Secret {
 	q := r.query.Select("secret")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `cacheKey` optional argument
@@ -14073,7 +12682,7 @@ func (r *Client) Secret(uri string, opts ...SecretOpts) *Secret {
 // Sets a secret given a user defined name to its plaintext and returns the secret.
 //
 // The plaintext value is limited to a size of 128000 bytes.
-func (r *Client) SetSecret(name string, plaintext string) *Secret {
+func (r *Query) SetSecret(name string, plaintext string) *Secret {
 	q := r.query.Select("setSecret")
 	q = q.Arg("name", name)
 	q = q.Arg("plaintext", plaintext)
@@ -14084,7 +12693,7 @@ func (r *Client) SetSecret(name string, plaintext string) *Secret {
 }
 
 // Creates source map metadata.
-func (r *Client) SourceMap(filename string, line int, column int) *SourceMap {
+func (r *Query) SourceMap(filename string, line int, column int) *SourceMap {
 	q := r.query.Select("sourceMap")
 	q = q.Arg("filename", filename)
 	q = q.Arg("line", line)
@@ -14096,7 +12705,7 @@ func (r *Client) SourceMap(filename string, line int, column int) *SourceMap {
 }
 
 // Create a new TypeDef.
-func (r *Client) TypeDef() *TypeDef {
+func (r *Query) TypeDef() *TypeDef {
 	q := r.query.Select("typeDef")
 
 	return &TypeDef{
@@ -14105,7 +12714,7 @@ func (r *Client) TypeDef() *TypeDef {
 }
 
 // Get the current Dagger Engine version.
-func (r *Client) Version(ctx context.Context) (string, error) {
+func (r *Query) Version(ctx context.Context) (string, error) {
 	q := r.query.Select("version")
 
 	var response string
@@ -15754,18 +14363,292 @@ func (r *TypeDef) WithScalar(name string, opts ...TypeDefWithScalarOpts) *TypeDe
 	}
 }
 
+type Up struct {
+	query *querybuilder.Selection
+
+	description *string
+	id          *UpID
+	name        *string
+}
+type WithUpFunc func(r *Up) *Up
+
+// With calls the provided function with current Up.
+//
+// This is useful for reusability and readability by not breaking the calling chain.
+func (r *Up) With(f WithUpFunc) *Up {
+	return f(r)
+}
+
+func (r *Up) WithGraphQLQuery(q *querybuilder.Selection) *Up {
+	return &Up{
+		query: q,
+	}
+}
+
+// The description of the service
+func (r *Up) Description(ctx context.Context) (string, error) {
+	if r.description != nil {
+		return *r.description, nil
+	}
+	q := r.query.Select("description")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// A unique identifier for this Up.
+func (r *Up) ID(ctx context.Context) (UpID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response UpID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *Up) XXX_GraphQLType() string {
+	return "Up"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *Up) XXX_GraphQLIDType() string {
+	return "UpID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *Up) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *Up) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+func (r *Up) UnmarshalJSON(bs []byte) error {
+	var id string
+	err := json.Unmarshal(bs, &id)
+	if err != nil {
+		return err
+	}
+	*r = *dag.LoadUpFromID(UpID(id))
+	return nil
+}
+
+// Return the fully qualified name of the service
+func (r *Up) Name(ctx context.Context) (string, error) {
+	if r.name != nil {
+		return *r.name, nil
+	}
+	q := r.query.Select("name")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// The original module in which the service has been defined
+func (r *Up) OriginalModule() *Module {
+	q := r.query.Select("originalModule")
+
+	return &Module{
+		query: q,
+	}
+}
+
+// The path of the service within its module
+func (r *Up) Path(ctx context.Context) ([]string, error) {
+	q := r.query.Select("path")
+
+	var response []string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Execute the service function
+func (r *Up) Run() *Up {
+	q := r.query.Select("run")
+
+	return &Up{
+		query: q,
+	}
+}
+
+type UpGroup struct {
+	query *querybuilder.Selection
+
+	id *UpGroupID
+}
+type WithUpGroupFunc func(r *UpGroup) *UpGroup
+
+// With calls the provided function with current UpGroup.
+//
+// This is useful for reusability and readability by not breaking the calling chain.
+func (r *UpGroup) With(f WithUpGroupFunc) *UpGroup {
+	return f(r)
+}
+
+func (r *UpGroup) WithGraphQLQuery(q *querybuilder.Selection) *UpGroup {
+	return &UpGroup{
+		query: q,
+	}
+}
+
+// A unique identifier for this UpGroup.
+func (r *UpGroup) ID(ctx context.Context) (UpGroupID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response UpGroupID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *UpGroup) XXX_GraphQLType() string {
+	return "UpGroup"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *UpGroup) XXX_GraphQLIDType() string {
+	return "UpGroupID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *UpGroup) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *UpGroup) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+func (r *UpGroup) UnmarshalJSON(bs []byte) error {
+	var id string
+	err := json.Unmarshal(bs, &id)
+	if err != nil {
+		return err
+	}
+	*r = *dag.LoadUpGroupFromID(UpGroupID(id))
+	return nil
+}
+
+// Return a list of individual services and their details
+func (r *UpGroup) List(ctx context.Context) ([]Up, error) {
+	q := r.query.Select("list")
+
+	q = q.Select("id")
+
+	type list struct {
+		Id UpID
+	}
+
+	convert := func(fields []list) []Up {
+		out := []Up{}
+
+		for i := range fields {
+			val := Up{id: &fields[i].Id}
+			val.query = q.Root().Select("loadUpFromID").Arg("id", fields[i].Id)
+			out = append(out, val)
+		}
+
+		return out
+	}
+	var response []list
+
+	q = q.Bind(&response)
+
+	err := q.Execute(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return convert(response), nil
+}
+
+// Execute all selected service functions
+func (r *UpGroup) Run() *UpGroup {
+	q := r.query.Select("run")
+
+	return &UpGroup{
+		query: q,
+	}
+}
+
 // A Dagger workspace detected from the current working directory.
 type Workspace struct {
 	query *querybuilder.Selection
 
-	clientId *string
-	findUp   *string
-	id       *WorkspaceID
-	root     *string
+	address     *string
+	clientId    *string
+	configPath  *string
+	findUp      *string
+	hasConfig   *bool
+	id          *WorkspaceID
+	initialized *bool
+	path        *string
 }
 
 func (r *Workspace) WithGraphQLQuery(q *querybuilder.Selection) *Workspace {
 	return &Workspace{
+		query: q,
+	}
+}
+
+// Canonical Dagger address of the workspace directory.
+func (r *Workspace) Address(ctx context.Context) (string, error) {
+	if r.address != nil {
+		return *r.address, nil
+	}
+	q := r.query.Select("address")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// WorkspaceChecksOpts contains options for Workspace.Checks
+type WorkspaceChecksOpts struct {
+	// Only include checks matching the specified patterns
+	Include []string
+}
+
+// Return all checks from modules loaded in the workspace.
+func (r *Workspace) Checks(opts ...WorkspaceChecksOpts) *CheckGroup {
+	q := r.query.Select("checks")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `include` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Include) {
+			q = q.Arg("include", opts[i].Include)
+		}
+	}
+
+	return &CheckGroup{
 		query: q,
 	}
 }
@@ -15776,6 +14659,19 @@ func (r *Workspace) ClientID(ctx context.Context) (string, error) {
 		return *r.clientId, nil
 	}
 	q := r.query.Select("clientId")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Path to config.toml relative to the workspace boundary (empty if not initialized).
+func (r *Workspace) ConfigPath(ctx context.Context) (string, error) {
+	if r.configPath != nil {
+		return *r.configPath, nil
+	}
+	q := r.query.Select("configPath")
 
 	var response string
 
@@ -15795,7 +14691,7 @@ type WorkspaceDirectoryOpts struct {
 
 // Returns a Directory from the workspace.
 //
-// Path is relative to workspace root. Use "." for the root directory.
+// Relative paths resolve from the workspace directory. Absolute paths resolve from the workspace boundary.
 func (r *Workspace) Directory(path string, opts ...WorkspaceDirectoryOpts) *Directory {
 	q := r.query.Select("directory")
 	for i := len(opts) - 1; i >= 0; i-- {
@@ -15821,7 +14717,7 @@ func (r *Workspace) Directory(path string, opts ...WorkspaceDirectoryOpts) *Dire
 
 // Returns a File from the workspace.
 //
-// Path is relative to workspace root.
+// Relative paths resolve from the workspace directory. Absolute paths resolve from the workspace boundary.
 func (r *Workspace) File(path string) *File {
 	q := r.query.Select("file")
 	q = q.Arg("path", path)
@@ -15833,7 +14729,7 @@ func (r *Workspace) File(path string) *File {
 
 // WorkspaceFindUpOpts contains options for Workspace.FindUp
 type WorkspaceFindUpOpts struct {
-	// Path to start the search from, relative to the workspace root.
+	// Path to start the search from. Relative paths resolve from the workspace directory; absolute paths resolve from the workspace boundary.
 	//
 	// Default: "."
 	From string
@@ -15841,9 +14737,11 @@ type WorkspaceFindUpOpts struct {
 
 // Search for a file or directory by walking up from the start path within the workspace.
 //
-// Returns the path relative to the workspace root if found, or null if not found.
+// Returns the absolute workspace path if found, or null if not found.
 //
-// The search stops at the workspace root and will not traverse above it.
+// Relative start paths resolve from the workspace directory.
+//
+// The search stops at the workspace boundary and will not traverse above it.
 func (r *Workspace) FindUp(ctx context.Context, name string, opts ...WorkspaceFindUpOpts) (string, error) {
 	if r.findUp != nil {
 		return *r.findUp, nil
@@ -15858,6 +14756,40 @@ func (r *Workspace) FindUp(ctx context.Context, name string, opts ...WorkspaceFi
 	q = q.Arg("name", name)
 
 	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// WorkspaceGeneratorsOpts contains options for Workspace.Generators
+type WorkspaceGeneratorsOpts struct {
+	// Only include generators matching the specified patterns
+	Include []string
+}
+
+// Return all generators from modules loaded in the workspace.
+func (r *Workspace) Generators(opts ...WorkspaceGeneratorsOpts) *GeneratorGroup {
+	q := r.query.Select("generators")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `include` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Include) {
+			q = q.Arg("include", opts[i].Include)
+		}
+	}
+
+	return &GeneratorGroup{
+		query: q,
+	}
+}
+
+// Whether a config.toml file exists in the workspace.
+func (r *Workspace) HasConfig(ctx context.Context) (bool, error) {
+	if r.hasConfig != nil {
+		return *r.hasConfig, nil
+	}
+	q := r.query.Select("hasConfig")
+
+	var response bool
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
@@ -15912,17 +14844,51 @@ func (r *Workspace) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-// Absolute path to the workspace root directory.
-func (r *Workspace) Root(ctx context.Context) (string, error) {
-	if r.root != nil {
-		return *r.root, nil
+// Whether .dagger/config.toml exists.
+func (r *Workspace) Initialized(ctx context.Context) (bool, error) {
+	if r.initialized != nil {
+		return *r.initialized, nil
 	}
-	q := r.query.Select("root")
+	q := r.query.Select("initialized")
+
+	var response bool
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Workspace directory path relative to the workspace boundary.
+func (r *Workspace) Path(ctx context.Context) (string, error) {
+	if r.path != nil {
+		return *r.path, nil
+	}
+	q := r.query.Select("path")
 
 	var response string
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
+}
+
+// WorkspaceServicesOpts contains options for Workspace.Services
+type WorkspaceServicesOpts struct {
+	// Only include services matching the specified patterns
+	Include []string
+}
+
+// Return all services from modules loaded in the workspace.
+func (r *Workspace) Services(opts ...WorkspaceServicesOpts) *UpGroup {
+	q := r.query.Select("services")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `include` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Include) {
+			q = q.Arg("include", opts[i].Include)
+		}
+	}
+
+	return &UpGroup{
+		query: q,
+	}
 }
 
 // Sharing mode of the cache volume.
@@ -16122,6 +15088,77 @@ const (
 
 	// Attempt the octopus merge and fail if git merge fails due to conflicts
 	ChangesetsMergeConflictFail ChangesetsMergeConflict = "FAIL"
+)
+
+// The type of change for a diff stat entry.
+type DiffStatKind string
+
+func (DiffStatKind) IsEnum() {}
+
+func (v DiffStatKind) Name() string {
+	switch v {
+	case DiffStatKindAdded:
+		return "ADDED"
+	case DiffStatKindModified:
+		return "MODIFIED"
+	case DiffStatKindRemoved:
+		return "REMOVED"
+	case DiffStatKindRenamed:
+		return "RENAMED"
+	default:
+		return ""
+	}
+}
+
+func (v DiffStatKind) Value() string {
+	return string(v)
+}
+
+func (v *DiffStatKind) MarshalJSON() ([]byte, error) {
+	if *v == "" {
+		return []byte(`""`), nil
+	}
+	name := v.Name()
+	if name == "" {
+		return nil, fmt.Errorf("invalid enum value %q", *v)
+	}
+	return json.Marshal(name)
+}
+
+func (v *DiffStatKind) UnmarshalJSON(dt []byte) error {
+	var s string
+	if err := json.Unmarshal(dt, &s); err != nil {
+		return err
+	}
+	switch s {
+	case "":
+		*v = ""
+	case "ADDED":
+		*v = DiffStatKindAdded
+	case "MODIFIED":
+		*v = DiffStatKindModified
+	case "REMOVED":
+		*v = DiffStatKindRemoved
+	case "RENAMED":
+		*v = DiffStatKindRenamed
+	default:
+		return fmt.Errorf("invalid enum value %q", s)
+	}
+	return nil
+}
+
+const (
+	// A file or directory was added.
+	DiffStatKindAdded DiffStatKind = "ADDED"
+
+	// A file was modified.
+	DiffStatKindModified DiffStatKind = "MODIFIED"
+
+	// A file or directory was removed.
+	DiffStatKindRemoved DiffStatKind = "REMOVED"
+
+	// A file was renamed.
+	DiffStatKindRenamed DiffStatKind = "RENAMED"
 )
 
 // File type.
@@ -16887,7 +15924,7 @@ const (
 )
 
 type Client struct {
-	query  *querybuilder.Selection
+	*Query
 	client graphql.Client
 }
 
@@ -16896,7 +15933,9 @@ var dag *Client
 func init() {
 	gqlClient, q := getClientParams()
 	dag = &Client{
-		query:  q.Client(gqlClient),
+		Query: &Query{
+			query: q.Client(gqlClient),
+		},
 		client: gqlClient,
 	}
 }
