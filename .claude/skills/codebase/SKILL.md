@@ -7,6 +7,11 @@ description: General information about the codebase, load me everytime
 
 IMPORTANT: Dont update generated code directly. Use `dagger generate -y` if you need to change generated code.
 
+## Running all checks
+
+- Directory: `/`
+- Command: `dagger checks`
+
 ## Backend
 
 - Directory: `/backend`
