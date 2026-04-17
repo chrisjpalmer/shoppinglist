@@ -59,7 +59,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"page-menu\"><h1>Want</h1><button id=\"save-button\" class=\"button\" hx-post=\"/want?fragment=content\" hx-swap=\"outerHTML\" hx-include=\".col-override\" hx-target=\"#content\" hx-on:click=\"setClean()\">Save</button></div></header>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"page-menu\"><h1>Want</h1><div class=\"button-container\"><button id=\"save-button\" class=\"button\" hx-post=\"/want?fragment=content\" hx-swap=\"outerHTML\" hx-include=\".col-override\" hx-target=\"#content\" hx-on:click=\"setClean()\">Save</button></div></div></header>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -87,7 +87,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 					var templ_7745c5c3_Var4 string
 					templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(w.Ingredient)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 33, Col: 40}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 35, Col: 40}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 					if templ_7745c5c3_Err != nil {
@@ -100,7 +100,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(w.Count)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 34, Col: 37}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 36, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -113,7 +113,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 					var templ_7745c5c3_Var6 string
 					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("col-override.%d", w.ID))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 35, Col: 98}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 37, Col: 98}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {
@@ -126,7 +126,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 					var templ_7745c5c3_Var7 string
 					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(w.OverrideCount)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 35, Col: 148}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 37, Col: 148}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 					if templ_7745c5c3_Err != nil {

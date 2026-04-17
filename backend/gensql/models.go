@@ -8,6 +8,7 @@ type Ingredient struct {
 	ID                int64
 	Name              string
 	WantOverrideCount int64
+	GotCount          int64
 }
 
 type Meal struct {
