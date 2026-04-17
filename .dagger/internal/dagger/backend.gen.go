@@ -33,6 +33,26 @@ func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
 	}
 }
 
+// BackendBackendServiceOpts contains options for Backend.BackendService
+type BackendBackendServiceOpts struct {
+	Ws *Workspace // backend (../../../backend/.dagger/service.go:21:55)
+}
+
+// BackendService - runs the backend service inside a container
+func (r *Backend) BackendService(opts ...BackendBackendServiceOpts) *Service { // backend (../../../backend/.dagger/service.go:21:1)
+	q := r.query.Select("backendService")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `ws` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Ws) {
+			q = q.Arg("ws", opts[i].Ws)
+		}
+	}
+
+	return &Service{
+		query: q,
+	}
+}
+
 func (r *Backend) BuildCheck() *Container { // backend (../../../backend/.dagger/build.go:14:1)
 	q := r.query.Select("buildCheck")
 

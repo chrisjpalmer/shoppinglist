@@ -213,6 +213,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			return nil, (*Frontend).CheckProtos(&parent, ctx)
+		case "FrontendService":
+			var parent Frontend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Frontend).FrontendService(&parent, ctx)
 		case "GenerateProtos":
 			var parent Frontend
 			err = json.Unmarshal(parentJSON, &parent)
