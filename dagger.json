@@ -1,6 +1,6 @@
 {
   "name": "shoppinglist",
-  "engineVersion": "v0.20.3",
+  "engineVersion": "v0.20.6",
   "sdk": {
     "source": "go"
   },
@@ -18,6 +18,14 @@
     {
       "name": "helm",
       "source": "dagger-helm"
+    },
+    {
+      "name": "backend",
+      "source": "backend"
+    },
+    {
+      "name": "frontend",
+      "source": "frontend"
     }
   ],
   "source": ".dagger"
