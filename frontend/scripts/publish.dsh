@@ -1,3 +1,0 @@
-#!/usr/bin/env dagger
-
-. | publish-linux-arm-64 $(secret env://GH_API_KEY)
