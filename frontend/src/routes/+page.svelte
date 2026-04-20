@@ -6,6 +6,9 @@
   import type { Meal } from "../gen/meal_pb";
   import type { Ingredient } from "../gen/ingredient_pb";
   import { CreateShoppingListService } from "$lib/shopping_list_service";
+  import Button from "../components/button.svelte";
+  import H1 from "../components/h1.svelte";
+  import Select from "../components/select.svelte";
 
 	const categories = [
 		Category.LUNCH,
@@ -129,50 +132,52 @@
 	<title>Planner</title>
 </svelte:head>
 
-<section>
-	<h1>Planner</h1>
-	<table>
-		<thead>
-			<tr>
-				<td></td>
-				{#each days as day}
-				<td>{day}</td>
+<div class="px-8">
+	<H1>Planner</H1>
+
+	<div class="overflow-x-scroll">
+		<table class="w-full">
+			<thead>
+				<tr class="font-bold">
+					<td></td>
+					{#each days as day}
+					<td>{day}</td>
+					{/each}
+				</tr>
+			</thead>
+			<tbody>
+				{#each categories as category}
+				<tr class="h-20">
+					<td class="font-bold">{Category[category]}</td>
+					{#each days as day, i}
+					<td>
+						<Select classes="mx-1" bind:value={
+								()=>getMealId(i, category), 
+								(v) => setMealId(i, category, v)
+							}>
+							{#if allMeals}
+							{#each allMeals as meal (meal.id)}
+							<option value={meal.id}>{meal.name}</option>
+							{/each}
+							{/if}
+						</Select>
+					</td>
+					{/each}
+				</tr>
 				{/each}
-			</tr>
-		</thead>
-		<tbody>
-			{#each categories as category}
-			<tr class="category">
-				<td class="day">{Category[category]}</td>
-				{#each days as day, i}
-				<td>
-					<select bind:value={
-							()=>getMealId(i, category), 
-							(v) => setMealId(i, category, v)
-						}>
-						{#if allMeals}
-						{#each allMeals as meal (meal.id)}
-						<option value={meal.id}>{meal.name}</option>
-						{/each}
-						{/if}
-					</select>
-				</td>
-				{/each}
-			</tr>
-			{/each}
-		</tbody>
-	</table>
+			</tbody>
+		</table>
+	</div>
 
 	{#if dirty}
-	<button onclick={save}>Save</button>
+	<Button onclick={save}>Save</Button>
 	{/if}
-</section>
 
-{#if planSummary}
-<section>
-	<table>
+	{#if planSummary}
+	<h1 class="font-normal text-2xl text-center sm:text-3xl py-10 font-sans">Ingredients List</h1>
+	<table class="w-full">
 		<thead>
-			<tr><td>Ingredient</td><td>Amount</td></tr>
+			<tr class="font-bold"><td>Ingredient</td><td>Amount</td></tr>
 		</thead>
 		<tbody>
 			{#each planSummary.ingredients as ig}
@@ -180,38 +185,5 @@
 			{/each}
 		</tbody>
 	</table>
-</section>
-{/if}
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-		overflow-x: auto;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	table {
-		width: 100%;
-		display: block;
-	}
-
-	select {
-		height: 30px;
-	}
-
-	.category {
-		height: 80px;
-	}
-
-	thead td, .day {
-		font-weight: bold;
-	}
-	
-</style>
+	{/if}
+</div>
