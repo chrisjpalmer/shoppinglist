@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./local/**)",
+      "Read(./backend/local/**)"
+    ]
+  }
+}
