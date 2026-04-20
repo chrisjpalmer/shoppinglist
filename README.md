@@ -14,8 +14,8 @@ A new shopping site is being built out in htmx / gotempl for a bit of fun.
 
 A preview version of the sites are available here (these are deployed to for every commit to master):
 
-- Meal Planning Site: http://100.49.171.244:30000/
-- Shopping Site: http://100.49.171.244:30002/
+- Meal Planning Site: http://100.49.208.199:30000/
+- Shopping Site: http://100.49.208.199:30002/
 
 ## Running the project
 
