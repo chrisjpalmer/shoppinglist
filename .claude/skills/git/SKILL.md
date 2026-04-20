@@ -1,6 +1,6 @@
 ---
 name: git
-description: Guidelines for making branches and commits
+description: Guidelines for making branches, commits and pull requests
 ---
 
 ## Branches
@@ -31,3 +31,11 @@ as well as provide better clarity.
 ```
 
 To see the list of available gitmojis see this link: https://github.com/carloscuesta/gitmoji/blob/master/packages/gitmojis/src/gitmojis.json
+
+## Raising PRs
+
+After commiting to the branch, use the following command to make a pr on github:
+
+```sh
+go run ./scripts/raise-pr/raise-pr.go
+```
