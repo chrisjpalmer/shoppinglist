@@ -2,7 +2,7 @@
 
 A pet project to keep track of my shopping!
 
-![](./doc/screenshot.png)
+![](./doc/images/screenshot.png)
 
 ## Project Structure
 
