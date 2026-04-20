@@ -1,5 +1,8 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(go run ./scripts/raise-pr/raise-pr.go)"
+    ],
     "deny": [
       "Read(./local/**)",
       "Read(./backend/local/**)"
