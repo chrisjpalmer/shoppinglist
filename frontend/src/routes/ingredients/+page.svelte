@@ -1,5 +1,8 @@
 <script lang="ts">
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
+	import Button from '../../components/button.svelte';
+  import H1 from '../../components/h1.svelte';
+  import TextInput from '../../components/text-input.svelte';
 
 	const client = CreateShoppingListService()
 
@@ -82,25 +85,25 @@
 	<title>Ingredients</title>
 </svelte:head>
 
-<div class="text-column">
-	<h1>Ingredients</h1>
+<div class="px-8">
+	<H1>Ingredients</H1>
 
-	<table>
+	<table class="w-full table-fixed">
 		<thead>
-			<tr><td>Name</td><td>Action</td></tr>
+			<tr class="font-bold"><td>Name</td><td>Action</td></tr>
 		</thead>
 		<tbody>
 			{#each displayIngredients as dig (dig.id)}
 				{#if dig.isEdit}
-					<tr><td><input type="text" bind:value={dig.name}></td><td><button onclick={() => saveIngredient(dig.id)}>Save</button></td></tr>
+					<tr class="h-10"><td><TextInput bind:value={dig.name}/></td><td><Button onclick={() => saveIngredient(dig.id)}>Save</Button></td></tr>
 				{:else}
-					<tr><td>{dig.name}</td><td><button onclick={() => editIngredient(dig.id)}>Edit</button><button onclick={() => deleteIngredient(dig.id)}>Delete</button></td></tr>
+					<tr class="h-10"><td>{dig.name}</td><td><Button onclick={() => editIngredient(dig.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteIngredient(dig.id)}>Delete</Button></td></tr>
 				{/if}
 			{/each}
 			{#each displayNewIngredients as dig (psuedoIdCounter)}
-				<tr><td><input type="text" bind:value={dig.name}></td><td><button onclick={() => saveNewIngredient(dig.pseudoId)}>Save</button></td></tr>
+				<tr class="h-10"><td><TextInput bind:value={dig.name}/></td><td><Button onclick={() => saveNewIngredient(dig.pseudoId)}>Save</Button></td></tr>
 			{/each}
-			<tr><td></td><td><button onclick={addIngredient}>+</button></td></tr>
+			<tr class="h-10"><td></td><td><Button onclick={addIngredient}>+</Button></td></tr>
 		</tbody>
 	</table>
 </div>

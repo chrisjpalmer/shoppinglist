@@ -2,6 +2,9 @@
   	import type { IngredientRef, Meal } from '../../gen/meal_pb';
   	import type { Ingredient } from '../../gen/ingredient_pb';
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
+  import H1 from '../../components/h1.svelte';
+  import Button from '../../components/button.svelte';
+  import Select from '../../components/select.svelte';
 
 	const client = CreateShoppingListService()
 
@@ -202,45 +205,47 @@
 	<meta name="description" content="Build the recipes" />
 </svelte:head>
 
-<div class="text-column">
-	<h1>Recipies</h1>
+<div class="px-8">
+	<H1>Recipies</H1>
 
-	<select bind:value={()=>getSelectedMealId(), (v) => setSelectedMealId(v)}>
-		{#each meals as meal (meal.id)}
-			<option value={meal.id}>{meal.name}</option>
-		{/each}
-	</select>
+	<div class="w-full flex-col flex items-center">
+		<Select classes="mb-4 size-1/2 h-10" bind:value={()=>getSelectedMealId(), (v) => setSelectedMealId(v)}>
+			{#each meals as meal (meal.id)}
+				<option value={meal.id}>{meal.name}</option>
+			{/each}
+		</Select>
+	</div>
 
 	{#if selectedMeal}
-	<table>
+	<table class="w-full table-fixed">
 		<thead>
-			<tr><td>Ingredient</td><td>Number</td><td>Action</td></tr>
+			<tr class="font-bold"><td>Ingredient</td><td>Number</td><td>Action</td></tr>
 		</thead>
 		<tbody>
 			{#each selectedMeal.ingredients as ing (ing.id)}
-			<tr>
+			<tr class="h-10">
 				<td>
-					<select bind:value={ing.id}>
+					<Select bind:value={ing.id}>
 					{#each ingredients as ing}
 						<option value={ing.id}>{ing.name}</option>
 					{/each}
-					</select>
+					</Select>
 				</td>
 				<td>
-					<input bind:value={ing.number} type="number" min="1" max="20">
+					<input class="bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
 				</td>
 				<td>
-					<button onclick={() => deleteIngredient(ing.id)}>Delete</button>
+					<Button onclick={() => deleteIngredient(ing.id)}>Delete</Button>
 				</td>
 			</tr>
 			{/each}
 
-			<tr><td></td><td><button onclick={addNewIngredient}>+</button></td></tr>
+			<tr class="h-10"><td></td><td></td><td><Button onclick={addNewIngredient}>+</Button></td></tr>
 		</tbody>
 	</table>
 
 	{#if dirty()}
-	<button onclick={saveSelectedMeal} disabled={!valid()}>Save</button>
+	<Button onclick={saveSelectedMeal} disabled={!valid()}>Save</Button>
 	{/if}
 	{/if}
 

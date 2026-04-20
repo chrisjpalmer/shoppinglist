@@ -1,6 +1,9 @@
 <script lang="ts">
   	import type { Meal } from '../../gen/meal_pb';
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
+  import H1 from '../../components/h1.svelte';
+  import TextInput from '../../components/text-input.svelte';
+  import Button from '../../components/button.svelte';
 
 	const client = CreateShoppingListService()
 
@@ -97,51 +100,51 @@
 	<title>Meals</title>
 </svelte:head>
 
-<div class="text-column">
-	<h1>Meals</h1>
+<div class="px-8">
+	<H1>Meals</H1>
 
-	<table>
+	<table class="w-full table-fixed">
 		<thead>
-			<tr><td>Name</td><td>Recipe Url</td><td>Action</td></tr>
+			<tr class="font-bold"><td>Name</td><td>Recipe Url</td><td>Action</td></tr>
 		</thead>
 		<tbody>
 			{#each displayMeals as dm (dm.id)}
 				{#if dm.isEdit}
-					<tr>
+					<tr class="h-10">
 						<td>
-							<input type="text" bind:value={dm.name}>
+							<TextInput bind:value={dm.name}/>
 						</td>
 						<td>
-							<input type="text" bind:value={dm.recipeUrl}>
+							<TextInput bind:value={dm.recipeUrl}/>
 						</td>
 						<td>
-							<button onclick={() => saveMeal(dm.id)}>Save</button>
+							<Button onclick={() => saveMeal(dm.id)}>Save</Button>
 						</td>
 					</tr>
 				{:else}
-					<tr>
+					<tr class="h-10">
 						<td style:color={!dm.hasIngredients ? 'red' : 'initial'}>{dm.name}</td>
 						<td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</td>
 						<td>
-							<button onclick={() => editMeal(dm.id)}>Edit</button><button onclick={() => deleteMeal(dm.id)}>Delete</button>
+							<Button onclick={() => editMeal(dm.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteMeal(dm.id)}>Delete</Button>
 						</td>
 					</tr>
 				{/if}
 			{/each}
 			{#each displayNewMeals as dm (psuedoIdCounter)}
-				<tr>
+				<tr class="h-10">
 					<td>
-						<input type="text" bind:value={dm.name}>
+						<TextInput bind:value={dm.name}/>
 					</td>
 					<td>
-						<input type="text" bind:value={dm.recipeUrl}>
+						<TextInput bind:value={dm.recipeUrl}/>
 					</td>
 					<td>
-						<button onclick={() => saveNewMeal(dm.pseudoId)}>Save</button>
+						<Button onclick={() => saveNewMeal(dm.pseudoId)}>Save</Button>
 					</td>
 				</tr>
 			{/each}
-			<tr><td></td><td></td><td><button onclick={addMeal}>+</button></td></tr>
+			<tr class="h-10"><td></td><td></td><td><Button onclick={addMeal}>+</Button></td></tr>
 		</tbody>
 	</table>
 </div>
