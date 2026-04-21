@@ -34,7 +34,7 @@ To see the list of available gitmojis see this link: https://github.com/carloscu
 
 ## Raising PRs
 
-After commiting to the branch, use the following command to make a pr on github:
+After commiting to the branch, use the following command to push the branch and raise the pr on github.
 
 ```sh
 go run ./scripts/raise-pr/raise-pr.go
