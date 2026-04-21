@@ -35,9 +35,23 @@ func main() {
 }
 
 func raisePr() error {
+	branch, err := currentBranch()
+	if err != nil {
+		return fmt.Errorf("error getting current branch: %s", err)
+	}
+
+	if branch == "master" {
+		return fmt.Errorf("cannot raise a pr from the master branch")
+	}
+
 	subject, body, err := lastCommitMessage()
 	if err != nil {
 		return fmt.Errorf("error getting last commit message: %w", err)
+	}
+
+	err = pushBranch(branch)
+	if err != nil {
+		return fmt.Errorf("error pushing the branch to github: %w", err)
 	}
 
 	if err := raiseGhPr(subject, body); err != nil {
@@ -45,6 +59,15 @@ func raisePr() error {
 	}
 
 	return nil
+}
+
+func currentBranch() (string, error) {
+	out, _, err := shellExec("git", "branch", "--show-current")
+	if err != nil {
+		return "", fmt.Errorf("error executing git branch: %w", err)
+	}
+
+	return strings.TrimSpace(out), nil
 }
 
 func lastCommitMessage() (string, string, error) {
@@ -76,6 +99,19 @@ func lastCommitMessage() (string, string, error) {
 	body := strings.Join(bodyLines, " ")
 
 	return subject, body, nil
+}
+
+func pushBranch(branch string) error {
+	stdout, stderr, err := shellExec("git", "push", "-u", "origin", branch)
+
+	if err != nil {
+		return fmt.Errorf("error while pushing branch: %w", err)
+	}
+
+	fmt.Println(stdout)
+	fmt.Println(stderr)
+
+	return nil
 }
 
 func raiseGhPr(subject, body string) error {
