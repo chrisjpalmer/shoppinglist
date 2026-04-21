@@ -69,11 +69,7 @@ tr:not(:first-child) td {
     font-size: 30px;
 }
 
-.table-header .col-item {
-    min-width: 300px;
-}
-
-.table-header .col-number {
+.table-header .col {
     min-width: 300px;
 }
 
