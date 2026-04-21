@@ -17,7 +17,7 @@
   "dependencies": [
     {
       "name": "helm",
-      "source": "dagger-helm"
+      "source": ".dagger/helm"
     },
     {
       "name": "backend",
