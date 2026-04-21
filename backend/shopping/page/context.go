@@ -19,6 +19,7 @@ func NewContext(r *http.Request) Context {
 type WantItem struct {
 	ID            int64
 	Ingredient    string
-	Count         int
+	Required      int
 	OverrideCount int
+	Total         int
 }
