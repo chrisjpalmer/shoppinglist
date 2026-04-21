@@ -129,11 +129,18 @@ func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
 	var ww []page.WantItem
 	for _, ing := range ingg {
 		ct := ingredientCounts[ing.ID]
+
+		total := int(ct)
+		if int(ing.WantOverrideCount) > total {
+			total = int(ing.WantOverrideCount)
+		}
+
 		ww = append(ww, page.WantItem{
 			ID:            ing.ID,
 			Ingredient:    ing.Name,
-			Count:         int(ct),
+			Required:      int(ct),
 			OverrideCount: int(ing.WantOverrideCount),
+			Total:         total,
 		})
 	}
 
