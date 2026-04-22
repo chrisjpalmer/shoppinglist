@@ -1,8 +1,13 @@
 <script lang="ts">
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
 	import Button from '../../components/button.svelte';
-  import H1 from '../../components/h1.svelte';
-  import TextInput from '../../components/text-input.svelte';
+	import H1 from '../../components/h1.svelte';
+	import Table from '../../components/table.svelte';
+	import Td from '../../components/td.svelte';
+	import TextInput from '../../components/text-input.svelte';
+	import TrHeader from '../../components/tr-header.svelte';
+	import TrTitle from '../../components/tr-title.svelte';
+	import Tr from '../../components/tr.svelte';
 
 	const client = CreateShoppingListService()
 
@@ -88,22 +93,19 @@
 <div class="px-8">
 	<H1>Ingredients</H1>
 
-	<table class="w-full table-fixed">
-		<thead>
-			<tr class="font-bold"><td>Name</td><td>Action</td></tr>
-		</thead>
-		<tbody>
-			{#each displayIngredients as dig (dig.id)}
-				{#if dig.isEdit}
-					<tr class="h-10"><td><TextInput bind:value={dig.name}/></td><td><Button onclick={() => saveIngredient(dig.id)}>Save</Button></td></tr>
-				{:else}
-					<tr class="h-10"><td>{dig.name}</td><td><Button onclick={() => editIngredient(dig.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteIngredient(dig.id)}>Delete</Button></td></tr>
-				{/if}
-			{/each}
-			{#each displayNewIngredients as dig (psuedoIdCounter)}
-				<tr class="h-10"><td><TextInput bind:value={dig.name}/></td><td><Button onclick={() => saveNewIngredient(dig.pseudoId)}>Save</Button></td></tr>
-			{/each}
-			<tr class="h-10"><td></td><td><Button onclick={addIngredient}>+</Button></td></tr>
-		</tbody>
-	</table>
+	<Table>
+		<TrTitle><Td>Ingredients</Td><Td></Td></TrTitle>
+		<TrHeader><Td header={true}>Name</Td><Td header={true}>Action</Td></TrHeader>
+		{#each displayIngredients as dig (dig.id)}
+			{#if dig.isEdit}
+				<Tr><Td><TextInput bind:value={dig.name}/></Td><Td><Button onclick={() => saveIngredient(dig.id)}>Save</Button></Td></Tr>
+			{:else}
+				<Tr><Td>{dig.name}</Td><Td><Button onclick={() => editIngredient(dig.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteIngredient(dig.id)}>Delete</Button></Td></Tr>
+			{/if}
+		{/each}
+		{#each displayNewIngredients as dig (psuedoIdCounter)}
+			<Tr><Td><TextInput bind:value={dig.name}/></Td><Td><Button onclick={() => saveNewIngredient(dig.pseudoId)}>Save</Button></Td></Tr>
+		{/each}
+		<Tr><Td></Td><Td><Button onclick={addIngredient}>+</Button></Td></Tr>
+	</Table>
 </div>
