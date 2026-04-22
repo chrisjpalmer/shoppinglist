@@ -2,9 +2,14 @@
   	import type { IngredientRef, Meal } from '../../gen/meal_pb';
   	import type { Ingredient } from '../../gen/ingredient_pb';
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
-  import H1 from '../../components/h1.svelte';
-  import Button from '../../components/button.svelte';
-  import Select from '../../components/select.svelte';
+	import H1 from '../../components/h1.svelte';
+	import Button from '../../components/button.svelte';
+	import Select from '../../components/select.svelte';
+	import Table from '../../components/table.svelte';
+	import Td from '../../components/td.svelte';
+	import TrHeader from '../../components/tr-header.svelte';
+	import TrTitle from '../../components/tr-title.svelte';
+	import Tr from '../../components/tr.svelte';
 
 	const client = CreateShoppingListService()
 
@@ -217,32 +222,29 @@
 	</div>
 
 	{#if selectedMeal}
-	<table class="w-full table-fixed">
-		<thead>
-			<tr class="font-bold"><td>Ingredient</td><td>Number</td><td>Action</td></tr>
-		</thead>
-		<tbody>
-			{#each selectedMeal.ingredients as ing (ing.id)}
-			<tr class="h-10">
-				<td>
-					<Select bind:value={ing.id}>
-					{#each ingredients as ing}
-						<option value={ing.id}>{ing.name}</option>
-					{/each}
-					</Select>
-				</td>
-				<td>
-					<input class="bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
-				</td>
-				<td>
-					<Button onclick={() => deleteIngredient(ing.id)}>Delete</Button>
-				</td>
-			</tr>
-			{/each}
+	<Table>
+		<TrTitle><Td>Recipies</Td><Td></Td><Td></Td></TrTitle>
+		<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Number</Td><Td header={true}>Action</Td></TrHeader>
+		{#each selectedMeal.ingredients as ing (ing.id)}
+		<Tr>
+			<Td>
+				<Select bind:value={ing.id}>
+				{#each ingredients as ing}
+					<option value={ing.id}>{ing.name}</option>
+				{/each}
+				</Select>
+			</Td>
+			<Td>
+				<input class="bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
+			</Td>
+			<Td>
+				<Button onclick={() => deleteIngredient(ing.id)}>Delete</Button>
+			</Td>
+		</Tr>
+		{/each}
 
-			<tr class="h-10"><td></td><td></td><td><Button onclick={addNewIngredient}>+</Button></td></tr>
-		</tbody>
-	</table>
+		<Tr><Td></Td><Td></Td><Td><Button onclick={addNewIngredient}>+</Button></Td></Tr>
+	</Table>
 
 	{#if dirty()}
 	<Button onclick={saveSelectedMeal} disabled={!valid()}>Save</Button>

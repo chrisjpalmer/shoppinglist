@@ -1,9 +1,14 @@
 <script lang="ts">
   	import type { Meal } from '../../gen/meal_pb';
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
-  import H1 from '../../components/h1.svelte';
-  import TextInput from '../../components/text-input.svelte';
-  import Button from '../../components/button.svelte';
+	import H1 from '../../components/h1.svelte';
+	import TextInput from '../../components/text-input.svelte';
+	import Button from '../../components/button.svelte';
+	import TrHeader from '../../components/tr-header.svelte';
+	import Td from '../../components/td.svelte';
+	import Tr from '../../components/tr.svelte';
+	import TrTitle from '../../components/tr-title.svelte';
+	import Table from '../../components/table.svelte';
 
 	const client = CreateShoppingListService()
 
@@ -103,48 +108,45 @@
 <div class="px-8">
 	<H1>Meals</H1>
 
-	<table class="w-full table-fixed">
-		<thead>
-			<tr class="font-bold"><td>Name</td><td>Recipe Url</td><td>Action</td></tr>
-		</thead>
-		<tbody>
-			{#each displayMeals as dm (dm.id)}
-				{#if dm.isEdit}
-					<tr class="h-10">
-						<td>
-							<TextInput bind:value={dm.name}/>
-						</td>
-						<td>
-							<TextInput bind:value={dm.recipeUrl}/>
-						</td>
-						<td>
-							<Button onclick={() => saveMeal(dm.id)}>Save</Button>
-						</td>
-					</tr>
-				{:else}
-					<tr class="h-10">
-						<td style:color={!dm.hasIngredients ? 'red' : 'initial'}>{dm.name}</td>
-						<td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</td>
-						<td>
-							<Button onclick={() => editMeal(dm.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteMeal(dm.id)}>Delete</Button>
-						</td>
-					</tr>
-				{/if}
-			{/each}
-			{#each displayNewMeals as dm (psuedoIdCounter)}
-				<tr class="h-10">
-					<td>
+	<Table>
+		<TrTitle><Td>Meals</Td><Td></Td><Td></Td></TrTitle>
+		<TrHeader><Td header={true}>Name</Td><Td header={true}>Recipe Url</Td><Td header={true}>Action</Td></TrHeader>
+		{#each displayMeals as dm (dm.id)}
+			{#if dm.isEdit}
+				<Tr>
+					<Td>
 						<TextInput bind:value={dm.name}/>
-					</td>
-					<td>
+					</Td>
+					<Td>
 						<TextInput bind:value={dm.recipeUrl}/>
-					</td>
-					<td>
-						<Button onclick={() => saveNewMeal(dm.pseudoId)}>Save</Button>
-					</td>
-				</tr>
-			{/each}
-			<tr class="h-10"><td></td><td></td><td><Button onclick={addMeal}>+</Button></td></tr>
-		</tbody>
-	</table>
+					</Td>
+					<Td>
+						<Button onclick={() => saveMeal(dm.id)}>Save</Button>
+					</Td>
+				</Tr>
+			{:else}
+				<Tr>
+					<Td classes={!dm.hasIngredients ? 'color-red' : 'color-initial'}>{dm.name}</Td>
+					<Td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</Td>
+					<Td>
+						<Button onclick={() => editMeal(dm.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteMeal(dm.id)}>Delete</Button>
+					</Td>
+				</Tr>
+			{/if}
+		{/each}
+		{#each displayNewMeals as dm (psuedoIdCounter)}
+			<Tr>
+				<Td>
+					<TextInput bind:value={dm.name}/>
+				</Td>
+				<Td>
+					<TextInput bind:value={dm.recipeUrl}/>
+				</Td>
+				<Td>
+					<Button onclick={() => saveNewMeal(dm.pseudoId)}>Save</Button>
+				</Td>
+			</Tr>
+		{/each}
+		<Tr><Td></Td><Td></Td><Td><Button onclick={addMeal}>+</Button></Td></Tr>
+	</Table>
 </div>

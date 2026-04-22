@@ -9,6 +9,11 @@
   import Button from "../components/button.svelte";
   import H1 from "../components/h1.svelte";
   import Select from "../components/select.svelte";
+  import Table from "../components/table.svelte";
+  import Td from "../components/td.svelte";
+  import TrHeader from "../components/tr-header.svelte";
+  import TrTitle from "../components/tr-title.svelte";
+  import Tr from "../components/tr.svelte";
 
 	const categories = [
 		Category.LUNCH,
@@ -135,38 +140,35 @@
 <div class="px-8">
 	<H1>Planner</H1>
 
-	<div class="overflow-x-scroll">
-		<table class="w-full">
-			<thead>
-				<tr class="font-bold">
-					<td></td>
-					{#each days as day}
-					<td>{day}</td>
-					{/each}
-				</tr>
-			</thead>
-			<tbody>
-				{#each categories as category}
-				<tr class="h-20">
-					<td class="font-bold">{Category[category]}</td>
-					{#each days as day, i}
-					<td>
-						<Select classes="mx-1" bind:value={
-								()=>getMealId(i, category), 
-								(v) => setMealId(i, category, v)
-							}>
-							{#if allMeals}
-							{#each allMeals as meal (meal.id)}
-							<option value={meal.id}>{meal.name}</option>
-							{/each}
-							{/if}
-						</Select>
-					</td>
-					{/each}
-				</tr>
+	<div class="overflow-x-auto">
+		<Table classes="min-w-300 mb-10">
+			<TrTitle><Td>Planner</Td>{#each days as day}<Td></Td>{/each}</TrTitle>
+			<TrHeader>
+				<Td header={true}></Td>
+				{#each days as day}
+				<Td header={true}>{day}</Td>
 				{/each}
-			</tbody>
-		</table>
+			</TrHeader>
+			{#each categories as category}
+			<Tr classes="h-20">
+				<Td classes="font-bold">{Category[category]}</Td>
+				{#each days as day, i}
+				<Td>
+					<Select classes="mx-1" bind:value={
+							()=>getMealId(i, category),
+							(v) => setMealId(i, category, v)
+						}>
+						{#if allMeals}
+						{#each allMeals as meal (meal.id)}
+						<option value={meal.id}>{meal.name}</option>
+						{/each}
+						{/if}
+					</Select>
+				</Td>
+				{/each}
+			</Tr>
+			{/each}
+		</Table>
 	</div>
 
 	{#if dirty}
@@ -174,16 +176,13 @@
 	{/if}
 
 	{#if planSummary}
-	<h1 class="font-normal text-2xl text-center sm:text-3xl py-10 font-sans">Ingredients List</h1>
-	<table class="w-full">
-		<thead>
-			<tr class="font-bold"><td>Ingredient</td><td>Amount</td></tr>
-		</thead>
-		<tbody>
-			{#each planSummary.ingredients as ig}
-			<tr><td>{ig.name}</td><td>{ig.count}</td></tr>
-			{/each}
-		</tbody>
-	</table>
+	<H1>Ingredients List</H1>
+	<Table>
+		<TrTitle><Td>Ingredients List</Td><Td></Td></TrTitle>
+		<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Amount</Td></TrHeader>
+		{#each planSummary.ingredients as ig}
+		<Tr><Td>{ig.name}</Td><Td>{ig.count}</Td></Tr>
+		{/each}
+	</Table>
 	{/if}
 </div>
