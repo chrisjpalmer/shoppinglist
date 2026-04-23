@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "css": "cp ../assets/main.css ./main.css && tailwindcss --cwd=../ -i ./tailwind/main.css -o ./assets/maintw.css"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.4",
+    "tailwindcss": "^4.2.4"
+  }
+}
