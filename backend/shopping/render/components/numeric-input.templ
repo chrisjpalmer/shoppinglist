@@ -1,0 +1,32 @@
+package components
+
+import "strings"
+
+type NumericInputOpts struct {
+    Classes []string
+}
+
+templ NumericInput(name string, value int, opts ...NumericInputOpts) {
+    {{
+        classes := []string{
+            "bg-white",
+            "rounded-md",
+            "h-7",
+            "px-2",
+            "border-solid",
+            "border-gray-500",
+            "border-1",
+            "focus:border-gray-900",
+            "focus:outline-none",
+        }
+
+        if len(opts) == 1 {
+            o := opts[0]
+
+            classes = append(classes, o.Classes...)
+        }
+
+        class := strings.Join(classes, " ")
+    }}
+    <input name={name} class={class} hx-on:change="setDirty()" value={value} type="number" min="0" max="999">
+}

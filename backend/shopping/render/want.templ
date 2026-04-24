@@ -13,33 +13,50 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 	@base() {
 		<header>
 			@components.Nav(pageContext)
-			<div class="page-menu">
-				<h1>Want</h1>
-				<button id="save-button" class="button" hx-post="/want?fragment=content" hx-swap="outerHTML" hx-include=".col-override" hx-target="#content" hx-on:click="setClean()">Save</button>
-			</div>
 		</header>
 		
 		@templ.Fragment("content") {
-		<div id="content">
-			<div class="table-content">
-				<table>
-					<tr class="table-header">
-						<td class="col">Item</td>
-						<td class="col">Required</td>
-						<td class="col">Override</td>
-						<td class="col">Total</td>
-					</tr>
-					for _, w := range wantItems {
-					<tr>
-						<td class="col">{w.Ingredient}</td>
-						<td class="col">{w.Required}</td>
-						<td class="col-override col-numeric-input"><input name={fmt.Sprintf("col-override.%d", w.ID)} hx-on:change="setDirty()" value={w.OverrideCount} max="999" type="number"/></td>
-						<td class="col">{w.Total}</td>
-					</tr>
-					}
-					
-				</table>
+		<div id="content" class="px-8">
+			<div class="flex flex-row items-center justify-between">
+				@components.H1("Want")
+				@components.Button(components.ButtonOpts{
+					ID: "save-button", 
+					Title: "Save", 
+					HxPost: "/want?fragment=content", 
+					HxInclude: ".col-override", 
+					HxTarget: "#content", 
+					HxOnClick: "setClean", 
+					Classes:[]string{"invisible"},
+				})
 			</div>
+
+			@components.Table() {
+				@components.TrTitle() {
+					@components.Td() { Want }
+					@components.Td()
+					@components.Td()
+					@components.Td()
+				}
+				@components.TrHeader() {
+					@components.Td(components.TdOpts{Header: true}){Item}
+					@components.Td(components.TdOpts{Header: true}){Required}
+					@components.Td(components.TdOpts{Header: true}){Override}
+					@components.Td(components.TdOpts{Header: true}){Total}
+				}
+				for _, w := range wantItems {
+				@components.Tr() {
+					@components.Td(){ {w.Ingredient} }
+					@components.Td(){ {w.Required} }
+					@components.Td(){ @components.NumericInput(
+						fmt.Sprintf("col-override.%d", w.ID), 
+						w.OverrideCount, 
+						components.NumericInputOpts{Classes: []string{"col-override"}},
+					) }
+					@components.Td(){ {w.Total} }
+				}
+				}
+				
+			}
 		</div>
 		}
 	}

@@ -1,0 +1,43 @@
+package components
+
+import "strings"
+
+type ButtonOpts struct {
+  ID string
+  Title string
+  HxPost string
+  HxInclude string
+  HxTarget string
+  HxOnClick string
+  Classes []string
+}
+
+templ Button(opts ButtonOpts) {
+    {{ classes := []string{
+        "rounded-md",
+        "px-4",
+        "py-2",
+        "text-sm",
+        "text-white",
+        "font-semibold",
+        "bg-blue-500",
+        "hover:bg-blue-400",
+        "active:bg-blue-600",
+      }
+
+      classes = append(classes, opts.Classes...)
+
+      class := strings.Join(classes, " ")
+    }}
+    
+    <button 
+      id={opts.ID} 
+      class={class} 
+      hx-post={opts.HxPost} 
+      hx-swap="outerHTML" 
+      hx-include={opts.HxInclude} 
+      hx-target={opts.HxTarget} 
+      hx-on:click={templ.JSFuncCall(opts.HxOnClick)}>
+            {opts.Title}
+    </button>
+}

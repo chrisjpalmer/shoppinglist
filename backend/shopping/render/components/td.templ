@@ -1,0 +1,43 @@
+package components
+
+import "strings"
+
+type TdOpts struct {
+    Header bool
+    Classes []string
+} 
+
+templ Td(opts ...TdOpts) {
+    {{ 
+    classes := []string{
+        "p-4",
+        "border-b-gray-200",
+        "border-b-1",
+        "group-first:border-t-1",
+        "group-first:border-t-gray-200",
+        "group-first:first:rounded-tl-lg",
+        "group-first:last:rounded-tr-lg",
+        "group-last:first:rounded-bl-lg",
+        "group-last:last:rounded-br-lg",
+    }
+
+    if len(opts) == 1 {
+        o := opts[0]
+
+        if o.Header {
+            classes = append(classes, 
+                "not-last:border-r-1",
+                "not-last:border-r-gray-200",
+            )
+        }
+        
+        classes = append(classes, o.Classes...)
+    }
+
+    class := strings.Join(classes, " ")
+    }}
+
+    <td class={class}>
+        {children...}
+    </td>
+}
