@@ -8,19 +8,28 @@ import (
 
 // GenerateProtos - generate protobuf codegen from .proto files
 // +generate
-func (m *Frontend) GenerateProtos() *dagger.Changeset {
-	gen := m.buildCtr().
+func (m *Frontend) GenerateProtos(ctx context.Context) (*dagger.Changeset, error) {
+	nodeVer, err := m.nodeVersion(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("error getting node version: %w", err)
+	}
+
+	gen := m.buildCtr(nodeVer).
 		WithExec([]string{"npm", "install"}).
 		WithExec([]string{"npm", "run", "generate-protos"}).
 		Directory("src/gen")
 
-	return m.Src.WithDirectory("src/gen", gen).Changes(m.Src)
+	return m.Src.WithDirectory("src/gen", gen).Changes(m.Src), nil
 }
 
 // CheckProtos - check that the working tree's proto generated files are in sync.
 // +check
 func (m *Frontend) CheckProtos(ctx context.Context) error {
-	chgset := m.GenerateProtos()
+	chgset, err := m.GenerateProtos(ctx)
+	if err != nil {
+		return fmt.Errorf("error generating protos: %w", err)
+	}
+
 	return assertEmpty(ctx, chgset)
 }
 

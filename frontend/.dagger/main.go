@@ -19,14 +19,13 @@ import (
 	"dagger/frontend/internal/dagger"
 	"fmt"
 	"strconv"
+	"strings"
 
 	telemetry "github.com/dagger/otel-go"
 	"golang.org/x/sync/errgroup"
 )
 
 const (
-	nodeVersion = "node:22.18.0"
-
 	// helmBackendPort - the port of the api server from the backend helm chart.
 	// This value must be synced with the helm chart
 	helmBackendPort = 30001
@@ -65,7 +64,12 @@ func (m *Frontend) build(
 	ctx, span := Tracer().Start(ctx, "build: "+string(platform))
 	defer telemetry.EndWithCause(span, &rerr)
 
-	build := m.buildCtr().
+	nodeVer, err := m.nodeVersion(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	build := m.buildCtr(nodeVer).
 		WithExec([]string{"npm", "install"}).
 		WithEnvVariable("PUBLIC_BACKEND_PORT", strconv.Itoa(backendPort)).
 		WithExec([]string{"npm", "run", "build"}).
@@ -74,7 +78,7 @@ func (m *Frontend) build(
 	return dag.Container(dagger.ContainerOpts{
 		Platform: platform,
 	}).
-		From(nodeVersion).
+		From("node:" + nodeVer).
 		WithMountedCache("/root/.npm", dag.CacheVolume("npm-build-cache")).
 		WithWorkdir("/app").
 		WithFiles(".", []*dagger.File{m.Src.File("package.json"), m.Src.File("package-lock.json")}).
@@ -83,13 +87,29 @@ func (m *Frontend) build(
 		WithEntrypoint([]string{"node", "build"}).Sync(ctx)
 }
 
-func (m *Frontend) buildCtr() *dagger.Container {
+func (m *Frontend) buildCtr(nodeVer string) *dagger.Container {
 	return dag.Container().
-		From(nodeVersion).
+		From("node:" + nodeVer).
 		WithMountedCache("/root/.npm", dag.CacheVolume("npm-build-cache")).
 		WithWorkdir("/app").
 		WithDirectory(".", m.RootSrc).
 		WithWorkdir("frontend")
+}
+
+func (m *Frontend) nodeVersion(ctx context.Context) (string, error) {
+	contents, err := m.RootSrc.File(".tool-versions").Contents(ctx)
+	if err != nil {
+		return "", fmt.Errorf("error reading .tool-versions: %w", err)
+	}
+
+	for line := range strings.SplitSeq(contents, "\n") {
+		parts := strings.Fields(line)
+		if len(parts) == 2 && parts[0] == "nodejs" {
+			return parts[1], nil
+		}
+	}
+
+	return "", fmt.Errorf("nodejs version not found in .tool-versions")
 }
 
 // +cache="never"
