@@ -210,7 +210,7 @@
 	<meta name="description" content="Build the recipes" />
 </svelte:head>
 
-<div class="px-8">
+<div class="sm:px-8 px-4">
 	<H1>Recipies</H1>
 
 	<div class="w-full flex-col flex items-center">
@@ -235,7 +235,7 @@
 				</Select>
 			</Td>
 			<Td>
-				<input class="bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
+				<input class="w-12 bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
 			</Td>
 			<Td>
 				<Button onclick={() => deleteIngredient(ing.id)}>Delete</Button>

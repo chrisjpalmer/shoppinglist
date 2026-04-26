@@ -137,7 +137,7 @@
 	<title>Planner</title>
 </svelte:head>
 
-<div class="px-8">
+<div class="sm:px-8 px-4">
 	<H1>Planner</H1>
 
 	<div class="overflow-x-auto">

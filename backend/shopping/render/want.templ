@@ -16,7 +16,7 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 		</header>
 		
 		@templ.Fragment("content") {
-		<div id="content" class="px-8">
+		<div id="content" class="sm:px-8 px-4">
 			<div class="flex flex-row items-center justify-between">
 				@components.H1("Want")
 				@components.Button(components.ButtonOpts{

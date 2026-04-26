@@ -75,7 +75,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"content\" class=\"px-8\"><div class=\"flex flex-row items-center justify-between\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"content\" class=\"sm:px-8 px-4\"><div class=\"flex flex-row items-center justify-between\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
