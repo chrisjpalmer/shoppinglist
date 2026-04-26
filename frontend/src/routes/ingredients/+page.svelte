@@ -90,7 +90,7 @@
 	<title>Ingredients</title>
 </svelte:head>
 
-<div class="px-8">
+<div class="sm:px-8 px-4">
 	<H1>Ingredients</H1>
 
 	<Table>

@@ -37,7 +37,7 @@ func Td(opts ...TdOpts) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		classes := []string{
-			"p-4",
+			"p-2", "sm:pl-4",
 			"border-b-gray-200",
 			"border-b-1",
 			"group-first:border-t-1",

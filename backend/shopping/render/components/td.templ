@@ -10,7 +10,7 @@ type TdOpts struct {
 templ Td(opts ...TdOpts) {
     {{ 
     classes := []string{
-        "p-4",
+        "p-2", "sm:pl-4",
         "border-b-gray-200",
         "border-b-1",
         "group-first:border-t-1",
@@ -30,7 +30,7 @@ templ Td(opts ...TdOpts) {
                 "not-last:border-r-gray-200",
             )
         }
-        
+
         classes = append(classes, o.Classes...)
     }
 
