@@ -40,7 +40,7 @@ func (m *Server) handleWantPage(w http.ResponseWriter, r *http.Request) {
 func (m *Server) renderWantPage(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 
-	pctx := page.NewContext(r)
+	pctx := m.pageContext(r)
 
 	ww, err := m.wantItems(r.Context())
 	if err != nil {

@@ -22,3 +22,6 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
+          env:
+            - name: PUBLIC_SHOPPING_SITE_URL
+              value: {{ .Values.shoppingSiteUrl }}

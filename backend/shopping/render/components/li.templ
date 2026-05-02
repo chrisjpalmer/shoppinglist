@@ -4,13 +4,33 @@ import (
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
 )
 
-templ Li(pageContext page.Context, title string, slug string) {
+type LiOpts struct {
+	Image *Image
+}
+
+type Image struct {
+	Source string
+	Alt string
+}
+
+templ Li(pageContext page.Context, title string, slug string, opts ...LiOpts) {
 	<li
-		class="text-md py-1 text-gray-600 aria-current:font-medium aria-current:text-blue-500"
+		class="flex text-md py-1 text-gray-600 aria-current:font-medium aria-current:text-blue-500"
 		if pageContext.Path == slug {
 			aria-current="page"
 		}
 	>
+		{{
+			var o LiOpts
+			if len(opts) == 1 {
+				o = opts[0]
+			} 
+		}}
+
 		<a href={ templ.URL(slug) }>{ title }</a>
+
+		if img := o.Image; img != nil {
+			<img class="ml-5" src={ templ.URL(img.Source) } alt={img.Alt} height="20" width="20">
+		}
 	</li>
 }

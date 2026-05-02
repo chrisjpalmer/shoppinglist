@@ -12,6 +12,12 @@ templ Nav(pageContext page.Context) {
             @Li(pageContext, "Want", "/want")
             @Li(pageContext, "Got", "/got")
             @Li(pageContext, "Shop", "/shop")
+            @Li(pageContext, "Planning", pageContext.PlanningSiteURL, LiOpts{
+                Image: &Image{
+                    Source: "/assets/exit.svg",
+                    Alt: "planning",
+                },
+            })
         </ul>
     </nav>
 }
