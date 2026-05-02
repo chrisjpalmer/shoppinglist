@@ -1,6 +1,8 @@
 @import '@fontsource/fira-mono';
 @import 'tailwindcss';
  
+@custom-variant aria-current (&[aria-current="page"]);
+
 @theme {
 	--color-orange: #ff3e00;
 }

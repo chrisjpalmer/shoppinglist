@@ -18,13 +18,19 @@ templ base(pageContext page.Context) {
 			<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
 			<script src="/assets/main.js"></script>
 		</head>
-		<body class="bg-gray-200">
-			<header>
-				@components.Nav(pageContext)
-			</header>
-			
-			<div class="sm:px-8 px-4">
-				{ children... }
+		<body>
+			<div class="flex flex-col bg-gray-100">
+				@components.MenuBar(pageContext)
+				<div class="h-screen overflow-y-auto mt-10 sm:mt-0">
+					<div class="flex flex-row pt-16 px-8">
+						<div class="hidden sm:block w-40 flex-shrink-0">
+							@components.Nav(pageContext)
+						</div>
+						<div class="flex flex-shrink-1 flex-basis-0 min-w-0 flex-col">
+							{ children... }
+						</div>
+					</div>
+				</div>
 			</div>
 		</body>
 	</html>

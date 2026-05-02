@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant aria-current (&[aria-current="page"]);
+
 header {
     margin: 0px 40px;
 }

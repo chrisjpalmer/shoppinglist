@@ -7,7 +7,6 @@
   import type { Ingredient } from "../gen/ingredient_pb";
   import { CreateShoppingListService } from "$lib/shopping_list_service";
   import Button from "../components/button.svelte";
-  import H1 from "../components/h1.svelte";
   import Select from "../components/select.svelte";
   import Table from "../components/table.svelte";
   import Td from "../components/td.svelte";
@@ -137,11 +136,8 @@
 	<title>Planner</title>
 </svelte:head>
 
-
-<H1>Planner</H1>
-
-<div class="overflow-x-auto">
-	<Table classes="min-w-300 mb-10">
+<div class="overflow-auto p-5 -m-5 w-[calc(100%_+_(var(--spacing)_*_10))]">
+	<Table classes="min-w-300">
 		<TrTitle><Td>Planner</Td>{#each days as day}<Td></Td>{/each}</TrTitle>
 		<TrHeader>
 			<Td header={true}></Td>
@@ -176,8 +172,7 @@
 {/if}
 
 {#if planSummary}
-<H1>Ingredients List</H1>
-<Table>
+<Table classes="mt-10">
 	<TrTitle><Td>Ingredients List</Td><Td></Td></TrTitle>
 	<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Amount</Td></TrHeader>
 	{#each planSummary.ingredients as ig}

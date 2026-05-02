@@ -1,0 +1,16 @@
+package components
+
+import (
+	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
+)
+
+templ Li(pageContext page.Context, title string, slug string) {
+	<li
+		class="text-md py-1 text-gray-600 aria-current:font-medium aria-current:text-blue-500"
+		if pageContext.Path == slug {
+			aria-current="page"
+		}
+	>
+		<a href={ templ.URL(slug) }>{ title }</a>
+	</li>
+}

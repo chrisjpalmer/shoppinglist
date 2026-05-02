@@ -2,7 +2,6 @@
   	import type { IngredientRef, Meal } from '../../gen/meal_pb';
   	import type { Ingredient } from '../../gen/ingredient_pb';
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
-	import H1 from '../../components/h1.svelte';
 	import Button from '../../components/button.svelte';
 	import Select from '../../components/select.svelte';
 	import Table from '../../components/table.svelte';
@@ -209,8 +208,6 @@
 	<title>Recipies</title>
 	<meta name="description" content="Build the recipes" />
 </svelte:head>
-
-<H1>Recipies</H1>
 
 <div class="w-full flex-col flex items-center">
 	<Select classes="mb-4 size-1/2 h-10" bind:value={()=>getSelectedMealId(), (v) => setSelectedMealId(v)}>
