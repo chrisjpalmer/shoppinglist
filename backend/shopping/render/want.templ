@@ -10,13 +10,9 @@ import (
 
 // WantPage - the main page for the hello server
 templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
-	@base() {
-		<header>
-			@components.Nav(pageContext)
-		</header>
-		
+	@base(pageContext) {
 		@templ.Fragment("content") {
-		<div id="content" class="sm:px-8 px-4">
+		<div id="content">
 			<div class="flex flex-row items-center justify-between">
 				@components.H1("Want")
 				@components.Button(components.ButtonOpts{
@@ -55,7 +51,6 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 					@components.Td(){ {w.Total} }
 				}
 				}
-				
 			}
 		</div>
 		}

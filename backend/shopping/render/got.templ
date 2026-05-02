@@ -8,13 +8,8 @@ import (
 
 // GotPage - the main page for the hello server
 templ GotPage(pageContext page.Context) {
-	@base() {
-		<header>
-			@components.Nav(pageContext)
-			<div class="page-menu">
-				<h1>Got</h1>
-			</div>
-		</header>
+	@base(pageContext) {
+		@components.H1("Got")
 	}
 }
 
