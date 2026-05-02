@@ -106,7 +106,7 @@
 
 
 <Table>
-	<TrTitle><Td>Meals</Td><Td></Td><Td></Td></TrTitle>
+	<TrTitle><Td title={true}>Meals</Td><Td title={true}></Td><Td></Td></TrTitle>
 	<TrHeader><Td header={true}>Name</Td><Td header={true}>Recipe Url</Td><Td header={true}>Action</Td></TrHeader>
 	{#each displayMeals as dm (dm.id)}
 		{#if dm.isEdit}

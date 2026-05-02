@@ -138,7 +138,7 @@
 
 <div class="overflow-auto p-5 -m-5 w-[calc(100%_+_(var(--spacing)_*_10))]">
 	<Table classes="min-w-300">
-		<TrTitle><Td>Planner</Td>{#each days as day}<Td></Td>{/each}</TrTitle>
+		<TrTitle><Td title={true}>Planner</Td>{#each days as day}<Td title={true}></Td>{/each}</TrTitle>
 		<TrHeader>
 			<Td header={true}></Td>
 			{#each days as day}
@@ -173,7 +173,7 @@
 
 {#if planSummary}
 <Table classes="mt-10">
-	<TrTitle><Td>Ingredients List</Td><Td></Td></TrTitle>
+	<TrTitle><Td title={true}>Ingredients List</Td><Td title={true}></Td></TrTitle>
 	<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Amount</Td></TrHeader>
 	{#each planSummary.ingredients as ig}
 	<Tr><Td>{ig.name}</Td><Td>{ig.count}</Td></Tr>

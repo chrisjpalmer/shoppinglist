@@ -90,7 +90,7 @@
 </svelte:head>
 
 <Table>
-	<TrTitle><Td>Ingredients</Td><Td></Td></TrTitle>
+	<TrTitle><Td title={true}>Ingredients</Td><Td title={true}></Td></TrTitle>
 	<TrHeader><Td header={true}>Name</Td><Td header={true}>Action</Td></TrHeader>
 	{#each displayIngredients as dig (dig.id)}
 		{#if dig.isEdit}
