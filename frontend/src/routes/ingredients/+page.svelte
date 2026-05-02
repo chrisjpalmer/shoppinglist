@@ -1,7 +1,6 @@
 <script lang="ts">
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
 	import Button from '../../components/button.svelte';
-	import H1 from '../../components/h1.svelte';
 	import Table from '../../components/table.svelte';
 	import Td from '../../components/td.svelte';
 	import TextInput from '../../components/text-input.svelte';
@@ -89,8 +88,6 @@
 <svelte:head>
 	<title>Ingredients</title>
 </svelte:head>
-
-<H1>Ingredients</H1>
 
 <Table>
 	<TrTitle><Td>Ingredients</Td><Td></Td></TrTitle>

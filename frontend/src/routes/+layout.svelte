@@ -1,22 +1,21 @@
 <script lang="ts">
-	import Header from './Header.svelte';
+	import Nav from './Nav.svelte';
 	import '../app.css';
+    import MenuBar from './MenuBar.svelte';
 
 	let { children } = $props();
 </script>
 
-<div class="flex flex-col min-h-screen">
-	<Header />
-
-	<main class="flex grow-1 flex-col w-full">
-		<div class="sm:px-8 px-4">
-			{@render children()}
+<div class="flex flex-col bg-gray-100">
+	<MenuBar></MenuBar>
+	<div class="h-screen overflow-y-auto mt-10 sm:mt-0">
+		<div class="flex flex-row pt-16 px-8">
+			<div class="hidden sm:block w-40 flex-shrink-0">
+				<Nav />
+			</div>
+			<div class="flex flex-shrink-1 flex-basis-0 min-w-0 flex-col">
+				{@render children()}
+			</div>
 		</div>
-	</main>
-
-	<footer class="flex flex-col justify-center items-center p-1 sm:px-0">
-		<p class="font-normal leading-5">
-			visit <a class="font-bold text-orange no-underline hover:underline" href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to learn about SvelteKit
-		</p>
-	</footer>
+	</div>
 </div>

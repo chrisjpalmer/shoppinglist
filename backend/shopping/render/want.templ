@@ -13,19 +13,6 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 	@base(pageContext) {
 		@templ.Fragment("content") {
 		<div id="content">
-			<div class="flex flex-row items-center justify-between">
-				@components.H1("Want")
-				@components.Button(components.ButtonOpts{
-					ID: "save-button", 
-					Title: "Save", 
-					HxPost: "/want?fragment=content", 
-					HxInclude: ".col-override", 
-					HxTarget: "#content", 
-					HxOnClick: "setClean", 
-					Classes:[]string{"invisible"},
-				})
-			</div>
-
 			@components.Table() {
 				@components.TrTitle() {
 					@components.Td() { Want }
@@ -51,7 +38,18 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 					@components.Td(){ {w.Total} }
 				}
 				}
+				
 			}
+
+			@components.Button(components.ButtonOpts{
+				ID: "save-button", 
+				Title: "Save", 
+				HxPost: "/want?fragment=content", 
+				HxInclude: ".col-override", 
+				HxTarget: "#content", 
+				HxOnClick: "setClean", 
+				Classes:[]string{"invisible", "mt-5", "max-w-20", "self-end"},
+			})
 		</div>
 		}
 	}

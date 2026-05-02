@@ -1,7 +1,6 @@
 <script lang="ts">
   	import type { Meal } from '../../gen/meal_pb';
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
-	import H1 from '../../components/h1.svelte';
 	import TextInput from '../../components/text-input.svelte';
 	import Button from '../../components/button.svelte';
 	import TrHeader from '../../components/tr-header.svelte';
@@ -105,7 +104,6 @@
 	<title>Meals</title>
 </svelte:head>
 
-<H1>Meals</H1>
 
 <Table>
 	<TrTitle><Td>Meals</Td><Td></Td><Td></Td></TrTitle>
