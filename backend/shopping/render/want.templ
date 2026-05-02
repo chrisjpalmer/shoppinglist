@@ -15,10 +15,10 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 		<div id="content">
 			@components.Table() {
 				@components.TrTitle() {
-					@components.Td() { Want }
-					@components.Td()
-					@components.Td()
-					@components.Td()
+					@components.Td(components.TdOpts{Title: true}) { Want }
+					@components.Td(components.TdOpts{Title: true})
+					@components.Td(components.TdOpts{Title: true})
+					@components.Td(components.TdOpts{Title: true})
 				}
 				@components.TrHeader() {
 					@components.Td(components.TdOpts{Header: true}){Item}

@@ -109,7 +109,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 							}
 							return nil
 						})
-						templ_7745c5c3_Err = components.Td().Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = components.Td(components.TdOpts{Title: true}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -117,7 +117,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = components.Td().Render(ctx, templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = components.Td(components.TdOpts{Title: true}).Render(ctx, templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -125,7 +125,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = components.Td().Render(ctx, templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = components.Td(components.TdOpts{Title: true}).Render(ctx, templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -133,7 +133,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = components.Td().Render(ctx, templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = components.Td(components.TdOpts{Title: true}).Render(ctx, templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}

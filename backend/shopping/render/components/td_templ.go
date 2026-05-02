@@ -12,6 +12,7 @@ import "strings"
 
 type TdOpts struct {
 	Header  bool
+	Title   bool
 	Classes []string
 }
 
@@ -56,6 +57,10 @@ func Td(opts ...TdOpts) templ.Component {
 					"not-last:border-r-1",
 					"not-last:border-r-gray-200",
 				)
+			}
+
+			if o.Title {
+				classes = append(classes, "py-4")
 			}
 
 			classes = append(classes, o.Classes...)

@@ -219,7 +219,7 @@
 
 {#if selectedMeal}
 <Table>
-	<TrTitle><Td>Recipies</Td><Td></Td><Td></Td></TrTitle>
+	<TrTitle><Td title={true}>Recipies</Td><Td title={true}></Td><Td></Td></TrTitle>
 	<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Number</Td><Td header={true}>Action</Td></TrHeader>
 	{#each selectedMeal.ingredients as ing (ing.id)}
 	<Tr>
