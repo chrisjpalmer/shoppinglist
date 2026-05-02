@@ -9,7 +9,9 @@
 	<Header />
 
 	<main class="flex grow-1 flex-col w-full">
-		{@render children()}
+		<div class="sm:px-8 px-4">
+			{@render children()}
+		</div>
 	</main>
 
 	<footer class="flex flex-col justify-center items-center p-1 sm:px-0">
