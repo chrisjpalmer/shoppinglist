@@ -105,36 +105,12 @@
 	<title>Meals</title>
 </svelte:head>
 
-<div class="sm:px-8 px-4">
-	<H1>Meals</H1>
 
-	<Table>
-		<TrTitle><Td>Meals</Td><Td></Td><Td></Td></TrTitle>
-		<TrHeader><Td header={true}>Name</Td><Td header={true}>Recipe Url</Td><Td header={true}>Action</Td></TrHeader>
-		{#each displayMeals as dm (dm.id)}
-			{#if dm.isEdit}
-				<Tr>
-					<Td>
-						<TextInput bind:value={dm.name}/>
-					</Td>
-					<Td>
-						<TextInput bind:value={dm.recipeUrl}/>
-					</Td>
-					<Td>
-						<Button onclick={() => saveMeal(dm.id)}>Save</Button>
-					</Td>
-				</Tr>
-			{:else}
-				<Tr>
-					<Td classes={!dm.hasIngredients ? 'color-red' : 'color-initial'}>{dm.name}</Td>
-					<Td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</Td>
-					<Td>
-						<Button onclick={() => editMeal(dm.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteMeal(dm.id)}>Delete</Button>
-					</Td>
-				</Tr>
-			{/if}
-		{/each}
-		{#each displayNewMeals as dm (psuedoIdCounter)}
+<Table>
+	<TrTitle><Td title={true}>Meals</Td><Td title={true}></Td><Td></Td></TrTitle>
+	<TrHeader><Td header={true}>Name</Td><Td header={true}>Recipe Url</Td><Td header={true}>Action</Td></TrHeader>
+	{#each displayMeals as dm (dm.id)}
+		{#if dm.isEdit}
 			<Tr>
 				<Td>
 					<TextInput bind:value={dm.name}/>
@@ -143,10 +119,31 @@
 					<TextInput bind:value={dm.recipeUrl}/>
 				</Td>
 				<Td>
-					<Button onclick={() => saveNewMeal(dm.pseudoId)}>Save</Button>
+					<Button onclick={() => saveMeal(dm.id)}>Save</Button>
 				</Td>
 			</Tr>
-		{/each}
-		<Tr><Td></Td><Td></Td><Td><Button onclick={addMeal}>+</Button></Td></Tr>
-	</Table>
-</div>
+		{:else}
+			<Tr>
+				<Td classes={!dm.hasIngredients ? 'color-red' : 'color-initial'}>{dm.name}</Td>
+				<Td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</Td>
+				<Td>
+					<Button onclick={() => editMeal(dm.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteMeal(dm.id)}>Delete</Button>
+				</Td>
+			</Tr>
+		{/if}
+	{/each}
+	{#each displayNewMeals as dm (psuedoIdCounter)}
+		<Tr>
+			<Td>
+				<TextInput bind:value={dm.name}/>
+			</Td>
+			<Td>
+				<TextInput bind:value={dm.recipeUrl}/>
+			</Td>
+			<Td>
+				<Button onclick={() => saveNewMeal(dm.pseudoId)}>Save</Button>
+			</Td>
+		</Tr>
+	{/each}
+	<Tr><Td></Td><Td></Td><Td><Button onclick={addMeal}>+</Button></Td></Tr>
+</Table>

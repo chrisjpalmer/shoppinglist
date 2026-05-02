@@ -137,52 +137,47 @@
 	<title>Planner</title>
 </svelte:head>
 
-<div class="sm:px-8 px-4">
-	<H1>Planner</H1>
-
-	<div class="overflow-x-auto">
-		<Table classes="min-w-300 mb-10">
-			<TrTitle><Td>Planner</Td>{#each days as day}<Td></Td>{/each}</TrTitle>
-			<TrHeader>
-				<Td header={true}></Td>
-				{#each days as day}
-				<Td header={true}>{day}</Td>
-				{/each}
-			</TrHeader>
-			{#each categories as category}
-			<Tr classes="h-20">
-				<Td classes="font-bold">{Category[category]}</Td>
-				{#each days as day, i}
-				<Td>
-					<Select classes="mx-1" bind:value={
-							()=>getMealId(i, category),
-							(v) => setMealId(i, category, v)
-						}>
-						{#if allMeals}
-						{#each allMeals as meal (meal.id)}
-						<option value={meal.id}>{meal.name}</option>
-						{/each}
-						{/if}
-					</Select>
-				</Td>
-				{/each}
-			</Tr>
+<div class="overflow-auto p-5 -m-5 w-[calc(100%_+_(var(--spacing)_*_10))]">
+	<Table classes="min-w-300">
+		<TrTitle><Td title={true}>Planner</Td>{#each days as day}<Td title={true}></Td>{/each}</TrTitle>
+		<TrHeader>
+			<Td header={true}></Td>
+			{#each days as day}
+			<Td header={true}>{day}</Td>
 			{/each}
-		</Table>
-	</div>
-
-	{#if dirty}
-	<Button onclick={save}>Save</Button>
-	{/if}
-
-	{#if planSummary}
-	<H1>Ingredients List</H1>
-	<Table>
-		<TrTitle><Td>Ingredients List</Td><Td></Td></TrTitle>
-		<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Amount</Td></TrHeader>
-		{#each planSummary.ingredients as ig}
-		<Tr><Td>{ig.name}</Td><Td>{ig.count}</Td></Tr>
+		</TrHeader>
+		{#each categories as category}
+		<Tr classes="h-20">
+			<Td classes="font-bold">{Category[category]}</Td>
+			{#each days as day, i}
+			<Td>
+				<Select classes="mx-1" bind:value={
+						()=>getMealId(i, category),
+						(v) => setMealId(i, category, v)
+					}>
+					{#if allMeals}
+					{#each allMeals as meal (meal.id)}
+					<option value={meal.id}>{meal.name}</option>
+					{/each}
+					{/if}
+				</Select>
+			</Td>
+			{/each}
+		</Tr>
 		{/each}
 	</Table>
-	{/if}
 </div>
+
+{#if dirty}
+<Button onclick={save}>Save</Button>
+{/if}
+
+{#if planSummary}
+<Table classes="mt-10">
+	<TrTitle><Td title={true}>Ingredients List</Td><Td title={true}></Td></TrTitle>
+	<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Amount</Td></TrHeader>
+	{#each planSummary.ingredients as ig}
+	<Tr><Td>{ig.name}</Td><Td>{ig.count}</Td></Tr>
+	{/each}
+</Table>
+{/if}

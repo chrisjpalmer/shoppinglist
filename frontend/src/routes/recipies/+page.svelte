@@ -210,45 +210,40 @@
 	<meta name="description" content="Build the recipes" />
 </svelte:head>
 
-<div class="sm:px-8 px-4">
-	<H1>Recipies</H1>
-
-	<div class="w-full flex-col flex items-center">
-		<Select classes="mb-4 size-1/2 h-10" bind:value={()=>getSelectedMealId(), (v) => setSelectedMealId(v)}>
-			{#each meals as meal (meal.id)}
-				<option value={meal.id}>{meal.name}</option>
-			{/each}
-		</Select>
-	</div>
-
-	{#if selectedMeal}
-	<Table>
-		<TrTitle><Td>Recipies</Td><Td></Td><Td></Td></TrTitle>
-		<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Number</Td><Td header={true}>Action</Td></TrHeader>
-		{#each selectedMeal.ingredients as ing (ing.id)}
-		<Tr>
-			<Td>
-				<Select bind:value={ing.id}>
-				{#each ingredients as ing}
-					<option value={ing.id}>{ing.name}</option>
-				{/each}
-				</Select>
-			</Td>
-			<Td>
-				<input class="w-12 bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
-			</Td>
-			<Td>
-				<Button onclick={() => deleteIngredient(ing.id)}>Delete</Button>
-			</Td>
-		</Tr>
+<div class="w-full flex-col flex items-center">
+	<Select classes="mb-4 size-1/2 h-10" bind:value={()=>getSelectedMealId(), (v) => setSelectedMealId(v)}>
+		{#each meals as meal (meal.id)}
+			<option value={meal.id}>{meal.name}</option>
 		{/each}
-
-		<Tr><Td></Td><Td></Td><Td><Button onclick={addNewIngredient}>+</Button></Td></Tr>
-	</Table>
-
-	{#if dirty()}
-	<Button onclick={saveSelectedMeal} disabled={!valid()}>Save</Button>
-	{/if}
-	{/if}
-
+	</Select>
 </div>
+
+{#if selectedMeal}
+<Table>
+	<TrTitle><Td title={true}>Recipies</Td><Td title={true}></Td><Td></Td></TrTitle>
+	<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Number</Td><Td header={true}>Action</Td></TrHeader>
+	{#each selectedMeal.ingredients as ing (ing.id)}
+	<Tr>
+		<Td>
+			<Select bind:value={ing.id}>
+			{#each ingredients as ing}
+				<option value={ing.id}>{ing.name}</option>
+			{/each}
+			</Select>
+		</Td>
+		<Td>
+			<input class="w-12 bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
+		</Td>
+		<Td>
+			<Button onclick={() => deleteIngredient(ing.id)}>Delete</Button>
+		</Td>
+	</Tr>
+	{/each}
+
+	<Tr><Td></Td><Td></Td><Td><Button onclick={addNewIngredient}>+</Button></Td></Tr>
+</Table>
+
+{#if dirty()}
+<Button onclick={saveSelectedMeal} disabled={!valid()}>Save</Button>
+{/if}
+{/if}
