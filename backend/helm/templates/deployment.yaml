@@ -34,6 +34,9 @@ spec:
             - name: shopping
               containerPort: 8081
               protocol: TCP
+          env:
+            - name: PLANNING_SITE_URL
+              value: {{ .Values.planningSiteUrl }}
           volumeMounts:
             - mountPath: /app/local
               name: db

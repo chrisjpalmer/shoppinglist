@@ -6,12 +6,15 @@ import "net/http"
 type Context struct {
 	// Path - the URL path of the currently viewed page
 	Path string
+	// PlanningSiteURL - the URL path to the planning site
+	PlanningSiteURL string
 }
 
 // NewContext - returns a page context
-func NewContext(r *http.Request) Context {
+func NewContext(r *http.Request, planningSiteURL string) Context {
 	return Context{
-		Path: r.URL.Path,
+		PlanningSiteURL: planningSiteURL,
+		Path:            r.URL.Path,
 	}
 }
 

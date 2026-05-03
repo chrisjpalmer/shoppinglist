@@ -22,13 +22,14 @@ var assets embed.FS
 
 // Server - the server for giving you nice hello greetings
 type Server struct {
-	srv  http.Server
-	done chan struct{}
-	sql  *gensql.Queries
+	planningSiteURL string
+	srv             http.Server
+	done            chan struct{}
+	sql             *gensql.Queries
 }
 
 // NewServer - creates a new server
-func NewServer(port int) (*Server, error) {
+func NewServer(port int, planningSiteURL string) (*Server, error) {
 	mux := http.NewServeMux()
 
 	sql, err := sql.Connect(context.Background())
@@ -37,6 +38,7 @@ func NewServer(port int) (*Server, error) {
 	}
 
 	srv := &Server{
+		planningSiteURL: planningSiteURL,
 		srv: http.Server{
 			Addr:    ":" + strconv.Itoa(port),
 			Handler: mux,
@@ -49,8 +51,8 @@ func NewServer(port int) (*Server, error) {
 	mux.HandleFunc("/", handleRootPage)
 	mux.Handle("/assets/", http.FileServerFS(assets))
 	mux.HandleFunc("/want", srv.handleWantPage)
-	mux.HandleFunc("/got", handleGotPage)
-	mux.HandleFunc("/shop", handleShopPage)
+	mux.HandleFunc("/got", srv.handleGotPage)
+	mux.HandleFunc("/shop", srv.handleShopPage)
 
 	return srv, nil
 }
@@ -60,14 +62,18 @@ func handleRootPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusFound)
 }
 
-func handleGotPage(w http.ResponseWriter, r *http.Request) {
-	pctx := page.NewContext(r)
+func (s *Server) handleGotPage(w http.ResponseWriter, r *http.Request) {
+	pctx := s.pageContext(r)
 	templ.Handler(render.GotPage(pctx)).ServeHTTP(w, r)
 }
 
-func handleShopPage(w http.ResponseWriter, r *http.Request) {
-	pctx := page.NewContext(r)
+func (s *Server) handleShopPage(w http.ResponseWriter, r *http.Request) {
+	pctx := s.pageContext(r)
 	templ.Handler(render.ShopPage(pctx)).ServeHTTP(w, r)
+}
+
+func (s *Server) pageContext(r *http.Request) page.Context {
+	return page.NewContext(r, s.planningSiteURL)
 }
 
 // Listen - starts the server

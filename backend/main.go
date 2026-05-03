@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 	"os/signal"
 	"syscall"
 
@@ -11,12 +12,17 @@ import (
 )
 
 func main() {
+	planningSiteURL := os.Getenv("PLANNING_SITE_URL")
+	if planningSiteURL == "" {
+		planningSiteURL = "http://localhost:3000"
+	}
+
 	apisrv, err := api.NewServer()
 	if err != nil {
 		log.Fatal("error during set up of api server", err)
 	}
 
-	spsrv, err := shopping.NewServer(8081)
+	spsrv, err := shopping.NewServer(8081, planningSiteURL)
 	if err != nil {
 		log.Fatal("error during set up of shopping server", err)
 	}
