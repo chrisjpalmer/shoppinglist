@@ -15,7 +15,7 @@ func (m *Backend) PublishMigrateImage(
 	tag string,
 	registryPassword *dagger.Secret,
 ) error {
-	plats := []dagger.Platform{"linux/arm64", "linux/amd64"}
+	plats := []dagger.Platform{"linux/arm64"}
 
 	toSql := m.RootSrc.File(schemaPath)
 
