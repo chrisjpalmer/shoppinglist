@@ -44,7 +44,7 @@ func (m *Backend) Publish(
 	tag string,
 	registryPassword *dagger.Secret,
 ) error {
-	plats := []dagger.Platform{"linux/arm64", "linux/amd64"}
+	plats := []dagger.Platform{"linux/arm64"}
 
 	ctrs := make([]*dagger.Container, len(plats))
 
