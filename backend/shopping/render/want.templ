@@ -35,7 +35,13 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 						w.OverrideCount, 
 						components.NumericInputOpts{Classes: []string{"col-override"}},
 					) }
-					@components.Td(){ {w.Total} }
+					{{ 
+					  var totalTd components.TdOpts
+					  if w.OverrideCount > w.Required {
+						totalTd.Classes = []string{"text-red-500"}
+					  }
+					}}
+					@components.Td(totalTd){ {w.Total} }
 				}
 				}
 				
