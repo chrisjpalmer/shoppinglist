@@ -1,5 +1,5 @@
-import { PUBLIC_SHOPPING_SITE_URL } from "$env/static/public";
+import { env } from '$env/dynamic/public';
 
 export function ShoppingSiteUrl(): string {
-    return PUBLIC_SHOPPING_SITE_URL
+    return env.PUBLIC_SHOPPING_SITE_URL
 }

@@ -14,6 +14,10 @@ const (
 	// localFrontendPort - the port of the frontend website.
 	// This is the default for the svelte setup being used.
 	localFrontendPort = 3000
+
+	// localShoppingSiteUrl - the url of the shopping site when the backend is served locally.
+	// This value must be synced with the default port in the backend code
+	localShoppingSiteUrl = "http://localhost:8081"
 )
 
 // FrontendService - runs the frontend service inside a container
@@ -30,6 +34,7 @@ func (m *Frontend) FrontendService(ctx context.Context) (*dagger.Service, error)
 	}
 
 	return ctr.
+		WithEnvVariable("PUBLIC_SHOPPING_SITE_URL", localShoppingSiteUrl).
 		WithExposedPort(localFrontendPort).
 		AsService(dagger.ContainerAsServiceOpts{UseEntrypoint: true}), nil
 }
