@@ -8,8 +8,8 @@
 
 <div class="flex flex-col bg-gray-100">
 	<MenuBar></MenuBar>
-	<div class="h-screen overflow-y-auto mt-10 sm:mt-0">
-		<div class="flex flex-row pt-16 px-8">
+	<div class="h-screen overflow-y-auto pt-26 sm:pt-16 pb-10">
+		<div class="flex flex-row px-8">
 			<div class="hidden sm:block w-40 flex-shrink-0">
 				<Nav />
 			</div>
