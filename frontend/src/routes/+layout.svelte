@@ -13,7 +13,7 @@
 			<div class="hidden sm:block w-40 flex-shrink-0">
 				<Nav />
 			</div>
-			<div class="flex flex-shrink-1 flex-basis-0 min-w-0 flex-col">
+			<div class="flex flex-grow-1 flex-shrink-1 flex-basis-0 min-w-0 flex-col">
 				{@render children()}
 			</div>
 		</div>
