@@ -4,7 +4,7 @@
         classes?: string,
     } = $props();
 </script>
-<table class="{classes} w-full table-fixed border-separate border-spacing-0 rounded-lg shadow-md sm:text-base text-sm">
+<table class="{classes} w-full border-separate border-spacing-0 rounded-lg shadow-md sm:text-base text-sm">
     <tbody>
         {@render children()}
     </tbody>

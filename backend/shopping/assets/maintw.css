@@ -262,8 +262,8 @@
   .flex-shrink-1 {
     flex-shrink: 1;
   }
-  .table-fixed {
-    table-layout: fixed;
+  .flex-grow-1 {
+    flex-grow: 1;
   }
   .border-separate {
     border-collapse: separate;
