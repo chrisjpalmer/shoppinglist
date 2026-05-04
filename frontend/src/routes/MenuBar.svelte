@@ -11,7 +11,7 @@
     expanded = false
   }
 </script>
-<div class="sm:hidden absolute top-0 left-0 p-5 z-5 shadow-md w-full">
+<div class="sm:hidden absolute top-0 left-0 p-5 z-5 shadow-md w-full bg-gray-100">
     <button class="cursor-pointer" onclick={() => show()}>
 	    <img src={menuSvg} alt="menu" height="20" width="20" />
     </button>
