@@ -53,11 +53,11 @@ func (m *Shoppinglist) BuildAndDeploy(
 		return fmt.Errorf("error while building: %w", err)
 	}
 
-	if err := m.Deploy(ctx, "env1", tag, kubeEnv1, "http://100.49.208.199:30000/", "http://100.49.208.199:30002/"); err != nil {
+	if err := m.Deploy(ctx, "env1", tag, kubeEnv1, "http://pipi:30000/", "http://pipi:30002/"); err != nil {
 		return fmt.Errorf("error while deploying to kubeEnv1: %w", err)
 	}
 
-	if err := m.Deploy(ctx, "env2", tag, kubeEnv2, "http://pipi:30000/", "http://pipi:30002/"); err != nil {
+	if err := m.Deploy(ctx, "env2", tag, kubeEnv2, "http://100.49.208.199:30000/", "http://100.49.208.199:30002/"); err != nil {
 		return fmt.Errorf("error while deploying to kubeEnv2: %w", err)
 	}
 
