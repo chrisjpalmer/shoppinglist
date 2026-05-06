@@ -4,10 +4,12 @@ CREATE TABLE plan (
 );
 
 CREATE TABLE meals (
-  id           INTEGER PRIMARY KEY,
-  name         text    NOT NULL,
-  recipe_url   text    NOT NULL,
-  ingredients  text    NOT NULL -- [ingredient ids]
+  id                    INTEGER PRIMARY KEY,
+  name                  text    NOT NULL,
+  recipe_url            text    NOT NULL,
+  preview_image_url     text    NOT NULL DEFAULT "",
+  ingredients_image_url text    NOT NULL DEFAULT "",
+  ingredients           text    NOT NULL -- [ingredient ids]
 );
 
 CREATE TABLE ingredients (

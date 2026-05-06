@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"connectrpc.com/connect"
 	"github.com/chrisjpalmer/shoppinglist/backend/genpb"
@@ -23,11 +24,29 @@ func (s *Server) GetMeals(ctx context.Context, rq *connect.Request[genpb.GetMeal
 			return nil, err
 		}
 
+		var previewImageUrl string
+		s, ok := m.PreviewImageUrl.(string)
+		if !ok {
+			return nil, fmt.Errorf("error casting PreviewImageUrl to a string")
+		}
+
+		previewImageUrl = s
+
+		var ingredientsImageUrl string
+		s, ok = m.IngredientsImageUrl.(string)
+		if !ok {
+			return nil, fmt.Errorf("error casting IngredientsImageUrl to a string")
+		}
+
+		ingredientsImageUrl = s
+
 		gmm = append(gmm, &genpb.Meal{
-			Id:             m.ID,
-			Name:           m.Name,
-			IngredientRefs: ig,
-			RecipeUrl:      m.RecipeUrl,
+			Id:                  m.ID,
+			Name:                m.Name,
+			IngredientRefs:      ig,
+			RecipeUrl:           m.RecipeUrl,
+			PreviewImageUrl:     previewImageUrl,
+			IngredientsImageUrl: ingredientsImageUrl,
 		})
 	}
 
@@ -40,9 +59,11 @@ func (s *Server) CreateMeal(ctx context.Context, rq *connect.Request[genpb.Creat
 	}
 
 	id, err := s.sql.CreateMeal(ctx, gensql.CreateMealParams{
-		Name:        rq.Msg.Meal.Name,
-		Ingredients: igstr,
-		RecipeUrl:   rq.Msg.Meal.RecipeUrl,
+		Name:                rq.Msg.Meal.Name,
+		Ingredients:         igstr,
+		RecipeUrl:           rq.Msg.Meal.RecipeUrl,
+		PreviewImageUrl:     rq.Msg.Meal.PreviewImageUrl,
+		IngredientsImageUrl: rq.Msg.Meal.IngredientsImageUrl,
 	})
 	if err != nil {
 		return nil, err
@@ -57,10 +78,12 @@ func (s *Server) UpdateMeal(ctx context.Context, rq *connect.Request[genpb.Updat
 	}
 
 	err = s.sql.UpdateMeal(ctx, gensql.UpdateMealParams{
-		ID:          rq.Msg.Meal.Id,
-		Name:        rq.Msg.Meal.Name,
-		Ingredients: igstr,
-		RecipeUrl:   rq.Msg.Meal.RecipeUrl,
+		ID:                  rq.Msg.Meal.Id,
+		Name:                rq.Msg.Meal.Name,
+		Ingredients:         igstr,
+		RecipeUrl:           rq.Msg.Meal.RecipeUrl,
+		PreviewImageUrl:     rq.Msg.Meal.PreviewImageUrl,
+		IngredientsImageUrl: rq.Msg.Meal.IngredientsImageUrl,
 	})
 	if err != nil {
 		return nil, err

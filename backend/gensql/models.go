@@ -11,10 +11,12 @@ type Ingredient struct {
 }
 
 type Meal struct {
-	ID          int64
-	Name        string
-	RecipeUrl   string
-	Ingredients string
+	ID                  int64
+	Name                string
+	RecipeUrl           string
+	PreviewImageUrl     interface{}
+	IngredientsImageUrl interface{}
+	Ingredients         string
 }
 
 type Plan struct {

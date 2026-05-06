@@ -22,13 +22,15 @@ const (
 )
 
 type Meal struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	Id             int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name           string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	IngredientRefs []*IngredientRef       `protobuf:"bytes,3,rep,name=ingredient_refs,json=ingredientRefs,proto3" json:"ingredient_refs,omitempty"`
-	RecipeUrl      string                 `protobuf:"bytes,4,opt,name=recipe_url,json=recipeUrl,proto3" json:"recipe_url,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	Id                  int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name                string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	IngredientRefs      []*IngredientRef       `protobuf:"bytes,3,rep,name=ingredient_refs,json=ingredientRefs,proto3" json:"ingredient_refs,omitempty"`
+	RecipeUrl           string                 `protobuf:"bytes,4,opt,name=recipe_url,json=recipeUrl,proto3" json:"recipe_url,omitempty"`
+	PreviewImageUrl     string                 `protobuf:"bytes,5,opt,name=preview_image_url,json=previewImageUrl,proto3" json:"preview_image_url,omitempty"`
+	IngredientsImageUrl string                 `protobuf:"bytes,6,opt,name=ingredients_image_url,json=ingredientsImageUrl,proto3" json:"ingredients_image_url,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *Meal) Reset() {
@@ -85,6 +87,20 @@ func (x *Meal) GetIngredientRefs() []*IngredientRef {
 func (x *Meal) GetRecipeUrl() string {
 	if x != nil {
 		return x.RecipeUrl
+	}
+	return ""
+}
+
+func (x *Meal) GetPreviewImageUrl() string {
+	if x != nil {
+		return x.PreviewImageUrl
+	}
+	return ""
+}
+
+func (x *Meal) GetIngredientsImageUrl() string {
+	if x != nil {
+		return x.IngredientsImageUrl
 	}
 	return ""
 }
@@ -146,13 +162,15 @@ var File_meal_proto protoreflect.FileDescriptor
 const file_meal_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"meal.proto\"\x82\x01\n" +
+	"meal.proto\"\xe2\x01\n" +
 	"\x04Meal\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x127\n" +
 	"\x0fingredient_refs\x18\x03 \x03(\v2\x0e.IngredientRefR\x0eingredientRefs\x12\x1d\n" +
 	"\n" +
-	"recipe_url\x18\x04 \x01(\tR\trecipeUrl\"L\n" +
+	"recipe_url\x18\x04 \x01(\tR\trecipeUrl\x12*\n" +
+	"\x11preview_image_url\x18\x05 \x01(\tR\x0fpreviewImageUrl\x122\n" +
+	"\x15ingredients_image_url\x18\x06 \x01(\tR\x13ingredientsImageUrl\"L\n" +
 	"\rIngredientRef\x12#\n" +
 	"\ringredient_id\x18\x01 \x01(\x03R\fingredientId\x12\x16\n" +
 	"\x06number\x18\x02 \x01(\x05R\x06numberBAB\tMealProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
