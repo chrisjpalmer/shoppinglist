@@ -123,7 +123,7 @@
 			</Tr>
 		{:else}
 			<Tr>
-				<Td classes={!dm.hasIngredients ? 'color-red' : 'color-initial'}>{dm.name}</Td>
+				<Td classes={!dm.hasIngredients ? 'text-red-500' : ''}>{dm.name}</Td>
 				<Td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</Td>
 				<Td>
 					<Button onclick={() => editMeal(dm.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteMeal(dm.id)}>Delete</Button>
