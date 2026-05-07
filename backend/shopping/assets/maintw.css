@@ -220,6 +220,9 @@
   .mb-2 {
     margin-bottom: calc(var(--spacing) * 2);
   }
+  .mb-5 {
+    margin-bottom: calc(var(--spacing) * 5);
+  }
   .ml-5 {
     margin-left: calc(var(--spacing) * 5);
   }
@@ -341,9 +344,6 @@
   }
   .py-4 {
     padding-block: calc(var(--spacing) * 4);
-  }
-  .py-10 {
-    padding-block: calc(var(--spacing) * 10);
   }
   .pt-26 {
     padding-top: calc(var(--spacing) * 26);
