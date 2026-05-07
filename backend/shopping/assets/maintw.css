@@ -8,9 +8,8 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-red-500: oklch(63.7% 0.237 25.331);
-    --color-blue-400: oklch(70.7% 0.165 254.624);
+    --color-blue-300: oklch(80.9% 0.105 251.813);
     --color-blue-500: oklch(62.3% 0.214 259.815);
-    --color-blue-600: oklch(54.6% 0.245 262.881);
     --color-gray-100: oklch(96.7% 0.003 264.542);
     --color-gray-200: oklch(92.8% 0.006 264.531);
     --color-gray-500: oklch(55.1% 0.027 264.364);
@@ -458,13 +457,6 @@
       background-color: var(--color-gray-100);
     }
   }
-  .hover\:bg-blue-400 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-blue-400);
-      }
-    }
-  }
   .focus\:border-gray-900 {
     &:focus {
       border-color: var(--color-gray-900);
@@ -476,9 +468,9 @@
       outline-style: none;
     }
   }
-  .active\:bg-blue-600 {
-    &:active {
-      background-color: var(--color-blue-600);
+  .disabled\:bg-blue-300 {
+    &:disabled {
+      background-color: var(--color-blue-300);
     }
   }
   .aria-expanded\:left-0 {
