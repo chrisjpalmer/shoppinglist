@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(go run ./scripts/raise-pr/raise-pr.go)"
+      "Bash(go run ./scripts/raise-pr/raise-pr.go)",
+      "Read(*)",
+      "Bash(git *)"
     ],
     "deny": [
       "Read(./local/**)",
