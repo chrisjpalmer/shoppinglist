@@ -21,6 +21,8 @@
 		name: string
 		isEdit: boolean
 		recipeUrl: string
+		previewImageUrl: string
+		ingredientsImageUrl: string
 		hasIngredients: boolean
 	}
 
@@ -28,6 +30,8 @@
 		pseudoId: number
 		name: string
 		recipeUrl: string
+		previewImageUrl: string
+		ingredientsImageUrl: string
 	}
 
 	async function refresh() {
@@ -37,7 +41,9 @@
 			name: m.name, 
 			_meal:m, 
 			isEdit: false, 
-			recipeUrl: m.recipeUrl, 
+			recipeUrl: m.recipeUrl,
+			previewImageUrl: m.previewImageUrl,
+			ingredientsImageUrl: m.ingredientsImageUrl,
 			hasIngredients: m.ingredientRefs && m.ingredientRefs.length > 0
 		}))
 		displayNewMeals = []
@@ -67,6 +73,8 @@
 		let _meal = m._meal
 		_meal.name = m.name
 		_meal.recipeUrl = m.recipeUrl
+		_meal.previewImageUrl = m.previewImageUrl
+		_meal.ingredientsImageUrl = m.ingredientsImageUrl
 
 		await client.updateMeal({
 			meal: _meal,
@@ -86,6 +94,8 @@
 			meal: {
 				name: m.name,
 				recipeUrl: m.recipeUrl,
+				previewImageUrl: m.previewImageUrl,
+				ingredientsImageUrl: m.ingredientsImageUrl,
 				ingredientRefs: [],
 			},
 		})
@@ -94,7 +104,7 @@
 	}
 
 	function addMeal() {
-		displayNewMeals.push({pseudoId: psuedoIdCounter, name: "", recipeUrl: ""})
+		displayNewMeals.push({pseudoId: psuedoIdCounter, name: "", recipeUrl: "", previewImageUrl: "", ingredientsImageUrl: ""})
 		psuedoIdCounter++
 	}
 
@@ -106,8 +116,20 @@
 
 
 <Table>
-	<TrTitle><Td title={true}>Meals</Td><Td title={true}></Td><Td></Td></TrTitle>
-	<TrHeader><Td header={true}>Name</Td><Td header={true}>Recipe Url</Td><Td header={true}>Action</Td></TrHeader>
+	<TrTitle>
+		<Td title={true}>Meals</Td>
+		<Td title={true}></Td>
+		<Td title={true}></Td>
+		<Td title={true}></Td>
+		<Td title={true}></Td>
+	</TrTitle>
+	<TrHeader>
+		<Td header={true}>Name</Td>
+		<Td header={true}>Recipe Url</Td>
+		<Td header={true}>Preview Image Url</Td>
+		<Td header={true}>Ingredients Image Url</Td>
+		<Td header={true}>Action</Td>
+	</TrHeader>
 	{#each displayMeals as dm (dm.id)}
 		{#if dm.isEdit}
 			<Tr>
@@ -118,6 +140,12 @@
 					<TextInput bind:value={dm.recipeUrl}/>
 				</Td>
 				<Td>
+					<TextInput bind:value={dm.previewImageUrl}/>
+				</Td>
+				<Td>
+					<TextInput bind:value={dm.ingredientsImageUrl}/>
+				</Td>
+				<Td>
 					<Button onclick={() => saveMeal(dm.id)}>Save</Button>
 				</Td>
 			</Tr>
@@ -125,6 +153,8 @@
 			<Tr>
 				<Td classes={!dm.hasIngredients ? 'text-red-500' : ''}>{dm.name}</Td>
 				<Td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</Td>
+				<Td>{#if dm.previewImageUrl != ''}<a href={dm.previewImageUrl}>Link</a>{/if}</Td>
+				<Td>{#if dm.ingredientsImageUrl != ''}<a href={dm.ingredientsImageUrl}>Link</a>{/if}</Td>
 				<Td>
 					<Button onclick={() => editMeal(dm.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteMeal(dm.id)}>Delete</Button>
 				</Td>
@@ -140,9 +170,21 @@
 				<TextInput bind:value={dm.recipeUrl}/>
 			</Td>
 			<Td>
+				<TextInput bind:value={dm.previewImageUrl}/>
+			</Td>
+			<Td>
+				<TextInput bind:value={dm.ingredientsImageUrl}/>
+			</Td>
+			<Td>
 				<Button onclick={() => saveNewMeal(dm.pseudoId)}>Save</Button>
 			</Td>
 		</Tr>
 	{/each}
-	<Tr><Td></Td><Td></Td><Td><Button onclick={addMeal}>+</Button></Td></Tr>
+	<Tr>
+		<Td></Td>
+		<Td></Td>
+		<Td></Td>
+		<Td></Td>
+		<Td><Button onclick={addMeal}>+</Button></Td>
+	</Tr>
 </Table>

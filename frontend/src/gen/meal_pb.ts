@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file meal.proto.
  */
 export const file_meal: GenFile = /*@__PURE__*/
-  fileDesc("CgptZWFsLnByb3RvIl0KBE1lYWwSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRInCg9pbmdyZWRpZW50X3JlZnMYAyADKAsyDi5JbmdyZWRpZW50UmVmEhIKCnJlY2lwZV91cmwYBCABKAkiNgoNSW5ncmVkaWVudFJlZhIVCg1pbmdyZWRpZW50X2lkGAEgASgDEg4KBm51bWJlchgCIAEoBWIGcHJvdG8z");
+  fileDesc("CgptZWFsLnByb3RvIpcBCgRNZWFsEgoKAmlkGAEgASgDEgwKBG5hbWUYAiABKAkSJwoPaW5ncmVkaWVudF9yZWZzGAMgAygLMg4uSW5ncmVkaWVudFJlZhISCgpyZWNpcGVfdXJsGAQgASgJEhkKEXByZXZpZXdfaW1hZ2VfdXJsGAUgASgJEh0KFWluZ3JlZGllbnRzX2ltYWdlX3VybBgGIAEoCSI2Cg1JbmdyZWRpZW50UmVmEhUKDWluZ3JlZGllbnRfaWQYASABKAMSDgoGbnVtYmVyGAIgASgFYgZwcm90bzM");
 
 /**
  * @generated from message Meal
@@ -35,6 +35,16 @@ export type Meal = Message<"Meal"> & {
    * @generated from field: string recipe_url = 4;
    */
   recipeUrl: string;
+
+  /**
+   * @generated from field: string preview_image_url = 5;
+   */
+  previewImageUrl: string;
+
+  /**
+   * @generated from field: string ingredients_image_url = 6;
+   */
+  ingredientsImageUrl: string;
 };
 
 /**

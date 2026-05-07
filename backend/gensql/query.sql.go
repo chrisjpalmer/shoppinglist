@@ -21,17 +21,25 @@ func (q *Queries) CreateIngredient(ctx context.Context, name string) (int64, err
 }
 
 const createMeal = `-- name: CreateMeal :one
-INSERT INTO meals (name, ingredients, recipe_url) VALUES (?, ?, ?) RETURNING id
+INSERT INTO meals (name, ingredients, recipe_url, preview_image_url, ingredients_image_url) VALUES (?, ?, ?, ?, ?) RETURNING id
 `
 
 type CreateMealParams struct {
-	Name        string
-	Ingredients string
-	RecipeUrl   string
+	Name                string
+	Ingredients         string
+	RecipeUrl           string
+	PreviewImageUrl     interface{}
+	IngredientsImageUrl interface{}
 }
 
 func (q *Queries) CreateMeal(ctx context.Context, arg CreateMealParams) (int64, error) {
-	row := q.db.QueryRowContext(ctx, createMeal, arg.Name, arg.Ingredients, arg.RecipeUrl)
+	row := q.db.QueryRowContext(ctx, createMeal,
+		arg.Name,
+		arg.Ingredients,
+		arg.RecipeUrl,
+		arg.PreviewImageUrl,
+		arg.IngredientsImageUrl,
+	)
 	var id int64
 	err := row.Scan(&id)
 	return id, err
@@ -96,15 +104,17 @@ func (q *Queries) GetIngredients(ctx context.Context) ([]Ingredient, error) {
 
 const getMeals = `-- name: GetMeals :many
 
-SELECT id, name, ingredients, recipe_url FROM meals
+SELECT id, name, ingredients, recipe_url, preview_image_url, ingredients_image_url FROM meals
 ORDER BY name
 `
 
 type GetMealsRow struct {
-	ID          int64
-	Name        string
-	Ingredients string
-	RecipeUrl   string
+	ID                  int64
+	Name                string
+	Ingredients         string
+	RecipeUrl           string
+	PreviewImageUrl     interface{}
+	IngredientsImageUrl interface{}
 }
 
 // ----- MEALS ------
@@ -122,6 +132,8 @@ func (q *Queries) GetMeals(ctx context.Context) ([]GetMealsRow, error) {
 			&i.Name,
 			&i.Ingredients,
 			&i.RecipeUrl,
+			&i.PreviewImageUrl,
+			&i.IngredientsImageUrl,
 		); err != nil {
 			return nil, err
 		}
@@ -178,14 +190,16 @@ func (q *Queries) UpdateIngredientWantOverrideCount(ctx context.Context, arg Upd
 }
 
 const updateMeal = `-- name: UpdateMeal :exec
-UPDATE meals set name = ?, ingredients = ?, recipe_url = ? WHERE id = ?
+UPDATE meals set name = ?, ingredients = ?, recipe_url = ?, preview_image_url = ?, ingredients_image_url = ? WHERE id = ?
 `
 
 type UpdateMealParams struct {
-	Name        string
-	Ingredients string
-	RecipeUrl   string
-	ID          int64
+	Name                string
+	Ingredients         string
+	RecipeUrl           string
+	PreviewImageUrl     interface{}
+	IngredientsImageUrl interface{}
+	ID                  int64
 }
 
 func (q *Queries) UpdateMeal(ctx context.Context, arg UpdateMealParams) error {
@@ -193,6 +207,8 @@ func (q *Queries) UpdateMeal(ctx context.Context, arg UpdateMealParams) error {
 		arg.Name,
 		arg.Ingredients,
 		arg.RecipeUrl,
+		arg.PreviewImageUrl,
+		arg.IngredientsImageUrl,
 		arg.ID,
 	)
 	return err

@@ -1,248 +1,27 @@
 <script lang="ts">
-  	import type { IngredientRef, Meal } from '../../gen/meal_pb';
-  	import type { Ingredient } from '../../gen/ingredient_pb';
+  	import type { Meal } from '../../gen/meal_pb';
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
-	import Button from '../../components/button.svelte';
-	import Select from '../../components/select.svelte';
-	import Table from '../../components/table.svelte';
-	import Td from '../../components/td.svelte';
-	import TrHeader from '../../components/tr-header.svelte';
-	import TrTitle from '../../components/tr-title.svelte';
-	import Tr from '../../components/tr.svelte';
 
 	const client = CreateShoppingListService()
 
-	let psuedoId = 10000
-
 	let meals: Meal[] = $state([])
-	let ingredients: Ingredient[] = $state([])
-
-	async function refresh() {
-		const gmRs = await client.getMeals({})
-		meals = gmRs.meals
-		
-		const giRs = await client.getIngredients({});
-		ingredients = giRs.ingredients
-
-		if(selectedMeal) {
-			await setSelectedMealId(selectedMeal.id)
-		} else {
-			if(meals.length > 0) {
-				await setSelectedMealId(meals[0].id)
-			}
-		}
-	}
-	interface SelectedMeal {
-		id: bigint
-		name: string
-		recipeUrl: string
-		ingredients: SelectedMealIngredient[]
+	
+	async function init() {
+		const rs = await client.getMeals({})
+		meals = rs.meals
 	}
 
-	interface SelectedMealIngredient {
-		id: bigint
-		name: string
-		number: number
-		isNew: boolean
-	}
-
-	let selectedMeal: SelectedMeal | null = $state(null)
-	let selectedMealPristine: SelectedMeal | null = null;
-
-	function getSelectedMealId() {
-		if(selectedMeal) {
-			return selectedMeal.id
-		}
-	}
-
-	async function setSelectedMealId(id:bigint | undefined) {
-		if (!id) {
-			selectedMeal = null
-			return
-		}
-			
-		const meal = meals.find(m => m.id == id) || null
-		if(!meal) {
-			selectedMeal = null
-			return
-		}
-
-		selectedMeal = toSelectedMeal(meal)
-		selectedMealPristine = toSelectedMeal(meal)
-	}
-
-	function toSelectedMeal(meal:Meal) : SelectedMeal {
-		let smig: SelectedMealIngredient[] = []
-
-		for(const igRef of meal.ingredientRefs) {
-			const ig = ingredients.find(ig => ig.id === igRef.ingredientId)
-			if(!ig) {
-				console.log("failed to resolve ingredient id: ", igRef.ingredientId)
-				continue
-			}
-
-			smig.push({
-				id: ig.id,
-				name: ig.name,
-				number: igRef.number,
-				isNew: false,
-			})
-		}
-
-		return {
-			id: meal.id,
-			name: meal.name,
-			recipeUrl: meal.recipeUrl,
-			ingredients: smig,
-		}
-	}
-
-	function addNewIngredient() {
-		selectedMeal?.ingredients.push({id: BigInt(psuedoId), name:"", number: 1, isNew: true})
-		psuedoId++
-	}
-
-	function deleteIngredient(id:bigint) {
-		if(!selectedMeal) {
-			console.log("trying to delete an ingredient, but no selected meal")
-			return
-		}
-		const ing = selectedMeal.ingredients;
-		ing.splice(ing.findIndex(ml => ml.id == id), 1)
-	}
-
-	async function saveSelectedMeal() {
-		if(!selectedMeal) {
-			console.log("tried to save a selected meal when no selected meal is set")
-			return
-		}
-
-		let igRefs: IngredientRef[] = []
-		for(const ig of selectedMeal.ingredients) {
-			igRefs.push(<IngredientRef>{
-				ingredientId: ig.id,
-				number: ig.number,
-			})
-		}
-
-		await client.updateMeal({
-			meal: {
-				id: selectedMeal.id,
-				name: selectedMeal.name,
-				recipeUrl: selectedMeal.recipeUrl,
-				ingredientRefs: igRefs,
-			},
-		})
-
-		refresh()
-	}
-
-	function dirty(): boolean {
-		if(!selectedMeal) {
-			return false;
-		}
-		if(!selectedMealPristine) {
-			console.log("selectedMealPristine was null but shouldnt be")
-			return false;
-		}
-
-		if(selectedMeal.ingredients.length != selectedMealPristine.ingredients.length) {
-			return true
-		}
-
-		for(let i = 0; i < selectedMeal.ingredients.length; i++) {
-			const ig = selectedMeal.ingredients[i]
-			const igprist = selectedMealPristine.ingredients[i]
-			if(!ingredientsEqual(ig, igprist)) {
-				return true
-			}
-		}
-		
-		return false
-	}
-
-	function ingredientsEqual(a: SelectedMealIngredient, b:SelectedMealIngredient): boolean {
-		if(a.id != b.id) {
-			return false
-		}
-
-		if (a.isNew != b.isNew) {
-			return false
-		}
-
-		if (a.name != b.name) {
-			return false
-		}
-
-		if (a.number != b.number) {
-			return false
-		}
-
-		return true
-	}
-
-	function valid(): boolean {
-		if(!selectedMeal) {
-			return true;
-		}
-
-		const newIngredients = selectedMeal.ingredients.filter(ig => ig.isNew)
-
-		for(const ning of newIngredients) {
-			if(ning.id == BigInt(0)) {
-				return false
-			}
-
-			if(ning.number == 0) {
-				return false
-			}
-		}
-		return true
-	}
-
-	refresh()
-
+	init()
 </script>
-
 <svelte:head>
-	<title>Recipies</title>
-	<meta name="description" content="Build the recipes" />
+	<title>Meals</title>
 </svelte:head>
 
-<div class="w-full flex-col flex items-center">
-	<Select classes="mb-4 size-1/2 h-10" bind:value={()=>getSelectedMealId(), (v) => setSelectedMealId(v)}>
-		{#each meals as meal (meal.id)}
-			<option value={meal.id}>{meal.name}</option>
-		{/each}
-	</Select>
-</div>
-
-{#if selectedMeal}
-<Table>
-	<TrTitle><Td title={true}>Recipies</Td><Td title={true}></Td><Td></Td></TrTitle>
-	<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Number</Td><Td header={true}>Action</Td></TrHeader>
-	{#each selectedMeal.ingredients as ing (ing.id)}
-	<Tr>
-		<Td>
-			<Select bind:value={ing.id}>
-			{#each ingredients as ing}
-				<option value={ing.id}>{ing.name}</option>
-			{/each}
-			</Select>
-		</Td>
-		<Td>
-			<input class="w-12 bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
-		</Td>
-		<Td>
-			<Button onclick={() => deleteIngredient(ing.id)}>Delete</Button>
-		</Td>
-	</Tr>
+<div class="flex flex-row flex-wrap w-full justify-center">
+	{#each meals as m (m.id)}
+	<a href="/recipies/{m.id}" class="flex flex-col justify-end relative overflow-hidden items-center w-25 h-25 m-1 sm:w-50 sm:h-50 sm:m-4 rounded-md bg-white shadow-md">
+		<p class="bg-white/70 z-2 px-3 font-medium w-full text-center sm:text-base text-xs">{m.name}</p>
+		<div class="absolute top-0 left-0 w-full h-full bg-cover" style="background-image: url({m.previewImageUrl || '/ramen.svg'})"></div>
+	</a>
 	{/each}
-
-	<Tr><Td></Td><Td></Td><Td><Button onclick={addNewIngredient}>+</Button></Td></Tr>
-</Table>
-
-{#if dirty()}
-<Button onclick={saveSelectedMeal} disabled={!valid()}>Save</Button>
-{/if}
-{/if}
+</div>

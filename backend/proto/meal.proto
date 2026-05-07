@@ -5,6 +5,8 @@ message Meal {
     string name = 2;
     repeated IngredientRef ingredient_refs = 3;
     string recipe_url = 4;
+    string preview_image_url = 5;
+    string ingredients_image_url = 6;
 }
 
 message IngredientRef {
