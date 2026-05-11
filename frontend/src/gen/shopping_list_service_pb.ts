@@ -16,7 +16,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file shopping_list_service.proto.
  */
 export const file_shopping_list_service: GenFile = /*@__PURE__*/
-  fileDesc("ChtzaG9wcGluZ19saXN0X3NlcnZpY2UucHJvdG8iEAoOR2V0UGxhblJlcXVlc3QiSgoPR2V0UGxhblJlc3BvbnNlEhMKBHBsYW4YASABKAsyBS5QbGFuEiIKDHBsYW5fc3VtbWFyeRgCIAEoCzIMLlBsYW5TdW1tYXJ5IigKEVVwZGF0ZVBsYW5SZXF1ZXN0EhMKBHBsYW4YASABKAsyBS5QbGFuIhQKElVwZGF0ZVBsYW5SZXNwb25zZSIRCg9HZXRNZWFsc1JlcXVlc3QiKAoQR2V0TWVhbHNSZXNwb25zZRIUCgVtZWFscxgBIAMoCzIFLk1lYWwiKAoRQ3JlYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiJQoSQ3JlYXRlTWVhbFJlc3BvbnNlEg8KB21lYWxfaWQYASABKAMiKAoRVXBkYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiFAoSVXBkYXRlTWVhbFJlc3BvbnNlIiQKEURlbGV0ZU1lYWxSZXF1ZXN0Eg8KB21lYWxfaWQYASABKAMiFAoSRGVsZXRlTWVhbFJlc3BvbnNlIhcKFUdldEluZ3JlZGllbnRzUmVxdWVzdCI6ChZHZXRJbmdyZWRpZW50c1Jlc3BvbnNlEiAKC2luZ3JlZGllbnRzGAEgAygLMgsuSW5ncmVkaWVudCI6ChdDcmVhdGVJbmdyZWRpZW50UmVxdWVzdBIfCgppbmdyZWRpZW50GAEgASgLMgsuSW5ncmVkaWVudCIxChhDcmVhdGVJbmdyZWRpZW50UmVzcG9uc2USFQoNaW5ncmVkaWVudF9pZBgBIAEoAyI6ChdVcGRhdGVJbmdyZWRpZW50UmVxdWVzdBIfCgppbmdyZWRpZW50GAEgASgLMgsuSW5ncmVkaWVudCIaChhVcGRhdGVJbmdyZWRpZW50UmVzcG9uc2UiMAoXRGVsZXRlSW5ncmVkaWVudFJlcXVlc3QSFQoNaW5ncmVkaWVudF9pZBgBIAEoAyIaChhEZWxldGVJbmdyZWRpZW50UmVzcG9uc2Uy7gQKE1Nob3BwaW5nTGlzdFNlcnZpY2USLAoHR2V0UGxhbhIPLkdldFBsYW5SZXF1ZXN0GhAuR2V0UGxhblJlc3BvbnNlEjUKClVwZGF0ZVBsYW4SEi5VcGRhdGVQbGFuUmVxdWVzdBoTLlVwZGF0ZVBsYW5SZXNwb25zZRIvCghHZXRNZWFscxIQLkdldE1lYWxzUmVxdWVzdBoRLkdldE1lYWxzUmVzcG9uc2USNQoKQ3JlYXRlTWVhbBISLkNyZWF0ZU1lYWxSZXF1ZXN0GhMuQ3JlYXRlTWVhbFJlc3BvbnNlEjUKClVwZGF0ZU1lYWwSEi5VcGRhdGVNZWFsUmVxdWVzdBoTLlVwZGF0ZU1lYWxSZXNwb25zZRI1CgpEZWxldGVNZWFsEhIuRGVsZXRlTWVhbFJlcXVlc3QaEy5EZWxldGVNZWFsUmVzcG9uc2USQQoOR2V0SW5ncmVkaWVudHMSFi5HZXRJbmdyZWRpZW50c1JlcXVlc3QaFy5HZXRJbmdyZWRpZW50c1Jlc3BvbnNlEkcKEENyZWF0ZUluZ3JlZGllbnQSGC5DcmVhdGVJbmdyZWRpZW50UmVxdWVzdBoZLkNyZWF0ZUluZ3JlZGllbnRSZXNwb25zZRJHChBVcGRhdGVJbmdyZWRpZW50EhguVXBkYXRlSW5ncmVkaWVudFJlcXVlc3QaGS5VcGRhdGVJbmdyZWRpZW50UmVzcG9uc2USRwoQRGVsZXRlSW5ncmVkaWVudBIYLkRlbGV0ZUluZ3JlZGllbnRSZXF1ZXN0GhkuRGVsZXRlSW5ncmVkaWVudFJlc3BvbnNlYgZwcm90bzM", [file_plan, file_meal, file_ingredient]);
+  fileDesc("ChtzaG9wcGluZ19saXN0X3NlcnZpY2UucHJvdG8iEAoOR2V0UGxhblJlcXVlc3QiSgoPR2V0UGxhblJlc3BvbnNlEhMKBHBsYW4YASABKAsyBS5QbGFuEiIKDHBsYW5fc3VtbWFyeRgCIAEoCzIMLlBsYW5TdW1tYXJ5IigKEVVwZGF0ZVBsYW5SZXF1ZXN0EhMKBHBsYW4YASABKAsyBS5QbGFuIhQKElVwZGF0ZVBsYW5SZXNwb25zZSIRCg9HZXRNZWFsc1JlcXVlc3QiKAoQR2V0TWVhbHNSZXNwb25zZRIUCgVtZWFscxgBIAMoCzIFLk1lYWwiKAoRQ3JlYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiJQoSQ3JlYXRlTWVhbFJlc3BvbnNlEg8KB21lYWxfaWQYASABKAMiKAoRVXBkYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiFAoSVXBkYXRlTWVhbFJlc3BvbnNlIjkKFlVwZGF0ZU1lYWxJbWFnZVJlcXVlc3QSCgoCaWQYASABKAMSEwoLaW1hZ2VfYnl0ZXMYAiABKAwiGQoXVXBkYXRlTWVhbEltYWdlUmVzcG9uc2UiJAoRRGVsZXRlTWVhbFJlcXVlc3QSDwoHbWVhbF9pZBgBIAEoAyIUChJEZWxldGVNZWFsUmVzcG9uc2UiFwoVR2V0SW5ncmVkaWVudHNSZXF1ZXN0IjoKFkdldEluZ3JlZGllbnRzUmVzcG9uc2USIAoLaW5ncmVkaWVudHMYASADKAsyCy5JbmdyZWRpZW50IjoKF0NyZWF0ZUluZ3JlZGllbnRSZXF1ZXN0Eh8KCmluZ3JlZGllbnQYASABKAsyCy5JbmdyZWRpZW50IjEKGENyZWF0ZUluZ3JlZGllbnRSZXNwb25zZRIVCg1pbmdyZWRpZW50X2lkGAEgASgDIjoKF1VwZGF0ZUluZ3JlZGllbnRSZXF1ZXN0Eh8KCmluZ3JlZGllbnQYASABKAsyCy5JbmdyZWRpZW50IhoKGFVwZGF0ZUluZ3JlZGllbnRSZXNwb25zZSIwChdEZWxldGVJbmdyZWRpZW50UmVxdWVzdBIVCg1pbmdyZWRpZW50X2lkGAEgASgDIhoKGERlbGV0ZUluZ3JlZGllbnRSZXNwb25zZTKaBgoTU2hvcHBpbmdMaXN0U2VydmljZRIsCgdHZXRQbGFuEg8uR2V0UGxhblJlcXVlc3QaEC5HZXRQbGFuUmVzcG9uc2USNQoKVXBkYXRlUGxhbhISLlVwZGF0ZVBsYW5SZXF1ZXN0GhMuVXBkYXRlUGxhblJlc3BvbnNlEi8KCEdldE1lYWxzEhAuR2V0TWVhbHNSZXF1ZXN0GhEuR2V0TWVhbHNSZXNwb25zZRI1CgpDcmVhdGVNZWFsEhIuQ3JlYXRlTWVhbFJlcXVlc3QaEy5DcmVhdGVNZWFsUmVzcG9uc2USNQoKVXBkYXRlTWVhbBISLlVwZGF0ZU1lYWxSZXF1ZXN0GhMuVXBkYXRlTWVhbFJlc3BvbnNlElIKHVVwZGF0ZU1lYWxQcmV2aWV3SW1hZ2VSZXF1ZXN0EhcuVXBkYXRlTWVhbEltYWdlUmVxdWVzdBoYLlVwZGF0ZU1lYWxJbWFnZVJlc3BvbnNlElYKIVVwZGF0ZU1lYWxJbmdyZWRpZW50c0ltYWdlUmVxdWVzdBIXLlVwZGF0ZU1lYWxJbWFnZVJlcXVlc3QaGC5VcGRhdGVNZWFsSW1hZ2VSZXNwb25zZRI1CgpEZWxldGVNZWFsEhIuRGVsZXRlTWVhbFJlcXVlc3QaEy5EZWxldGVNZWFsUmVzcG9uc2USQQoOR2V0SW5ncmVkaWVudHMSFi5HZXRJbmdyZWRpZW50c1JlcXVlc3QaFy5HZXRJbmdyZWRpZW50c1Jlc3BvbnNlEkcKEENyZWF0ZUluZ3JlZGllbnQSGC5DcmVhdGVJbmdyZWRpZW50UmVxdWVzdBoZLkNyZWF0ZUluZ3JlZGllbnRSZXNwb25zZRJHChBVcGRhdGVJbmdyZWRpZW50EhguVXBkYXRlSW5ncmVkaWVudFJlcXVlc3QaGS5VcGRhdGVJbmdyZWRpZW50UmVzcG9uc2USRwoQRGVsZXRlSW5ncmVkaWVudBIYLkRlbGV0ZUluZ3JlZGllbnRSZXF1ZXN0GhkuRGVsZXRlSW5ncmVkaWVudFJlc3BvbnNlYgZwcm90bzM", [file_plan, file_meal, file_ingredient]);
 
 /**
  * @generated from message GetPlanRequest
@@ -178,6 +178,41 @@ export const UpdateMealResponseSchema: GenMessage<UpdateMealResponse> = /*@__PUR
   messageDesc(file_shopping_list_service, 9);
 
 /**
+ * @generated from message UpdateMealImageRequest
+ */
+export type UpdateMealImageRequest = Message<"UpdateMealImageRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: bytes image_bytes = 2;
+   */
+  imageBytes: Uint8Array;
+};
+
+/**
+ * Describes the message UpdateMealImageRequest.
+ * Use `create(UpdateMealImageRequestSchema)` to create a new message.
+ */
+export const UpdateMealImageRequestSchema: GenMessage<UpdateMealImageRequest> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 10);
+
+/**
+ * @generated from message UpdateMealImageResponse
+ */
+export type UpdateMealImageResponse = Message<"UpdateMealImageResponse"> & {
+};
+
+/**
+ * Describes the message UpdateMealImageResponse.
+ * Use `create(UpdateMealImageResponseSchema)` to create a new message.
+ */
+export const UpdateMealImageResponseSchema: GenMessage<UpdateMealImageResponse> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 11);
+
+/**
  * @generated from message DeleteMealRequest
  */
 export type DeleteMealRequest = Message<"DeleteMealRequest"> & {
@@ -192,7 +227,7 @@ export type DeleteMealRequest = Message<"DeleteMealRequest"> & {
  * Use `create(DeleteMealRequestSchema)` to create a new message.
  */
 export const DeleteMealRequestSchema: GenMessage<DeleteMealRequest> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 10);
+  messageDesc(file_shopping_list_service, 12);
 
 /**
  * @generated from message DeleteMealResponse
@@ -205,7 +240,7 @@ export type DeleteMealResponse = Message<"DeleteMealResponse"> & {
  * Use `create(DeleteMealResponseSchema)` to create a new message.
  */
 export const DeleteMealResponseSchema: GenMessage<DeleteMealResponse> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 11);
+  messageDesc(file_shopping_list_service, 13);
 
 /**
  * @generated from message GetIngredientsRequest
@@ -218,7 +253,7 @@ export type GetIngredientsRequest = Message<"GetIngredientsRequest"> & {
  * Use `create(GetIngredientsRequestSchema)` to create a new message.
  */
 export const GetIngredientsRequestSchema: GenMessage<GetIngredientsRequest> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 12);
+  messageDesc(file_shopping_list_service, 14);
 
 /**
  * @generated from message GetIngredientsResponse
@@ -235,7 +270,7 @@ export type GetIngredientsResponse = Message<"GetIngredientsResponse"> & {
  * Use `create(GetIngredientsResponseSchema)` to create a new message.
  */
 export const GetIngredientsResponseSchema: GenMessage<GetIngredientsResponse> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 13);
+  messageDesc(file_shopping_list_service, 15);
 
 /**
  * @generated from message CreateIngredientRequest
@@ -252,7 +287,7 @@ export type CreateIngredientRequest = Message<"CreateIngredientRequest"> & {
  * Use `create(CreateIngredientRequestSchema)` to create a new message.
  */
 export const CreateIngredientRequestSchema: GenMessage<CreateIngredientRequest> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 14);
+  messageDesc(file_shopping_list_service, 16);
 
 /**
  * @generated from message CreateIngredientResponse
@@ -269,7 +304,7 @@ export type CreateIngredientResponse = Message<"CreateIngredientResponse"> & {
  * Use `create(CreateIngredientResponseSchema)` to create a new message.
  */
 export const CreateIngredientResponseSchema: GenMessage<CreateIngredientResponse> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 15);
+  messageDesc(file_shopping_list_service, 17);
 
 /**
  * @generated from message UpdateIngredientRequest
@@ -286,7 +321,7 @@ export type UpdateIngredientRequest = Message<"UpdateIngredientRequest"> & {
  * Use `create(UpdateIngredientRequestSchema)` to create a new message.
  */
 export const UpdateIngredientRequestSchema: GenMessage<UpdateIngredientRequest> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 16);
+  messageDesc(file_shopping_list_service, 18);
 
 /**
  * @generated from message UpdateIngredientResponse
@@ -299,7 +334,7 @@ export type UpdateIngredientResponse = Message<"UpdateIngredientResponse"> & {
  * Use `create(UpdateIngredientResponseSchema)` to create a new message.
  */
 export const UpdateIngredientResponseSchema: GenMessage<UpdateIngredientResponse> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 17);
+  messageDesc(file_shopping_list_service, 19);
 
 /**
  * @generated from message DeleteIngredientRequest
@@ -316,7 +351,7 @@ export type DeleteIngredientRequest = Message<"DeleteIngredientRequest"> & {
  * Use `create(DeleteIngredientRequestSchema)` to create a new message.
  */
 export const DeleteIngredientRequestSchema: GenMessage<DeleteIngredientRequest> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 18);
+  messageDesc(file_shopping_list_service, 20);
 
 /**
  * @generated from message DeleteIngredientResponse
@@ -329,7 +364,7 @@ export type DeleteIngredientResponse = Message<"DeleteIngredientResponse"> & {
  * Use `create(DeleteIngredientResponseSchema)` to create a new message.
  */
 export const DeleteIngredientResponseSchema: GenMessage<DeleteIngredientResponse> = /*@__PURE__*/
-  messageDesc(file_shopping_list_service, 19);
+  messageDesc(file_shopping_list_service, 21);
 
 /**
  * @generated from service ShoppingListService
@@ -378,6 +413,22 @@ export const ShoppingListService: GenService<{
     methodKind: "unary";
     input: typeof UpdateMealRequestSchema;
     output: typeof UpdateMealResponseSchema;
+  },
+  /**
+   * @generated from rpc ShoppingListService.UpdateMealPreviewImageRequest
+   */
+  updateMealPreviewImageRequest: {
+    methodKind: "unary";
+    input: typeof UpdateMealImageRequestSchema;
+    output: typeof UpdateMealImageResponseSchema;
+  },
+  /**
+   * @generated from rpc ShoppingListService.UpdateMealIngredientsImageRequest
+   */
+  updateMealIngredientsImageRequest: {
+    methodKind: "unary";
+    input: typeof UpdateMealImageRequestSchema;
+    output: typeof UpdateMealImageResponseSchema;
   },
   /**
    * @generated from rpc ShoppingListService.DeleteMeal

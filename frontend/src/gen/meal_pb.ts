@@ -2,15 +2,15 @@
 // @generated from file meal.proto (syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file meal.proto.
  */
 export const file_meal: GenFile = /*@__PURE__*/
-  fileDesc("CgptZWFsLnByb3RvIpcBCgRNZWFsEgoKAmlkGAEgASgDEgwKBG5hbWUYAiABKAkSJwoPaW5ncmVkaWVudF9yZWZzGAMgAygLMg4uSW5ncmVkaWVudFJlZhISCgpyZWNpcGVfdXJsGAQgASgJEhkKEXByZXZpZXdfaW1hZ2VfdXJsGAUgASgJEh0KFWluZ3JlZGllbnRzX2ltYWdlX3VybBgGIAEoCSI2Cg1JbmdyZWRpZW50UmVmEhUKDWluZ3JlZGllbnRfaWQYASABKAMSDgoGbnVtYmVyGAIgASgFYgZwcm90bzM");
+  fileDesc("CgptZWFsLnByb3RvIqcBCgRNZWFsEgoKAmlkGAEgASgDEgwKBG5hbWUYAiABKAkSJwoPaW5ncmVkaWVudF9yZWZzGAMgAygLMg4uSW5ncmVkaWVudFJlZhISCgpyZWNpcGVfdXJsGAQgASgJEiEKDXByZXZpZXdfaW1hZ2UYBSABKAsyCi5JbWFnZU1ldGESJQoRaW5ncmVkaWVudHNfaW1hZ2UYBiABKAsyCi5JbWFnZU1ldGEiUQoJSW1hZ2VNZXRhEhgKBG1vZGUYASABKA4yCi5JbWFnZU1vZGUSFAoMZXh0ZXJuYWxfdXJsGAIgASgJEhQKDGludGVybmFsX3VybBgDIAEoCSI2Cg1JbmdyZWRpZW50UmVmEhUKDWluZ3JlZGllbnRfaWQYASABKAMSDgoGbnVtYmVyGAIgASgFKjoKCUltYWdlTW9kZRILCgdJTV9OT05FEAASDwoLSU1fSU5URVJOQUwQARIPCgtJTV9FWFRFUk5BTBACYgZwcm90bzM");
 
 /**
  * @generated from message Meal
@@ -37,14 +37,14 @@ export type Meal = Message<"Meal"> & {
   recipeUrl: string;
 
   /**
-   * @generated from field: string preview_image_url = 5;
+   * @generated from field: ImageMeta preview_image = 5;
    */
-  previewImageUrl: string;
+  previewImage?: ImageMeta;
 
   /**
-   * @generated from field: string ingredients_image_url = 6;
+   * @generated from field: ImageMeta ingredients_image = 6;
    */
-  ingredientsImageUrl: string;
+  ingredientsImage?: ImageMeta;
 };
 
 /**
@@ -53,6 +53,37 @@ export type Meal = Message<"Meal"> & {
  */
 export const MealSchema: GenMessage<Meal> = /*@__PURE__*/
   messageDesc(file_meal, 0);
+
+/**
+ * @generated from message ImageMeta
+ */
+export type ImageMeta = Message<"ImageMeta"> & {
+  /**
+   * @generated from field: ImageMode mode = 1;
+   */
+  mode: ImageMode;
+
+  /**
+   * the url of the image when the image mode is external
+   *
+   * @generated from field: string external_url = 2;
+   */
+  externalUrl: string;
+
+  /**
+   * the url of the image when the image mode is internal - read only
+   *
+   * @generated from field: string internal_url = 3;
+   */
+  internalUrl: string;
+};
+
+/**
+ * Describes the message ImageMeta.
+ * Use `create(ImageMetaSchema)` to create a new message.
+ */
+export const ImageMetaSchema: GenMessage<ImageMeta> = /*@__PURE__*/
+  messageDesc(file_meal, 1);
 
 /**
  * @generated from message IngredientRef
@@ -74,5 +105,31 @@ export type IngredientRef = Message<"IngredientRef"> & {
  * Use `create(IngredientRefSchema)` to create a new message.
  */
 export const IngredientRefSchema: GenMessage<IngredientRef> = /*@__PURE__*/
-  messageDesc(file_meal, 1);
+  messageDesc(file_meal, 2);
+
+/**
+ * @generated from enum ImageMode
+ */
+export enum ImageMode {
+  /**
+   * @generated from enum value: IM_NONE = 0;
+   */
+  IM_NONE = 0,
+
+  /**
+   * @generated from enum value: IM_INTERNAL = 1;
+   */
+  IM_INTERNAL = 1,
+
+  /**
+   * @generated from enum value: IM_EXTERNAL = 2;
+   */
+  IM_EXTERNAL = 2,
+}
+
+/**
+ * Describes the enum ImageMode.
+ */
+export const ImageModeSchema: GenEnum<ImageMode> = /*@__PURE__*/
+  enumDesc(file_meal, 0);
 

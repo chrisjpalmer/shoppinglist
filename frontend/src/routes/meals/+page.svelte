@@ -1,6 +1,6 @@
 <script lang="ts">
-  	import type { Meal } from '../../gen/meal_pb';
-  	import { CreateShoppingListService } from '$lib/shopping_list_service';
+  	import { type Meal, type ImageMeta, ImageMode } from '../../gen/meal_pb';
+  	import { BackendUrl, CreateShoppingListService } from '$lib/shopping_list_service';
 	import TextInput from '../../components/text-input.svelte';
 	import Button from '../../components/button.svelte';
 	import TrHeader from '../../components/tr-header.svelte';
@@ -21,18 +21,79 @@
 		name: string
 		isEdit: boolean
 		recipeUrl: string
-		previewImageUrl: string
-		ingredientsImageUrl: string
+		previewImage: DPImageMeta 
+		ingredientsImage: DPImageMeta
 		hasIngredients: boolean
+	}
+
+	interface DPImageMeta {
+		id: string // dm.id + "preview/ingredients"
+		mode: "none" | "external" | "internal"
+		internalUrl?: string
+		externalUrl?: string
+		fileUpload?: HTMLInputElement
+		fileBytes?: Uint8Array
+	}
+
+	function emptyImageMeta(id: string): DPImageMeta {
+		return {
+			id, 
+			mode: "none",
+		}
 	}
 
 	interface DisplayNewMeal {
 		pseudoId: number
 		name: string
 		recipeUrl: string
-		previewImageUrl: string
-		ingredientsImageUrl: string
+		previewImage: DPImageMeta 
+		ingredientsImage: DPImageMeta
 	}
+
+	function mapImageMeta(id: bigint, imgType: "preview" | "ingredients", img:ImageMeta | undefined): DPImageMeta {
+		let mid = imgid(id, imgType)
+
+		if (!img || img.mode == ImageMode.IM_NONE) {
+			return emptyImageMeta(mid)
+		}
+
+		if (img.mode == ImageMode.IM_INTERNAL) {
+			return {
+				id: mid,
+				mode: "internal",
+				internalUrl: BackendUrl() + img.internalUrl,
+			}
+		}
+
+		return {
+			id: mid,
+			mode: "external",
+			externalUrl: img.externalUrl,
+		}
+	}
+
+	function mapDPImageMeta(dpImg: DPImageMeta): ImageMeta {
+		let mode: ImageMode = ImageMode.IM_NONE
+		
+		if (dpImg.mode == "internal") {
+			mode = ImageMode.IM_INTERNAL
+		} else if (dpImg.mode == "external") {
+			mode = ImageMode.IM_EXTERNAL
+		} else {
+			// upgrade it to external if we are currently
+			// set to none but an external link is provided
+			if (!!dpImg.externalUrl) {
+				mode = ImageMode.IM_EXTERNAL
+			}
+		}
+
+		return {
+			$typeName: "ImageMeta",
+			mode,
+			externalUrl: dpImg.externalUrl || "",
+			internalUrl: "", // set to avoid typescript errors
+		}
+	} 
 
 	async function refresh() {
 		const rs = await client.getMeals({})
@@ -42,9 +103,9 @@
 			_meal:m, 
 			isEdit: false, 
 			recipeUrl: m.recipeUrl,
-			previewImageUrl: m.previewImageUrl,
-			ingredientsImageUrl: m.ingredientsImageUrl,
-			hasIngredients: m.ingredientRefs && m.ingredientRefs.length > 0
+			previewImage: mapImageMeta(m.id, "preview", m.previewImage),
+			ingredientsImage: mapImageMeta(m.id, "ingredients", m.ingredientsImage),
+			hasIngredients: m.ingredientRefs && m.ingredientRefs.length > 0,
 		}))
 		displayNewMeals = []
 	}
@@ -70,15 +131,26 @@
 			return;
 		}
 
-		let _meal = m._meal
-		_meal.name = m.name
-		_meal.recipeUrl = m.recipeUrl
-		_meal.previewImageUrl = m.previewImageUrl
-		_meal.ingredientsImageUrl = m.ingredientsImageUrl
-
 		await client.updateMeal({
-			meal: _meal,
+			meal: {
+				id: m._meal.id,
+				name: m.name,
+				recipeUrl: m.recipeUrl,
+				ingredientRefs: m._meal.ingredientRefs,
+				previewImage: mapDPImageMeta(m.previewImage),
+				ingredientsImage: mapDPImageMeta(m.ingredientsImage),
+			},
 		})
+
+		if (m.previewImage.mode == "internal" && !!m.previewImage.fileBytes) {
+			// a preview image was uploaded, we need to send this to the backend
+			await client.updateMealPreviewImageRequest({id: m.id, imageBytes: m.previewImage.fileBytes})
+		}
+
+		if (m.ingredientsImage.mode == "internal" && !!m.ingredientsImage.fileBytes) {
+			// an ingredients image was uploaded, we need to send this to the backend
+			await client.updateMealIngredientsImageRequest({id: m.id, imageBytes: m.ingredientsImage.fileBytes})
+		}
 
 		refresh()
 	}
@@ -94,8 +166,8 @@
 			meal: {
 				name: m.name,
 				recipeUrl: m.recipeUrl,
-				previewImageUrl: m.previewImageUrl,
-				ingredientsImageUrl: m.ingredientsImageUrl,
+				previewImage: mapDPImageMeta(m.previewImage),
+				ingredientsImage: mapDPImageMeta(m.ingredientsImage),
 				ingredientRefs: [],
 			},
 		})
@@ -104,8 +176,57 @@
 	}
 
 	function addMeal() {
-		displayNewMeals.push({pseudoId: psuedoIdCounter, name: "", recipeUrl: "", previewImageUrl: "", ingredientsImageUrl: ""})
+		displayNewMeals.push({
+			pseudoId: psuedoIdCounter,
+			name: "",
+			recipeUrl: "",
+			previewImage: emptyImageMeta(imgid(psuedoIdCounter, "preview")),
+			ingredientsImage: emptyImageMeta(imgid(psuedoIdCounter, "ingredients")),
+		})
 		psuedoIdCounter++
+	}
+
+	function imgid(id: bigint | number, imgType: "preview" | "ingredients") {
+		return `${id}_${imgType}`
+	}
+
+	function openFileDialog(img: DPImageMeta) {
+		if(!img.fileUpload) {
+			console.log("the fileUpload is undefined for dm: ", img.id)
+			return
+		}
+
+		img.fileUpload.click()
+	}
+
+	async function fileChanged(img: DPImageMeta) {
+		if(!img.fileUpload) {
+			console.log("the fileUpload is undefined for dm: ", img.id)
+			return
+		}
+		
+		if (!img.fileUpload.files || img.fileUpload.files?.length == 0) {
+			console.log("no files for dm: ", img.id)
+			return
+		}
+
+		if (img.fileUpload.files.length > 1) {
+			console.log("error: multiple files were selected for dm: ", img.id)
+			return
+		}
+
+		const b = await img.fileUpload.files[0].arrayBuffer()
+		img.fileBytes = new Uint8Array(b)
+		img.mode = "internal"
+	}
+
+	function removeInternalImage(img: DPImageMeta) {
+		// downgrade to either the external image or none
+		if (!!img.externalUrl) {
+			img.mode = "external"
+		} else {
+			img.mode = "none"
+		}
 	}
 
 	refresh()
@@ -139,12 +260,17 @@
 				<Td>
 					<TextInput bind:value={dm.recipeUrl}/>
 				</Td>
+				{#each [dm.previewImage, dm.ingredientsImage] as img}
 				<Td>
-					<TextInput bind:value={dm.previewImageUrl}/>
+					{#if img.mode == "internal" }
+					<Button onclick={() => removeInternalImage(img)}>Remove Image</Button>
+					{:else}
+					<TextInput bind:value={img.externalUrl}/>
+					<Button onclick={() => openFileDialog(img)}>Upload Image</Button>
+					{/if}
+					<input onchange={() => fileChanged(img)} bind:this={img.fileUpload} class="hidden" accept="image/png" type="file"/>
 				</Td>
-				<Td>
-					<TextInput bind:value={dm.ingredientsImageUrl}/>
-				</Td>
+				{/each}
 				<Td>
 					<Button onclick={() => saveMeal(dm.id)}>Save</Button>
 				</Td>
@@ -153,8 +279,15 @@
 			<Tr>
 				<Td classes={!dm.hasIngredients ? 'text-red-500' : ''}>{dm.name}</Td>
 				<Td>{#if dm.recipeUrl != ''}<a href={dm.recipeUrl}>Link</a>{/if}</Td>
-				<Td>{#if dm.previewImageUrl != ''}<a href={dm.previewImageUrl}>Link</a>{/if}</Td>
-				<Td>{#if dm.ingredientsImageUrl != ''}<a href={dm.ingredientsImageUrl}>Link</a>{/if}</Td>
+				{#each [dm.previewImage, dm.ingredientsImage] as img}
+				<Td>
+					{#if img.mode == "external"}
+					<img src={img.externalUrl} alt={img.id} height="50" width="50">
+					{:else if img.mode == "internal"}
+					<img src={img.internalUrl} alt={img.id} height="50" width="50">
+					{/if}
+				</Td>
+				{/each}
 				<Td>
 					<Button onclick={() => editMeal(dm.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteMeal(dm.id)}>Delete</Button>
 				</Td>
@@ -169,12 +302,17 @@
 			<Td>
 				<TextInput bind:value={dm.recipeUrl}/>
 			</Td>
-			<Td>
-				<TextInput bind:value={dm.previewImageUrl}/>
-			</Td>
-			<Td>
-				<TextInput bind:value={dm.ingredientsImageUrl}/>
-			</Td>
+			{#each [dm.previewImage, dm.ingredientsImage] as img}
+				<Td>
+					{#if img.mode == "internal" }
+					<Button onclick={() => removeInternalImage(img)}>Remove Image</Button>
+					{:else}
+					<TextInput bind:value={img.externalUrl}/>
+					<Button onclick={() => openFileDialog(img)}>Upload Image</Button>
+					{/if}
+					<input onchange={() => fileChanged(img)} bind:this={img.fileUpload} class="hidden" accept="image/png" type="file"/>
+				</Td>
+				{/each}
 			<Td>
 				<Button onclick={() => saveNewMeal(dm.pseudoId)}>Save</Button>
 			</Td>

@@ -49,6 +49,15 @@ message UpdateMealResponse {
   
 }
 
+message UpdateMealImageRequest {
+  int64 id = 1;
+  bytes image_bytes = 2;
+}
+
+message UpdateMealImageResponse {
+
+}
+
 message DeleteMealRequest {
   int64 meal_id = 1;
 }
@@ -102,6 +111,8 @@ service ShoppingListService {
   rpc GetMeals(GetMealsRequest) returns (GetMealsResponse);
   rpc CreateMeal(CreateMealRequest) returns (CreateMealResponse);
   rpc UpdateMeal(UpdateMealRequest) returns (UpdateMealResponse);
+  rpc UpdateMealPreviewImageRequest(UpdateMealImageRequest) returns (UpdateMealImageResponse);
+  rpc UpdateMealIngredientsImageRequest(UpdateMealImageRequest) returns (UpdateMealImageResponse);
   rpc DeleteMeal(DeleteMealRequest) returns (DeleteMealResponse);
 
   // ingredients

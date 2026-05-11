@@ -21,15 +21,25 @@ func (q *Queries) CreateIngredient(ctx context.Context, name string) (int64, err
 }
 
 const createMeal = `-- name: CreateMeal :one
-INSERT INTO meals (name, ingredients, recipe_url, preview_image_url, ingredients_image_url) VALUES (?, ?, ?, ?, ?) RETURNING id
+INSERT INTO meals (
+ name,
+ ingredients,
+ recipe_url,
+ preview_image_mode,
+ preview_image_url,
+ ingredients_image_mode,
+ ingredients_image_url
+) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
 `
 
 type CreateMealParams struct {
-	Name                string
-	Ingredients         string
-	RecipeUrl           string
-	PreviewImageUrl     interface{}
-	IngredientsImageUrl interface{}
+	Name                 string
+	Ingredients          string
+	RecipeUrl            string
+	PreviewImageMode     interface{}
+	PreviewImageUrl      interface{}
+	IngredientsImageMode interface{}
+	IngredientsImageUrl  interface{}
 }
 
 func (q *Queries) CreateMeal(ctx context.Context, arg CreateMealParams) (int64, error) {
@@ -37,7 +47,9 @@ func (q *Queries) CreateMeal(ctx context.Context, arg CreateMealParams) (int64, 
 		arg.Name,
 		arg.Ingredients,
 		arg.RecipeUrl,
+		arg.PreviewImageMode,
 		arg.PreviewImageUrl,
+		arg.IngredientsImageMode,
 		arg.IngredientsImageUrl,
 	)
 	var id int64
@@ -102,19 +114,52 @@ func (q *Queries) GetIngredients(ctx context.Context) ([]Ingredient, error) {
 	return items, nil
 }
 
+const getMealIngredientsImageBytes = `-- name: GetMealIngredientsImageBytes :one
+SELECT ingredients_image_bytes FROM meals WHERE id = ?
+`
+
+func (q *Queries) GetMealIngredientsImageBytes(ctx context.Context, id int64) (interface{}, error) {
+	row := q.db.QueryRowContext(ctx, getMealIngredientsImageBytes, id)
+	var ingredients_image_bytes interface{}
+	err := row.Scan(&ingredients_image_bytes)
+	return ingredients_image_bytes, err
+}
+
+const getMealPreviewImageBytes = `-- name: GetMealPreviewImageBytes :one
+SELECT preview_image_bytes FROM meals WHERE id = ?
+`
+
+func (q *Queries) GetMealPreviewImageBytes(ctx context.Context, id int64) (interface{}, error) {
+	row := q.db.QueryRowContext(ctx, getMealPreviewImageBytes, id)
+	var preview_image_bytes interface{}
+	err := row.Scan(&preview_image_bytes)
+	return preview_image_bytes, err
+}
+
 const getMeals = `-- name: GetMeals :many
 
-SELECT id, name, ingredients, recipe_url, preview_image_url, ingredients_image_url FROM meals
+SELECT 
+    id, 
+    name, 
+    ingredients, 
+    recipe_url, 
+    preview_image_mode,
+    preview_image_url,
+    ingredients_image_mode,
+    ingredients_image_url
+FROM meals
 ORDER BY name
 `
 
 type GetMealsRow struct {
-	ID                  int64
-	Name                string
-	Ingredients         string
-	RecipeUrl           string
-	PreviewImageUrl     interface{}
-	IngredientsImageUrl interface{}
+	ID                   int64
+	Name                 string
+	Ingredients          string
+	RecipeUrl            string
+	PreviewImageMode     interface{}
+	PreviewImageUrl      interface{}
+	IngredientsImageMode interface{}
+	IngredientsImageUrl  interface{}
 }
 
 // ----- MEALS ------
@@ -132,7 +177,9 @@ func (q *Queries) GetMeals(ctx context.Context) ([]GetMealsRow, error) {
 			&i.Name,
 			&i.Ingredients,
 			&i.RecipeUrl,
+			&i.PreviewImageMode,
 			&i.PreviewImageUrl,
+			&i.IngredientsImageMode,
 			&i.IngredientsImageUrl,
 		); err != nil {
 			return nil, err
@@ -190,16 +237,25 @@ func (q *Queries) UpdateIngredientWantOverrideCount(ctx context.Context, arg Upd
 }
 
 const updateMeal = `-- name: UpdateMeal :exec
-UPDATE meals set name = ?, ingredients = ?, recipe_url = ?, preview_image_url = ?, ingredients_image_url = ? WHERE id = ?
+UPDATE meals set name = ?,
+ ingredients = ?,
+ recipe_url = ?,
+ preview_image_mode = ?,
+ preview_image_url = ?,
+ ingredients_image_mode = ?,
+ ingredients_image_url = ?
+WHERE id = ?
 `
 
 type UpdateMealParams struct {
-	Name                string
-	Ingredients         string
-	RecipeUrl           string
-	PreviewImageUrl     interface{}
-	IngredientsImageUrl interface{}
-	ID                  int64
+	Name                 string
+	Ingredients          string
+	RecipeUrl            string
+	PreviewImageMode     interface{}
+	PreviewImageUrl      interface{}
+	IngredientsImageMode interface{}
+	IngredientsImageUrl  interface{}
+	ID                   int64
 }
 
 func (q *Queries) UpdateMeal(ctx context.Context, arg UpdateMealParams) error {
@@ -207,10 +263,40 @@ func (q *Queries) UpdateMeal(ctx context.Context, arg UpdateMealParams) error {
 		arg.Name,
 		arg.Ingredients,
 		arg.RecipeUrl,
+		arg.PreviewImageMode,
 		arg.PreviewImageUrl,
+		arg.IngredientsImageMode,
 		arg.IngredientsImageUrl,
 		arg.ID,
 	)
+	return err
+}
+
+const updateMealIngredientsImageBytes = `-- name: UpdateMealIngredientsImageBytes :exec
+UPDATE meals set ingredients_image_bytes = ? WHERE id = ?
+`
+
+type UpdateMealIngredientsImageBytesParams struct {
+	IngredientsImageBytes interface{}
+	ID                    int64
+}
+
+func (q *Queries) UpdateMealIngredientsImageBytes(ctx context.Context, arg UpdateMealIngredientsImageBytesParams) error {
+	_, err := q.db.ExecContext(ctx, updateMealIngredientsImageBytes, arg.IngredientsImageBytes, arg.ID)
+	return err
+}
+
+const updateMealPreviewImageBytes = `-- name: UpdateMealPreviewImageBytes :exec
+UPDATE meals set preview_image_bytes = ? WHERE id = ?
+`
+
+type UpdateMealPreviewImageBytesParams struct {
+	PreviewImageBytes interface{}
+	ID                int64
+}
+
+func (q *Queries) UpdateMealPreviewImageBytes(ctx context.Context, arg UpdateMealPreviewImageBytesParams) error {
+	_, err := q.db.ExecContext(ctx, updateMealPreviewImageBytes, arg.PreviewImageBytes, arg.ID)
 	return err
 }
 
