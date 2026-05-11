@@ -5,8 +5,20 @@ message Meal {
     string name = 2;
     repeated IngredientRef ingredient_refs = 3;
     string recipe_url = 4;
-    string preview_image_url = 5;
-    string ingredients_image_url = 6;
+    ImageMeta preview_image = 5;
+    ImageMeta ingredients_image = 6;
+}
+
+message ImageMeta {
+    ImageMode mode = 1;
+    string external_url = 2; // the url of the image when the image mode is external
+    string internal_url = 3; // the url of the image when the image mode is internal - read only
+}
+
+enum ImageMode {
+    IM_NONE = 0;
+    IM_INTERNAL = 1;
+    IM_EXTERNAL = 2;
 }
 
 message IngredientRef {

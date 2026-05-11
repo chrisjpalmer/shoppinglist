@@ -5,7 +5,7 @@ import { page } from '$app/state'
 import { PUBLIC_BACKEND_PORT } from "$env/static/public";
 
 export function CreateShoppingListService() {
-	const url = `http://${page.url.hostname}:${PUBLIC_BACKEND_PORT}`
+	const url = BackendUrl()
     const transport = createConnectTransport({
 		baseUrl: url,
 	});
@@ -13,4 +13,8 @@ export function CreateShoppingListService() {
 	const client = createClient(ShoppingListService, transport);
 
     return client
+}
+
+export function BackendUrl(): string {
+	return `http://${page.url.hostname}:${PUBLIC_BACKEND_PORT}`
 }

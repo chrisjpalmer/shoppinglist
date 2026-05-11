@@ -1,7 +1,7 @@
 <script lang="ts">
-  	import type { Meal, IngredientRef } from '../../../gen/meal_pb';
+  	import { type Meal, type IngredientRef, type ImageMeta, ImageMode } from '../../../gen/meal_pb';
   	import type { Ingredient } from '../../../gen/ingredient_pb';
-  	import { CreateShoppingListService } from '$lib/shopping_list_service';
+  	import { BackendUrl, CreateShoppingListService } from '$lib/shopping_list_service';
 	import Select from '../../../components/select.svelte';
 	import Table from '../../../components/table.svelte';
 	import Td from '../../../components/td.svelte';
@@ -33,10 +33,10 @@
 		
 	}
 	interface SelectedMeal {
+		_meal: Meal
 		id: bigint
 		name: string
 		recipeUrl: string
-		previewImageUrl: string
 		ingredientsImageUrl: string
 		ingredients: SelectedMealIngredient[]
 	}
@@ -86,13 +86,25 @@
 		}
 
 		return {
+			_meal: meal,
 			id: meal.id,
 			name: meal.name,
 			recipeUrl: meal.recipeUrl,
-			previewImageUrl: meal.previewImageUrl,
-			ingredientsImageUrl: meal.ingredientsImageUrl,
+			ingredientsImageUrl: mapImageSource(meal.ingredientsImage),
 			ingredients: smig,
 		}
+	}
+
+	function mapImageSource(img:ImageMeta | undefined): string {
+		if (!img || img.mode == ImageMode.IM_NONE) {
+			return ''
+		}
+
+		if (img.mode == ImageMode.IM_INTERNAL) {
+			return BackendUrl() + img.internalUrl
+		} 
+		
+		return img.externalUrl
 	}
 
 	function addNewIngredient() {
@@ -130,8 +142,8 @@
 				id: selectedMeal.id,
 				name: selectedMeal.name,
 				recipeUrl: selectedMeal.recipeUrl,
-				previewImageUrl: selectedMeal.previewImageUrl,
-				ingredientsImageUrl: selectedMeal.ingredientsImageUrl,
+				previewImage: selectedMeal._meal.previewImage,
+				ingredientsImage: selectedMeal._meal.ingredientsImage,
 				ingredientRefs: igRefs,
 			},
 		})

@@ -1,14 +1,38 @@
 <script lang="ts">
-  	import type { Meal } from '../../gen/meal_pb';
-  	import { CreateShoppingListService } from '$lib/shopping_list_service';
+  	import { ImageMode, type ImageMeta } from '../../gen/meal_pb';
+  	import { BackendUrl, CreateShoppingListService } from '$lib/shopping_list_service';
 
 	const client = CreateShoppingListService()
 
-	let meals: Meal[] = $state([])
-	
+	interface DisplayMeal {
+		 id: bigint
+		 name: string
+		 previewImageUrl: string
+	}
+
+	let meals: DisplayMeal[] = $state([])
+
 	async function init() {
 		const rs = await client.getMeals({})
-		meals = rs.meals
+		meals = rs.meals.map(m => {
+			return {
+				id: m.id,
+				name: m.name,
+				previewImageUrl: mapImageSource(m.previewImage)
+			}
+		})
+	}
+
+	function mapImageSource(img:ImageMeta | undefined): string {
+		if (!img || img.mode == ImageMode.IM_NONE) {
+			return ''
+		}
+
+		if (img.mode == ImageMode.IM_INTERNAL) {
+			return BackendUrl() + img.internalUrl
+		} 
+		
+		return img.externalUrl
 	}
 
 	init()

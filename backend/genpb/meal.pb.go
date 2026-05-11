@@ -21,16 +21,65 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type ImageMode int32
+
+const (
+	ImageMode_IM_NONE     ImageMode = 0
+	ImageMode_IM_INTERNAL ImageMode = 1
+	ImageMode_IM_EXTERNAL ImageMode = 2
+)
+
+// Enum value maps for ImageMode.
+var (
+	ImageMode_name = map[int32]string{
+		0: "IM_NONE",
+		1: "IM_INTERNAL",
+		2: "IM_EXTERNAL",
+	}
+	ImageMode_value = map[string]int32{
+		"IM_NONE":     0,
+		"IM_INTERNAL": 1,
+		"IM_EXTERNAL": 2,
+	}
+)
+
+func (x ImageMode) Enum() *ImageMode {
+	p := new(ImageMode)
+	*p = x
+	return p
+}
+
+func (x ImageMode) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ImageMode) Descriptor() protoreflect.EnumDescriptor {
+	return file_meal_proto_enumTypes[0].Descriptor()
+}
+
+func (ImageMode) Type() protoreflect.EnumType {
+	return &file_meal_proto_enumTypes[0]
+}
+
+func (x ImageMode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ImageMode.Descriptor instead.
+func (ImageMode) EnumDescriptor() ([]byte, []int) {
+	return file_meal_proto_rawDescGZIP(), []int{0}
+}
+
 type Meal struct {
-	state               protoimpl.MessageState `protogen:"open.v1"`
-	Id                  int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name                string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	IngredientRefs      []*IngredientRef       `protobuf:"bytes,3,rep,name=ingredient_refs,json=ingredientRefs,proto3" json:"ingredient_refs,omitempty"`
-	RecipeUrl           string                 `protobuf:"bytes,4,opt,name=recipe_url,json=recipeUrl,proto3" json:"recipe_url,omitempty"`
-	PreviewImageUrl     string                 `protobuf:"bytes,5,opt,name=preview_image_url,json=previewImageUrl,proto3" json:"preview_image_url,omitempty"`
-	IngredientsImageUrl string                 `protobuf:"bytes,6,opt,name=ingredients_image_url,json=ingredientsImageUrl,proto3" json:"ingredients_image_url,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Id               int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name             string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	IngredientRefs   []*IngredientRef       `protobuf:"bytes,3,rep,name=ingredient_refs,json=ingredientRefs,proto3" json:"ingredient_refs,omitempty"`
+	RecipeUrl        string                 `protobuf:"bytes,4,opt,name=recipe_url,json=recipeUrl,proto3" json:"recipe_url,omitempty"`
+	PreviewImage     *ImageMeta             `protobuf:"bytes,5,opt,name=preview_image,json=previewImage,proto3" json:"preview_image,omitempty"`
+	IngredientsImage *ImageMeta             `protobuf:"bytes,6,opt,name=ingredients_image,json=ingredientsImage,proto3" json:"ingredients_image,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *Meal) Reset() {
@@ -91,16 +140,76 @@ func (x *Meal) GetRecipeUrl() string {
 	return ""
 }
 
-func (x *Meal) GetPreviewImageUrl() string {
+func (x *Meal) GetPreviewImage() *ImageMeta {
 	if x != nil {
-		return x.PreviewImageUrl
+		return x.PreviewImage
+	}
+	return nil
+}
+
+func (x *Meal) GetIngredientsImage() *ImageMeta {
+	if x != nil {
+		return x.IngredientsImage
+	}
+	return nil
+}
+
+type ImageMeta struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Mode          ImageMode              `protobuf:"varint,1,opt,name=mode,proto3,enum=ImageMode" json:"mode,omitempty"`
+	ExternalUrl   string                 `protobuf:"bytes,2,opt,name=external_url,json=externalUrl,proto3" json:"external_url,omitempty"` // the url of the image when the image mode is external
+	InternalUrl   string                 `protobuf:"bytes,3,opt,name=internal_url,json=internalUrl,proto3" json:"internal_url,omitempty"` // the url of the image when the image mode is internal - read only
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImageMeta) Reset() {
+	*x = ImageMeta{}
+	mi := &file_meal_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImageMeta) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImageMeta) ProtoMessage() {}
+
+func (x *ImageMeta) ProtoReflect() protoreflect.Message {
+	mi := &file_meal_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ImageMeta.ProtoReflect.Descriptor instead.
+func (*ImageMeta) Descriptor() ([]byte, []int) {
+	return file_meal_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ImageMeta) GetMode() ImageMode {
+	if x != nil {
+		return x.Mode
+	}
+	return ImageMode_IM_NONE
+}
+
+func (x *ImageMeta) GetExternalUrl() string {
+	if x != nil {
+		return x.ExternalUrl
 	}
 	return ""
 }
 
-func (x *Meal) GetIngredientsImageUrl() string {
+func (x *ImageMeta) GetInternalUrl() string {
 	if x != nil {
-		return x.IngredientsImageUrl
+		return x.InternalUrl
 	}
 	return ""
 }
@@ -115,7 +224,7 @@ type IngredientRef struct {
 
 func (x *IngredientRef) Reset() {
 	*x = IngredientRef{}
-	mi := &file_meal_proto_msgTypes[1]
+	mi := &file_meal_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -127,7 +236,7 @@ func (x *IngredientRef) String() string {
 func (*IngredientRef) ProtoMessage() {}
 
 func (x *IngredientRef) ProtoReflect() protoreflect.Message {
-	mi := &file_meal_proto_msgTypes[1]
+	mi := &file_meal_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -140,7 +249,7 @@ func (x *IngredientRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IngredientRef.ProtoReflect.Descriptor instead.
 func (*IngredientRef) Descriptor() ([]byte, []int) {
-	return file_meal_proto_rawDescGZIP(), []int{1}
+	return file_meal_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *IngredientRef) GetIngredientId() int64 {
@@ -162,18 +271,29 @@ var File_meal_proto protoreflect.FileDescriptor
 const file_meal_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"meal.proto\"\xe2\x01\n" +
+	"meal.proto\"\xec\x01\n" +
 	"\x04Meal\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x127\n" +
 	"\x0fingredient_refs\x18\x03 \x03(\v2\x0e.IngredientRefR\x0eingredientRefs\x12\x1d\n" +
 	"\n" +
-	"recipe_url\x18\x04 \x01(\tR\trecipeUrl\x12*\n" +
-	"\x11preview_image_url\x18\x05 \x01(\tR\x0fpreviewImageUrl\x122\n" +
-	"\x15ingredients_image_url\x18\x06 \x01(\tR\x13ingredientsImageUrl\"L\n" +
+	"recipe_url\x18\x04 \x01(\tR\trecipeUrl\x12/\n" +
+	"\rpreview_image\x18\x05 \x01(\v2\n" +
+	".ImageMetaR\fpreviewImage\x127\n" +
+	"\x11ingredients_image\x18\x06 \x01(\v2\n" +
+	".ImageMetaR\x10ingredientsImage\"q\n" +
+	"\tImageMeta\x12\x1e\n" +
+	"\x04mode\x18\x01 \x01(\x0e2\n" +
+	".ImageModeR\x04mode\x12!\n" +
+	"\fexternal_url\x18\x02 \x01(\tR\vexternalUrl\x12!\n" +
+	"\finternal_url\x18\x03 \x01(\tR\vinternalUrl\"L\n" +
 	"\rIngredientRef\x12#\n" +
 	"\ringredient_id\x18\x01 \x01(\x03R\fingredientId\x12\x16\n" +
-	"\x06number\x18\x02 \x01(\x05R\x06numberBAB\tMealProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
+	"\x06number\x18\x02 \x01(\x05R\x06number*:\n" +
+	"\tImageMode\x12\v\n" +
+	"\aIM_NONE\x10\x00\x12\x0f\n" +
+	"\vIM_INTERNAL\x10\x01\x12\x0f\n" +
+	"\vIM_EXTERNAL\x10\x02BAB\tMealProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
 
 var (
 	file_meal_proto_rawDescOnce sync.Once
@@ -187,18 +307,24 @@ func file_meal_proto_rawDescGZIP() []byte {
 	return file_meal_proto_rawDescData
 }
 
-var file_meal_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_meal_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_meal_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_meal_proto_goTypes = []any{
-	(*Meal)(nil),          // 0: Meal
-	(*IngredientRef)(nil), // 1: IngredientRef
+	(ImageMode)(0),        // 0: ImageMode
+	(*Meal)(nil),          // 1: Meal
+	(*ImageMeta)(nil),     // 2: ImageMeta
+	(*IngredientRef)(nil), // 3: IngredientRef
 }
 var file_meal_proto_depIdxs = []int32{
-	1, // 0: Meal.ingredient_refs:type_name -> IngredientRef
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 0: Meal.ingredient_refs:type_name -> IngredientRef
+	2, // 1: Meal.preview_image:type_name -> ImageMeta
+	2, // 2: Meal.ingredients_image:type_name -> ImageMeta
+	0, // 3: ImageMeta.mode:type_name -> ImageMode
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_meal_proto_init() }
@@ -211,13 +337,14 @@ func file_meal_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_meal_proto_rawDesc), len(file_meal_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_meal_proto_goTypes,
 		DependencyIndexes: file_meal_proto_depIdxs,
+		EnumInfos:         file_meal_proto_enumTypes,
 		MessageInfos:      file_meal_proto_msgTypes,
 	}.Build()
 	File_meal_proto = out.File

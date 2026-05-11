@@ -29,6 +29,8 @@ func (s *Server) Listen() error {
 	mux := http.NewServeMux()
 	path, handler := genpbconnect.NewShoppingListServiceHandler(s)
 	mux.Handle(path, handler)
+	mux.HandleFunc("/meal/{id}/image/preview", s.handleMealPreviewImage)
+	mux.HandleFunc("/meal/{id}/image/ingredients", s.handleMealIngredientsImage)
 
 	return http.ListenAndServe(":8080", h2c.NewHandler(cors.AllowAll().Handler(mux), &http2.Server{}))
 }

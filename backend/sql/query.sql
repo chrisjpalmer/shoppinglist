@@ -12,17 +12,53 @@ UPDATE plan set plan_data = ? WHERE id = ?;
 ------- MEALS ------
 
 -- name: GetMeals :many
-SELECT id, name, ingredients, recipe_url, preview_image_url, ingredients_image_url FROM meals
+SELECT 
+    id, 
+    name, 
+    ingredients, 
+    recipe_url, 
+    preview_image_mode,
+    preview_image_url,
+    ingredients_image_mode,
+    ingredients_image_url
+FROM meals
 ORDER BY name;
 
 -- name: CreateMeal :one
-INSERT INTO meals (name, ingredients, recipe_url, preview_image_url, ingredients_image_url) VALUES (?, ?, ?, ?, ?) RETURNING id;
+INSERT INTO meals (
+ name,
+ ingredients,
+ recipe_url,
+ preview_image_mode,
+ preview_image_url,
+ ingredients_image_mode,
+ ingredients_image_url
+) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id;
 
 -- name: UpdateMeal :exec
-UPDATE meals set name = ?, ingredients = ?, recipe_url = ?, preview_image_url = ?, ingredients_image_url = ? WHERE id = ?;
+UPDATE meals set name = ?,
+ ingredients = ?,
+ recipe_url = ?,
+ preview_image_mode = ?,
+ preview_image_url = ?,
+ ingredients_image_mode = ?,
+ ingredients_image_url = ?
+WHERE id = ?;
 
 -- name: DeleteMeal :exec
 DELETE FROM meals WHERE id = ?;
+
+-- name: GetMealPreviewImageBytes :one
+SELECT preview_image_bytes FROM meals WHERE id = ?;
+
+-- name: GetMealIngredientsImageBytes :one
+SELECT ingredients_image_bytes FROM meals WHERE id = ?;
+
+-- name: UpdateMealPreviewImageBytes :exec
+UPDATE meals set preview_image_bytes = ? WHERE id = ?;
+
+-- name: UpdateMealIngredientsImageBytes :exec
+UPDATE meals set ingredients_image_bytes = ? WHERE id = ?;
 
 ------- INGREDIENTS ------
 
