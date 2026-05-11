@@ -10,6 +10,7 @@ type ButtonOpts struct {
   HxTarget string
   HxOnClick string
   Classes []string
+  Disabled bool
 }
 
 templ Button(opts ButtonOpts) {
@@ -21,22 +22,24 @@ templ Button(opts ButtonOpts) {
         "text-white",
         "font-semibold",
         "bg-blue-500",
-        "hover:bg-blue-400",
-        "active:bg-blue-600",
+        "disabled:bg-blue-300",
+        "not(disabled):hover:bg-blue-400",
+        "not(disabled):active:bg-blue-600",
       }
 
       classes = append(classes, opts.Classes...)
 
       class := strings.Join(classes, " ")
     }}
-    
-    <button 
-      id={opts.ID} 
-      class={class} 
-      hx-post={opts.HxPost} 
-      hx-swap="outerHTML" 
-      hx-include={opts.HxInclude} 
-      hx-target={opts.HxTarget} 
+
+    <button
+      id={opts.ID}
+      class={class}
+      disabled?={opts.Disabled}
+      hx-post={opts.HxPost}
+      hx-swap="outerHTML"
+      hx-include={opts.HxInclude}
+      hx-target={opts.HxTarget}
       hx-on:click={templ.JSFuncCall(opts.HxOnClick)}>
             {opts.Title}
     </button>
