@@ -51,8 +51,8 @@ func Button(opts ButtonOpts) templ.Component {
 			"font-semibold",
 			"bg-blue-500",
 			"disabled:bg-blue-300",
-			"not(disabled):hover:bg-blue-400",
-			"not(disabled):active:bg-blue-600",
+			"not-disabled:hover:bg-blue-400",
+			"not-disabled:active:bg-blue-600",
 		}
 
 		classes = append(classes, opts.Classes...)
