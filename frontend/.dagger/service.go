@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	// localBackendPort - the port of the api server when the backend is served locally.
+	// localBackendUrl - the url of the backend when the backend is served locally.
 	// This value must be synced with the default port in the backend code
-	localBackendPort = 8080
+	localBackendUrl = "http://localhost:8080"
 
 	// localFrontendPort - the port of the frontend website.
 	// This is the default for the svelte setup being used.
@@ -28,12 +28,13 @@ func (m *Frontend) FrontendService(ctx context.Context) (*dagger.Service, error)
 		return nil, err
 	}
 
-	ctr, err := m.build(ctx, plt, localBackendPort)
+	ctr, err := m.build(ctx, plt)
 	if err != nil {
 		return nil, fmt.Errorf("error building frontend: %w", err)
 	}
 
 	return ctr.
+		WithEnvVariable("PUBLIC_BACKEND_URL", localBackendUrl).
 		WithEnvVariable("PUBLIC_SHOPPING_SITE_URL", localShoppingSiteUrl).
 		WithExposedPort(localFrontendPort).
 		AsService(dagger.ContainerAsServiceOpts{UseEntrypoint: true}), nil

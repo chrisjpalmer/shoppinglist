@@ -53,11 +53,11 @@ func (m *Shoppinglist) BuildAndDeploy(
 		return fmt.Errorf("error while building: %w", err)
 	}
 
-	if err := m.Deploy(ctx, "env1", tag, kubeEnv1, "http://pipi:30000/", "http://pipi:30002/"); err != nil {
+	if err := m.Deploy(ctx, "env1", tag, kubeEnv1, "http://pipi:30000/", "http://pipi:30001/", "http://pipi:30002/"); err != nil {
 		return fmt.Errorf("error while deploying to kubeEnv1: %w", err)
 	}
 
-	if err := m.Deploy(ctx, "env2", tag, kubeEnv2, "http://100.49.208.199:30000/", "http://100.49.208.199:30002/"); err != nil {
+	if err := m.Deploy(ctx, "env2", tag, kubeEnv2, "http://100.49.208.199:30000/", "http://100.49.208.199:30001/", "http://100.49.208.199:30002/"); err != nil {
 		return fmt.Errorf("error while deploying to kubeEnv2: %w", err)
 	}
 
@@ -71,6 +71,7 @@ func (m *Shoppinglist) Deploy(
 	tag string,
 	kubectlFile *dagger.Secret,
 	planningSiteURL,
+	backendURL string,
 	shoppingSiteURL string,
 ) (rerr error) {
 	ctx, span := Tracer().Start(ctx, "deploy: "+env)
@@ -80,7 +81,7 @@ func (m *Shoppinglist) Deploy(
 		return err
 	}
 
-	if err := m.deployFrontend(ctx, tag, kubectlFile, shoppingSiteURL); err != nil {
+	if err := m.deployFrontend(ctx, tag, kubectlFile, backendURL, shoppingSiteURL); err != nil {
 		return err
 	}
 
@@ -165,12 +166,13 @@ func (m *Shoppinglist) deployFrontend(
 	ctx context.Context,
 	tag string,
 	kubectlFile *dagger.Secret,
+	backendURL string,
 	shoppingSiteURL string,
 ) (rerr error) {
 	ctx, span := Tracer().Start(ctx, "deploy frontend")
 	defer telemetry.EndWithCause(span, &rerr)
 
-	valuesYaml, err := makeFrontendValuesYaml(tag, shoppingSiteURL)
+	valuesYaml, err := makeFrontendValuesYaml(tag, backendURL, shoppingSiteURL)
 	if err != nil {
 		return err
 	}
@@ -206,16 +208,17 @@ func makeBackendValuesYaml(tag, planningSiteURL string) (*dagger.File, error) {
 	return dag.File("values.yaml", string(out)), nil
 }
 
-func makeFrontendValuesYaml(tag, shoppingSiteURL string) (*dagger.File, error) {
+func makeFrontendValuesYaml(tag, backendURL, shoppingSiteURL string) (*dagger.File, error) {
 	type Image struct {
 		Tag string `yaml:"tag"`
 	}
 	type ValuesYaml struct {
 		Image           Image  `yaml:"image"`
+		BackendURL      string `yaml:"backendUrl"`
 		ShoppingSiteURL string `yaml:"shoppingSiteUrl"`
 	}
 
-	out, err := yaml.Marshal(ValuesYaml{Image: Image{Tag: tag}, ShoppingSiteURL: shoppingSiteURL})
+	out, err := yaml.Marshal(ValuesYaml{Image: Image{Tag: tag}, BackendURL: backendURL, ShoppingSiteURL: shoppingSiteURL})
 	if err != nil {
 		return nil, err
 	}

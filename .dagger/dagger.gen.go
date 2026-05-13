@@ -289,7 +289,28 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubectlFile", err))
 				}
 			}
-			return nil, (*Shoppinglist).Deploy(&parent, ctx, env, tag, kubectlFile)
+			var planningSiteUrl string
+			if inputArgs["planningSiteURL"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["planningSiteURL"]), &planningSiteUrl)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg planningSiteURL", err))
+				}
+			}
+			var backendUrl string
+			if inputArgs["backendURL"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["backendURL"]), &backendUrl)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg backendURL", err))
+				}
+			}
+			var shoppingSiteUrl string
+			if inputArgs["shoppingSiteURL"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["shoppingSiteURL"]), &shoppingSiteUrl)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg shoppingSiteURL", err))
+				}
+			}
+			return nil, (*Shoppinglist).Deploy(&parent, ctx, env, tag, kubectlFile, planningSiteUrl, backendUrl, shoppingSiteUrl)
 		case "":
 			var parent Shoppinglist
 			err = json.Unmarshal(parentJSON, &parent)
