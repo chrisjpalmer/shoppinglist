@@ -17,6 +17,7 @@ type Backend struct { // backend (../../../backend/.dagger/main.go:25:6)
 
 	checkProtos             *Void
 	checkSqlc               *Void
+	checkTailwind           *Void
 	checkTempl              *Void
 	id                      *BackendID
 	migrateCheck            *Void
@@ -81,6 +82,16 @@ func (r *Backend) CheckSqlc(ctx context.Context) error { // backend (../../../ba
 	return q.Execute(ctx)
 }
 
+// CheckTailwind checks that maintw.css file is in sync
+func (r *Backend) CheckTailwind(ctx context.Context) error { // backend (../../../backend/.dagger/generated_tailwind.go:27:1)
+	if r.checkTailwind != nil {
+		return nil
+	}
+	q := r.query.Select("checkTailwind")
+
+	return q.Execute(ctx)
+}
+
 // CheckTempl - check that the working tree's templ generated files are in sync.
 func (r *Backend) CheckTempl(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:67:1)
 	if r.checkTempl != nil {
@@ -103,6 +114,15 @@ func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.da
 // GenerateSqlc - generate sqlc codegen from .sql files
 func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagger/generated.go:33:1)
 	q := r.query.Select("generateSqlc")
+
+	return &Changeset{
+		query: q,
+	}
+}
+
+// GenerateTailwind generates the maintw.css file using tailwindcss
+func (r *Backend) GenerateTailwind() *Changeset { // backend (../../../backend/.dagger/generated_tailwind.go:12:1)
+	q := r.query.Select("generateTailwind")
 
 	return &Changeset{
 		query: q,

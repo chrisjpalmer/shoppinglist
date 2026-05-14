@@ -234,6 +234,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			return nil, (*Backend).CheckSqlc(&parent, ctx)
+		case "CheckTailwind":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return nil, (*Backend).CheckTailwind(&parent, ctx)
 		case "CheckTempl":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
@@ -255,6 +262,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			return (*Backend).GenerateSqlc(&parent), nil
+		case "GenerateTailwind":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Backend).GenerateTailwind(&parent, ctx)
 		case "GenerateTempl":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)

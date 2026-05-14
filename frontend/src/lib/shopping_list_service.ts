@@ -1,8 +1,7 @@
 import { ShoppingListService } from '../gen/shopping_list_service_pb';
 import { createClient} from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-web";
-import { page } from '$app/state'
-import { PUBLIC_BACKEND_PORT } from "$env/static/public";
+import { env } from '$env/dynamic/public';
 
 export function CreateShoppingListService() {
 	const url = BackendUrl()
@@ -16,5 +15,5 @@ export function CreateShoppingListService() {
 }
 
 export function BackendUrl(): string {
-	return `http://${page.url.hostname}:${PUBLIC_BACKEND_PORT}`
+	return env.PUBLIC_BACKEND_URL
 }

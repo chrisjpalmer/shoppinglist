@@ -25,3 +25,5 @@ spec:
           env:
             - name: PUBLIC_SHOPPING_SITE_URL
               value: {{ .Values.shoppingSiteUrl }}
+            - name: PUBLIC_BACKEND_URL
+              value: {{ .Values.backendUrl }}

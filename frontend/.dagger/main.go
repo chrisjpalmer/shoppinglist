@@ -18,7 +18,6 @@ import (
 	"context"
 	"dagger/frontend/internal/dagger"
 	"fmt"
-	"strconv"
 
 	telemetry "github.com/dagger/otel-go"
 	"golang.org/x/sync/errgroup"
@@ -26,10 +25,6 @@ import (
 
 const (
 	nodeVersion = "node:22.18.0"
-
-	// helmBackendPort - the port of the api server from the backend helm chart.
-	// This value must be synced with the helm chart
-	helmBackendPort = 30001
 )
 
 type Frontend struct {
@@ -54,20 +49,18 @@ func (m *Frontend) BuildCheck(ctx context.Context) (*dagger.Container, error) {
 		return nil, err
 	}
 
-	return m.build(ctx, plt, helmBackendPort)
+	return m.build(ctx, plt)
 }
 
 func (m *Frontend) build(
 	ctx context.Context,
 	platform dagger.Platform,
-	backendPort int,
 ) (_ *dagger.Container, rerr error) {
 	ctx, span := Tracer().Start(ctx, "build: "+string(platform))
 	defer telemetry.EndWithCause(span, &rerr)
 
 	build := m.buildCtr().
 		WithExec([]string{"npm", "install"}).
-		WithEnvVariable("PUBLIC_BACKEND_PORT", strconv.Itoa(backendPort)).
 		WithExec([]string{"npm", "run", "build"}).
 		Directory("build")
 
@@ -106,7 +99,7 @@ func (m *Frontend) Publish(
 
 	for i, plt := range plats {
 		errg.Go(func() error {
-			build, err := m.build(gctx, plt, helmBackendPort)
+			build, err := m.build(gctx, plt)
 			if err != nil {
 				return err
 			}
