@@ -17,13 +17,14 @@ spec:
     spec:
       initContainers:
         - name: migrate
-          image: "ghcr.io/chrisjpalmer/shoppinglist:migrate-{{ .Values.image.tag }}"
+          image: "ghcr.io/chrisjpalmer/shoppinglist:backend-{{ .Values.image.tag }}"
           volumeMounts:
             - mountPath: /app/local
               name: db
           env:
             - name: DATABASE_FILE
               value: /app/local/local.db  
+          command: ["/migrations/entrypoint.sh"]
       containers:
         - name: backend
           image: "ghcr.io/chrisjpalmer/shoppinglist:backend-{{ .Values.image.tag }}"

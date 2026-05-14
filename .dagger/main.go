@@ -102,8 +102,6 @@ func (m *Shoppinglist) Build(
 
 	errg.Go(func() error { return m.publishBackend(gctx, ws, tag, registryPassword) })
 
-	errg.Go(func() error { return m.publishMigrateImage(gctx, ws, tag, registryPassword) })
-
 	errg.Go(func() error { return m.publishFrontend(gctx, ws, tag, registryPassword) })
 
 	if err := errg.Wait(); err != nil {
@@ -118,13 +116,6 @@ func (m *Shoppinglist) publishBackend(ctx context.Context, ws *dagger.Workspace,
 	defer telemetry.EndWithCause(span, &rerr)
 
 	return dag.Backend(dagger.BackendOpts{Ws: ws}).Publish(ctx, tag, registryPassword)
-}
-
-func (m *Shoppinglist) publishMigrateImage(ctx context.Context, ws *dagger.Workspace, tag string, registryPassword *dagger.Secret) (rerr error) {
-	ctx, span := Tracer().Start(ctx, "publish-migrate-image")
-	defer telemetry.EndWithCause(span, &rerr)
-
-	return dag.Backend(dagger.BackendOpts{Ws: ws}).PublishMigrateImage(ctx, tag, registryPassword)
 }
 
 func (m *Shoppinglist) publishFrontend(ctx context.Context, ws *dagger.Workspace, tag string, registryPassword *dagger.Secret) (rerr error) {

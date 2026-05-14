@@ -15,17 +15,16 @@ type BackendID string // backend (../../../backend/.dagger/main.go:25:6)
 type Backend struct { // backend (../../../backend/.dagger/main.go:25:6)
 	query *querybuilder.Selection
 
-	checkProtos             *Void
-	checkSqlc               *Void
-	checkTailwind           *Void
-	checkTempl              *Void
-	id                      *BackendID
-	migrateCheck            *Void
-	publish                 *Void
-	publishMigrateImage     *Void
-	testMigrateImageNodb    *Void
-	testMigrateImageNodbenv *Void
-	testMigrateImageWithDb  *Void
+	checkProtos               *Void
+	checkSqlc                 *Void
+	checkTailwind             *Void
+	checkTempl                *Void
+	id                        *BackendID
+	migrateCheck              *Void
+	publish                   *Void
+	testMigrationToolsNodb    *Void
+	testMigrationToolsNodbenv *Void
+	testMigrationToolsWithDb  *Void
 }
 
 func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
@@ -189,7 +188,7 @@ func (r *Backend) UnmarshalJSON(bs []byte) error {
 
 // MigrateCheck - checks whether the previous schema on the master branch
 // can be successfully migrated to the new schema
-func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../../backend/.dagger/migrate.go:22:1)
+func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../../backend/.dagger/migrate.go:23:1)
 	if r.migrateCheck != nil {
 		return nil
 	}
@@ -199,7 +198,7 @@ func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../..
 }
 
 // MigrateLocal - migrates the passed in database and returns it
-func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../backend/.dagger/migrate.go:13:1)
+func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../backend/.dagger/migrate.go:14:1)
 	assertNotNil("localdb", localdb)
 	q := r.query.Select("migrateLocal")
 	q = q.Arg("localdb", localdb)
@@ -221,46 +220,32 @@ func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Sec
 	return q.Execute(ctx)
 }
 
-// PublishMigrateImage - builds an image that contains the atlas migration tool
-// as well as the new schema that the database needs to be migrated to
-func (r *Backend) PublishMigrateImage(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/migrate_image.go:13:1)
-	assertNotNil("registryPassword", registryPassword)
-	if r.publishMigrateImage != nil {
+// TestMigrationToolsNODB - tests that the migration tools work if the DB doesn't exist
+func (r *Backend) TestMigrationToolsNodb(ctx context.Context) error { // backend (../../../backend/.dagger/migration_tools.go:46:1)
+	if r.testMigrationToolsNodb != nil {
 		return nil
 	}
-	q := r.query.Select("publishMigrateImage")
-	q = q.Arg("tag", tag)
-	q = q.Arg("registryPassword", registryPassword)
+	q := r.query.Select("testMigrationToolsNodb")
 
 	return q.Execute(ctx)
 }
 
-// TestMigrateImageNODB - tests that the migrate image works if the DB exists
-func (r *Backend) TestMigrateImageNodb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:78:1)
-	if r.testMigrateImageNodb != nil {
+// TestMigrationToolsNoDBEnv - tests that the migration tools correctly fail if the DATABASE_FILE var isn't present
+func (r *Backend) TestMigrationToolsNodbenv(ctx context.Context) error { // backend (../../../backend/.dagger/migration_tools.go:59:1)
+	if r.testMigrationToolsNodbenv != nil {
 		return nil
 	}
-	q := r.query.Select("testMigrateImageNodb")
+	q := r.query.Select("testMigrationToolsNodbenv")
 
 	return q.Execute(ctx)
 }
 
-// TestMigrateImageNoDBEnv - tests that the migrate image correctly fails if the DATABASE_FILE var isn't present
-func (r *Backend) TestMigrateImageNodbenv(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:95:1)
-	if r.testMigrateImageNodbenv != nil {
+// TestMigrationToolsWithDB - tests that the migration tools work if the DB exists
+func (r *Backend) TestMigrationToolsWithDb(ctx context.Context) error { // backend (../../../backend/.dagger/migration_tools.go:28:1)
+	if r.testMigrationToolsWithDb != nil {
 		return nil
 	}
-	q := r.query.Select("testMigrateImageNodbenv")
-
-	return q.Execute(ctx)
-}
-
-// TestMigrateImageWithDB - tests that the migrate image works if the DB exists
-func (r *Backend) TestMigrateImageWithDb(ctx context.Context) error { // backend (../../../backend/.dagger/migrate_image.go:55:1)
-	if r.testMigrateImageWithDb != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrateImageWithDb")
+	q := r.query.Select("testMigrationToolsWithDb")
 
 	return q.Execute(ctx)
 }

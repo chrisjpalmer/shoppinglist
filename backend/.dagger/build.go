@@ -35,12 +35,19 @@ func (m *Backend) build(ctx context.Context, platform dagger.Platform) (_ *dagge
 		WithExec([]string{"go", "build", "-o", "backend", "."}).
 		File("backend")
 
-	return dag.Container(dagger.ContainerOpts{
+	appCtr := dag.Container(dagger.ContainerOpts{
 		Platform: platform,
-	}).From("alpine:latest").
-		WithWorkdir("/app").
+	}).From("alpine:latest")
+
+	appCtr = m.withMigrationTools(appCtr)
+
+	appCtr = appCtr.WithWorkdir("/app").
 		WithFile("backend", backend).
-		WithEntrypoint([]string{"./backend"}).Sync(ctx)
+		WithEntrypoint([]string{"./backend"})
+
+	appCtr = m.withMigrationSQL(appCtr, m.RootSrc.File(schemaPath))
+
+	return appCtr.Sync(ctx)
 }
 
 func arch(platform dagger.Platform) string {
