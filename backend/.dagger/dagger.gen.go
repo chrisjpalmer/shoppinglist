@@ -318,48 +318,27 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				}
 			}
 			return nil, (*Backend).Publish(&parent, ctx, tag, registryPassword)
-		case "PublishMigrateImage":
+		case "TestMigrationToolsNODB":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var tag string
-			if inputArgs["tag"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["tag"]), &tag)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg tag", err))
-				}
-			}
-			var registryPassword *dagger.Secret
-			if inputArgs["registryPassword"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["registryPassword"]), &registryPassword)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
-				}
-			}
-			return nil, (*Backend).PublishMigrateImage(&parent, ctx, tag, registryPassword)
-		case "TestMigrateImageNODB":
+			return nil, (*Backend).TestMigrationToolsNODB(&parent, ctx)
+		case "TestMigrationToolsNODBEnv":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			return nil, (*Backend).TestMigrateImageNODB(&parent, ctx)
-		case "TestMigrateImageNODBEnv":
+			return nil, (*Backend).TestMigrationToolsNODBEnv(&parent, ctx)
+		case "TestMigrationToolsWithDB":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			return nil, (*Backend).TestMigrateImageNODBEnv(&parent, ctx)
-		case "TestMigrateImageWithDB":
-			var parent Backend
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			return nil, (*Backend).TestMigrateImageWithDB(&parent, ctx)
+			return nil, (*Backend).TestMigrationToolsWithDB(&parent, ctx)
 		case "":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)

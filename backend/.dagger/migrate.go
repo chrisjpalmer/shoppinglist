@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"dagger/backend/internal/dagger"
+	"fmt"
 )
 
 const schemaPath = "backend/sql/schema.sql"
 
-const atlasVersion = "arigaio/atlas:1.1.6-extended-alpine"
+const atlasVersion = "1.1.6"
 
 // MigrateLocal - migrates the passed in database and returns it
 func (m *Backend) MigrateLocal(ctx context.Context, localdb *dagger.File) *dagger.File {
@@ -36,7 +37,7 @@ func (m *Backend) MigrateCheck(ctx context.Context) error {
 
 func migrate(prevdb, newsql *dagger.File) *dagger.Container {
 	return dag.Container().
-		From(atlasVersion).
+		From(fmt.Sprintf("arigaio/atlas:%s-extended-alpine", atlasVersion)).
 		WithWorkdir("/app").
 		WithFile("prev.db", prevdb).
 		WithFile("new.sql", newsql).
