@@ -116,7 +116,7 @@ func (m *Frontend) Publish(
 
 	_, err := dag.Container().
 		WithRegistryAuth("ghcr.io", "USERNAME", registryPassword).
-		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist:frontend-%s", tag), dagger.ContainerPublishOpts{
+		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist/frontend:%s", tag), dagger.ContainerPublishOpts{
 			PlatformVariants: ctrs,
 		})
 

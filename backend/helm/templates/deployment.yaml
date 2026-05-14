@@ -17,7 +17,7 @@ spec:
     spec:
       initContainers:
         - name: migrate
-          image: "ghcr.io/chrisjpalmer/shoppinglist:backend-{{ .Values.image.tag }}"
+          image: "ghcr.io/chrisjpalmer/shoppinglist/backend:{{ .Values.image.tag }}"
           volumeMounts:
             - mountPath: /app/local
               name: db
@@ -27,7 +27,7 @@ spec:
           command: ["/migrations/entrypoint.sh"]
       containers:
         - name: backend
-          image: "ghcr.io/chrisjpalmer/shoppinglist:backend-{{ .Values.image.tag }}"
+          image: "ghcr.io/chrisjpalmer/shoppinglist/backend:{{ .Values.image.tag }}"
           ports:
             - name: http
               containerPort: 8080

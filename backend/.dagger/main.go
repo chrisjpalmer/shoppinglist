@@ -69,7 +69,7 @@ func (m *Backend) Publish(
 
 	_, err := dag.Container().
 		WithRegistryAuth("ghcr.io", "USERNAME", registryPassword).
-		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist:backend-%s", tag), dagger.ContainerPublishOpts{
+		Publish(ctx, fmt.Sprintf("ghcr.io/chrisjpalmer/shoppinglist/backend:%s", tag), dagger.ContainerPublishOpts{
 			PlatformVariants: ctrs,
 		})
 
