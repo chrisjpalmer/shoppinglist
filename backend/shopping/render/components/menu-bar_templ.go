@@ -50,7 +50,7 @@ func MenuBar(pageContext page.Context) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><img src=\"/assets/menu.svg\" alt=\"menu\" height=\"20\" width=\"20\"></button></div><div id=\"mobile-menu\" aria-expanded=\"false\" class=\"transition-[left] sm:hidden absolute top-0 -left-50 aria-expanded:left-0 p-5 bg-white h-screen z-6 w-50\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><img src=\"/shopping/assets/menu.svg\" alt=\"menu\" height=\"20\" width=\"20\"></button></div><div id=\"mobile-menu\" aria-expanded=\"false\" class=\"transition-[left] sm:hidden absolute top-0 -left-50 aria-expanded:left-0 p-5 bg-white h-screen z-6 w-50\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -67,7 +67,7 @@ func MenuBar(pageContext page.Context) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\"><img src=\"/assets/cross.svg\" alt=\"exit\" height=\"20\" width=\"20\"></button>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\"><img src=\"/shopping/assets/cross.svg\" alt=\"exit\" height=\"20\" width=\"20\"></button>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

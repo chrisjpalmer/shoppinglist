@@ -40,21 +40,21 @@ func Nav(pageContext page.Context) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Li(pageContext, "Want", "/want").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Li(pageContext, "Want", "/shopping/want").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Li(pageContext, "Got", "/got").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Li(pageContext, "Got", "/shopping/got").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Li(pageContext, "Shop", "/shop").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Li(pageContext, "Shop", "/shopping/shop").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = Li(pageContext, "Planning", pageContext.PlanningSiteURL, LiOpts{
 			Image: &Image{
-				Source: "/assets/exit.svg",
+				Source: "/shopping/assets/exit.svg",
 				Alt:    "planning",
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)

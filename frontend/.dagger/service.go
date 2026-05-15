@@ -9,7 +9,7 @@ import (
 const (
 	// localBackendUrl - the url of the backend when the backend is served locally.
 	// This value must be synced with the default port in the backend code
-	localBackendUrl = "http://localhost:8080"
+	localBackendUrl = "http://localhost:8080/api"
 
 	// localFrontendPort - the port of the frontend website.
 	// This is the default for the svelte setup being used.
@@ -17,7 +17,7 @@ const (
 
 	// localShoppingSiteUrl - the url of the shopping site when the backend is served locally.
 	// This value must be synced with the default port in the backend code
-	localShoppingSiteUrl = "http://localhost:8081"
+	localShoppingSiteUrl = "http://localhost:8080/shopping"
 )
 
 // FrontendService - runs the frontend service inside a container
