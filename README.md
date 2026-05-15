@@ -12,10 +12,12 @@ A pet project to keep track of my shopping!
 Originally there was only the meal planning site ( written in svelte ).
 A new shopping site is being built out in htmx / gotempl for a bit of fun.
 
-A preview version of the sites are available here (these are deployed to for every commit to master):
+A preview version of the sites is hosted on railway:
 
-- Meal Planning Site: http://100.49.208.199:30000/
-- Shopping Site: http://100.49.208.199:30001/shopping
+- Meal Planning Site: https://frontend-production-4312.up.railway.app/
+- Shopping Site: https://backend-production-28fe5.up.railway.app/shopping
+
+The full project and its [settings can be viewed here](https://railway.com/project/8c0aadfe-273e-469b-a372-ad00f4f5b025)
 
 ## Running the project
 
