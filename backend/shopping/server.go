@@ -4,7 +4,6 @@ import (
 	"context"
 	"embed"
 	"net/http"
-	"strconv"
 
 	"github.com/a-h/templ"
 	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
@@ -20,45 +19,33 @@ const (
 //go:embed assets/*
 var assets embed.FS
 
-// Server - the server for giving you nice hello greetings
 type Server struct {
 	planningSiteURL string
-	srv             http.Server
-	done            chan struct{}
 	sql             *gensql.Queries
 }
 
-// NewServer - creates a new server
-func NewServer(port int, planningSiteURL string) (*Server, error) {
-	mux := http.NewServeMux()
-
+func NewServer(planningSiteURL string) (*Server, error) {
 	sql, err := sql.Connect(context.Background())
 	if err != nil {
 		return nil, err
 	}
 
-	srv := &Server{
+	return &Server{
 		planningSiteURL: planningSiteURL,
-		srv: http.Server{
-			Addr:    ":" + strconv.Itoa(port),
-			Handler: mux,
-		},
-		done: make(chan struct{}),
-		sql:  sql,
-	}
+		sql:             sql,
+	}, nil
+}
 
-	// serve one route on `/` which will be our hello page
-	mux.HandleFunc("/", handleRootPage)
-	mux.Handle("/assets/", http.FileServerFS(assets))
-	mux.HandleFunc("/want", srv.handleWantPage)
-	mux.HandleFunc("/got", srv.handleGotPage)
-	mux.HandleFunc("/shop", srv.handleShopPage)
-
-	return srv, nil
+func (s *Server) RegisterRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("/shopping", handleRootPage)
+	mux.Handle("/shopping/assets/", http.StripPrefix("/shopping", http.FileServerFS(assets)))
+	mux.HandleFunc("/shopping/want", s.handleWantPage)
+	mux.HandleFunc("/shopping/got", s.handleGotPage)
+	mux.HandleFunc("/shopping/shop", s.handleShopPage)
 }
 
 func handleRootPage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Location", "/want")
+	w.Header().Add("Location", "/shopping/want")
 	w.WriteHeader(http.StatusFound)
 }
 
@@ -74,16 +61,4 @@ func (s *Server) handleShopPage(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) pageContext(r *http.Request) page.Context {
 	return page.NewContext(r, s.planningSiteURL)
-}
-
-// Listen - starts the server
-func (s *Server) Listen() error {
-	return s.srv.ListenAndServe()
-}
-
-// Close - gracefully closes the server
-func (s *Server) Close() error {
-	close(s.done)
-
-	return s.srv.Shutdown(context.Background())
 }

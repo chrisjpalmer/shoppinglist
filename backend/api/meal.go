@@ -74,7 +74,7 @@ func mapImageMeta(id int64, imageType string, mode, imageUrl interface{}) (*genp
 	return &genpb.ImageMeta{
 		Mode:        mapImageMode(modeStr),
 		ExternalUrl: imageUrlStr,
-		InternalUrl: fmt.Sprintf("/meal/%d/image/%s", id, imageType),
+		InternalUrl: fmt.Sprintf("/meal/%d/image/%s", id, imageType), // leave out /api as this is part of the frontend url
 	}, nil
 }
 

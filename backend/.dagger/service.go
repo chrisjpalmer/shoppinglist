@@ -7,13 +7,9 @@ import (
 )
 
 const (
-	// localBackendApiPort - the default port that the backend api server
+	// localBackendPort - the default port that the backend server
 	// is served from.
-	localBackendApiPort = 8080
-
-	// localBackendShoppingSitePort - the default port that the shopping site
-	// is served from.
-	localBackendShoppingSitePort = 8081
+	localBackendPort = 8080
 )
 
 // BackendService - runs the backend service inside a container
@@ -31,7 +27,6 @@ func (m *Backend) BackendService(ctx context.Context, ws *dagger.Workspace) (*da
 
 	return ctr.
 		WithMountedDirectory("local", ws.Directory("/backend/local")).
-		WithExposedPort(localBackendApiPort).
-		WithExposedPort(localBackendShoppingSitePort).
+		WithExposedPort(localBackendPort).
 		AsService(dagger.ContainerAsServiceOpts{UseEntrypoint: true}), nil
 }

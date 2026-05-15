@@ -9,12 +9,12 @@ import (
 templ Nav(pageContext page.Context) {
     <nav>
         <ul>
-            @Li(pageContext, "Want", "/want")
-            @Li(pageContext, "Got", "/got")
-            @Li(pageContext, "Shop", "/shop")
+            @Li(pageContext, "Want", "/shopping/want")
+            @Li(pageContext, "Got", "/shopping/got")
+            @Li(pageContext, "Shop", "/shopping/shop")
             @Li(pageContext, "Planning", pageContext.PlanningSiteURL, LiOpts{
                 Image: &Image{
-                    Source: "/assets/exit.svg",
+                    Source: "/shopping/assets/exit.svg",
                     Alt: "planning",
                 },
             })

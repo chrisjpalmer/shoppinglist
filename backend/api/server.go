@@ -8,8 +8,6 @@ import (
 	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 	"github.com/chrisjpalmer/shoppinglist/backend/sql"
 	"github.com/rs/cors"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 )
 
 type Server struct {
@@ -25,12 +23,15 @@ func NewServer() (*Server, error) {
 	return &Server{sql: sql}, nil
 }
 
-func (s *Server) Listen() error {
-	mux := http.NewServeMux()
-	path, handler := genpbconnect.NewShoppingListServiceHandler(s)
-	mux.Handle(path, handler)
-	mux.HandleFunc("/meal/{id}/image/preview", s.handleMealPreviewImage)
-	mux.HandleFunc("/meal/{id}/image/ingredients", s.handleMealIngredientsImage)
+func (s *Server) RegisterRoutes(mux *http.ServeMux) {
+	apiMux := http.NewServeMux()
 
-	return http.ListenAndServe(":8080", h2c.NewHandler(cors.AllowAll().Handler(mux), &http2.Server{}))
+	path, handler := genpbconnect.NewShoppingListServiceHandler(s)
+
+	apiMux.Handle(path, handler)
+
+	apiMux.HandleFunc("/meal/{id}/image/preview", s.handleMealPreviewImage)
+	apiMux.HandleFunc("/meal/{id}/image/ingredients", s.handleMealIngredientsImage)
+
+	mux.Handle("/api/", cors.AllowAll().Handler(http.StripPrefix("/api", apiMux)))
 }

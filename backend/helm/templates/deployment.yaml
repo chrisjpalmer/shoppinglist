@@ -32,9 +32,6 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-            - name: shopping
-              containerPort: 8081
-              protocol: TCP
           env:
             - name: PLANNING_SITE_URL
               value: {{ .Values.planningSiteUrl }}
