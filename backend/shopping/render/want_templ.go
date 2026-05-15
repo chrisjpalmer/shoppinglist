@@ -417,7 +417,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 				templ_7745c5c3_Err = components.Button(components.ButtonOpts{
 					ID:        "save-button",
 					Title:     "Save",
-					HxPost:    "/want?fragment=content",
+					HxPost:    "/shopping/want?fragment=content",
 					HxInclude: ".col-override",
 					HxTarget:  "#content",
 					HxOnClick: "setClean",
