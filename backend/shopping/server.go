@@ -5,10 +5,8 @@ import (
 	"embed"
 	"net/http"
 
-	"github.com/a-h/templ"
 	"github.com/chrisjpalmer/shoppinglist/backend/gensql"
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
-	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render"
 	"github.com/chrisjpalmer/shoppinglist/backend/sql"
 )
 
@@ -43,16 +41,12 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/shopping/got", s.handleGotPage)
 	mux.HandleFunc("/shopping/got/reset", s.handleGotResetPage)
 	mux.HandleFunc("/shopping/shop", s.handleShopPage)
+	mux.HandleFunc("/shopping/shop/reset", s.handleShopResetPage)
 }
 
 func handleRootPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Location", "/shopping/want")
 	w.WriteHeader(http.StatusFound)
-}
-
-func (s *Server) handleShopPage(w http.ResponseWriter, r *http.Request) {
-	pctx := s.pageContext(r)
-	templ.Handler(render.ShopPage(pctx)).ServeHTTP(w, r)
 }
 
 func (s *Server) pageContext(r *http.Request) page.Context {

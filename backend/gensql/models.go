@@ -9,6 +9,7 @@ type Ingredient struct {
 	Name              string
 	WantOverrideCount int64
 	GotCount          int64
+	Shopped           bool
 }
 
 type Meal struct {

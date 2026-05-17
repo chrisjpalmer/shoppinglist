@@ -86,7 +86,7 @@ func (q *Queries) DeleteMeal(ctx context.Context, id int64) error {
 
 const getIngredients = `-- name: GetIngredients :many
 
-SELECT id, name, want_override_count, got_count FROM ingredients
+SELECT id, name, want_override_count, got_count, shopped FROM ingredients
 ORDER BY name
 `
 
@@ -105,6 +105,7 @@ func (q *Queries) GetIngredients(ctx context.Context) ([]Ingredient, error) {
 			&i.Name,
 			&i.WantOverrideCount,
 			&i.GotCount,
+			&i.Shopped,
 		); err != nil {
 			return nil, err
 		}
@@ -222,6 +223,15 @@ func (q *Queries) ResetIngredientGotCount(ctx context.Context) error {
 	return err
 }
 
+const resetIngredientShopped = `-- name: ResetIngredientShopped :exec
+UPDATE ingredients SET shopped = FALSE
+`
+
+func (q *Queries) ResetIngredientShopped(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, resetIngredientShopped)
+	return err
+}
+
 const updateIngredient = `-- name: UpdateIngredient :exec
 UPDATE ingredients set name = ? WHERE id = ?
 `
@@ -247,6 +257,20 @@ type UpdateIngredientGotCountParams struct {
 
 func (q *Queries) UpdateIngredientGotCount(ctx context.Context, arg UpdateIngredientGotCountParams) error {
 	_, err := q.db.ExecContext(ctx, updateIngredientGotCount, arg.GotCount, arg.ID)
+	return err
+}
+
+const updateIngredientShopped = `-- name: UpdateIngredientShopped :exec
+UPDATE ingredients SET shopped = ? WHERE id = ?
+`
+
+type UpdateIngredientShoppedParams struct {
+	Shopped bool
+	ID      int64
+}
+
+func (q *Queries) UpdateIngredientShopped(ctx context.Context, arg UpdateIngredientShoppedParams) error {
+	_, err := q.db.ExecContext(ctx, updateIngredientShopped, arg.Shopped, arg.ID)
 	return err
 }
 
