@@ -2,12 +2,71 @@
 package render
 
 import (
+	"fmt"
+
 	"github.com/chrisjpalmer/shoppinglist/backend/shopping/page"
+	"github.com/chrisjpalmer/shoppinglist/backend/shopping/render/components"
 )
 
-// ShopPage - the main page for the hello server
-templ ShopPage(pageContext page.Context) {
-	@base(pageContext) { }
+// ShopPage - the shop page for tracking what has been picked up while shopping
+templ ShopPage(pageContext page.Context, shopItems []page.ShopItem) {
+	@base(pageContext) {
+		@templ.Fragment("content") {
+		<div id="content">
+			@components.Table() {
+				@components.TrTitle() {
+					@components.Td(components.TdOpts{Title: true}) { Shop }
+					@components.Td(components.TdOpts{Title: true})
+					@components.Td(components.TdOpts{Title: true})
+				}
+				@components.TrHeader() {
+					@components.Td(components.TdOpts{Header: true}){Item}
+					@components.Td(components.TdOpts{Header: true}){Need}
+					@components.Td(components.TdOpts{Header: true}){Shopped}
+				}
+				for _, s := range shopItems {
+				@components.Tr() {
+					@components.Td(){ {s.Ingredient} }
+					@components.Td(){ {s.NeedCount} }
+					@components.Td(){
+						<input
+							name={ fmt.Sprintf("col-shopped-row.%d", s.ID) }
+							class="col-shopped-row"
+							type="hidden"
+							value="0"
+						/>
+						<input
+							name={ fmt.Sprintf("col-shopped.%d", s.ID) }
+							class="col-shopped"
+							type="checkbox"
+							checked?={ s.Shopped }
+							hx-on:change="setDirty()"
+						/>
+					}
+				}
+				}
+			}
+
+			<div class="flex flex-row items-center justify-between mt-5">
+				<div class="flex flex-row">
+					@components.Button(components.ButtonOpts{
+						ID:        "save-button",
+						Title:     "Save",
+						HxPost:    "/shopping/shop?fragment=content",
+						HxInclude: ".col-shopped,.col-shopped-row",
+						HxTarget:  "#content",
+						HxOnClick: "setClean",
+						Classes:   []string{"invisible", "mr-2"},
+					})
+					@components.Button(components.ButtonOpts{
+						ID:      "reset-button",
+						Title:   "Reset",
+						HxPost:  "/shopping/shop/reset?fragment=content",
+						HxTarget: "#content",
+					})
+				</div>
+			</div>
+		</div>
+		}
+	}
 }
-
-

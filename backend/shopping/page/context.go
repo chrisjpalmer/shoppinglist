@@ -33,3 +33,11 @@ type GotItem struct {
 	Ingredient string
 	GotCount   int
 }
+
+// ShopItem - an item to display on the shop page
+type ShopItem struct {
+	ID         int64
+	Ingredient string
+	NeedCount  int
+	Shopped    bool
+}
