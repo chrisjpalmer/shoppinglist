@@ -4,7 +4,6 @@
   import { ShoppingListService } from "../gen/shopping_list_service_pb";
   import { Category, type Plan } from "../gen/plan_pb";
   import type { Meal } from "../gen/meal_pb";
-  import type { Ingredient } from "../gen/ingredient_pb";
   import { CreateShoppingListService } from "$lib/shopping_list_service";
   import Button from "../components/button.svelte";
   import Select from "../components/select.svelte";
@@ -32,10 +31,6 @@
 
 	const client = CreateShoppingListService()
 
-	interface DisplaySummary {
-		ingredients: DisplayIngredientCount[]
-	}
-
 	interface DisplayIngredientCount {
 		name: string
 		count: number
@@ -43,7 +38,6 @@
 
 	let dirty = $state(false);
 	let plan:Plan | null = $state(null);
-	let planSummary:DisplaySummary | null = $state(null);
 	let allMeals:Meal[] | null = $state(null);
 
 	async function refresh() {
@@ -51,39 +45,9 @@
 		const planRs = await client.getPlan({})
 		plan = <Plan> planRs.plan
 
-		// plan summary
-		const igRs = await client.getIngredients({})
-
-		const igmap = ingredientMap(igRs.ingredients)
-
-		let ds:DisplaySummary = {
-			ingredients: []
-		}
-
-		if(planRs.planSummary) {
-			for(const igref of planRs.planSummary.ingredientRef) {
-				if(igmap.has(igref.ingredientId)) {
-					ds.ingredients.push({name: <string> igmap.get(igref.ingredientId), count: igref.number})
-				} else {
-					console.log(`ingredient id ${igref.ingredientId} was ignored when rendering plan summary`)
-				}
-			}
-		}
-
-		planSummary = ds
-
 		// all meals
 		const mealRs = await client.getMeals({})
 		allMeals = <Meal[]> mealRs.meals
-	}
-
-	function ingredientMap(igs: Ingredient[]): Map<BigInt, string> {
-		let igmap = new Map<BigInt, string>();
-		for(const ig of igs) {
-			igmap.set(ig.id, ig.name)
-		}
-
-		return igmap
 	}
 	
 	function getMealId(day: number, category: Category): bigint {
@@ -146,7 +110,7 @@
 			{/each}
 		</TrHeader>
 		{#each categories as category}
-		<Tr classes="h-20">
+		<Tr classes="h-40">
 			<Td classes="font-bold">{Category[category]}</Td>
 			{#each days as day, i}
 			<Td>
@@ -169,14 +133,4 @@
 
 {#if dirty}
 <Button onclick={save}>Save</Button>
-{/if}
-
-{#if planSummary}
-<Table classes="mt-10">
-	<TrTitle><Td title={true}>Ingredients List</Td><Td title={true}></Td></TrTitle>
-	<TrHeader><Td header={true}>Ingredient</Td><Td header={true}>Amount</Td></TrHeader>
-	{#each planSummary.ingredients as ig}
-	<Tr><Td>{ig.name}</Td><Td>{ig.count}</Td></Tr>
-	{/each}
-</Table>
 {/if}
