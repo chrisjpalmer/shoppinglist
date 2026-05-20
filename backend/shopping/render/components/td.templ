@@ -6,6 +6,7 @@ type TdOpts struct {
     Header bool
     Title  bool
     Classes []string
+    Colspan int
 }
 
 templ Td(opts ...TdOpts) {
@@ -22,6 +23,8 @@ templ Td(opts ...TdOpts) {
         "group-last:last:rounded-br-lg",
     }
 
+    colspan := 0
+
     if len(opts) == 1 {
         o := opts[0]
 
@@ -37,12 +40,18 @@ templ Td(opts ...TdOpts) {
         }
 
         classes = append(classes, o.Classes...)
+
+        colspan = o.Colspan
     }
 
     class := strings.Join(classes, " ")
     }}
 
-    <td class={class}>
+    <td class={class} 
+        if colspan > 0 {
+            colspan={colspan}
+        }
+    >
         {children...}
     </td>
 }

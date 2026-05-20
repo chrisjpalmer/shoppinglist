@@ -1,11 +1,13 @@
 <script lang="ts">
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
 	import Button from '../../components/button.svelte';
-	import Table from '../../components/table.svelte';
+	import ScrollableTable from '../../components/scrollableTable.svelte';
+	import StickyTrHeader from '../../components/sticky-tr-header.svelte';
+	import StickyTrTitle from '../../components/sticky-tr-title.svelte';
+
 	import Td from '../../components/td.svelte';
 	import TextInput from '../../components/text-input.svelte';
-	import TrHeader from '../../components/tr-header.svelte';
-	import TrTitle from '../../components/tr-title.svelte';
+
 	import Tr from '../../components/tr.svelte';
 
 	const client = CreateShoppingListService()
@@ -89,9 +91,9 @@
 	<title>Ingredients</title>
 </svelte:head>
 
-<Table>
-	<TrTitle><Td title={true}>Ingredients</Td><Td title={true}></Td></TrTitle>
-	<TrHeader><Td header={true}>Name</Td><Td header={true}>Action</Td></TrHeader>
+<ScrollableTable classes="overflow-y-auto h-full">
+	<StickyTrTitle><Td title={true} colspan={2}>Ingredients</Td></StickyTrTitle>
+	<StickyTrHeader><Td header={true}>Name</Td><Td header={true}>Action</Td></StickyTrHeader>
 	{#each displayIngredients as dig (dig.id)}
 		{#if dig.isEdit}
 			<Tr><Td><TextInput bind:value={dig.name}/></Td><Td><Button onclick={() => saveIngredient(dig.id)}>Save</Button></Td></Tr>
@@ -103,4 +105,4 @@
 		<Tr><Td><TextInput bind:value={dig.name}/></Td><Td><Button onclick={() => saveNewIngredient(dig.pseudoId)}>Save</Button></Td></Tr>
 	{/each}
 	<Tr><Td></Td><Td><Button onclick={addIngredient}>+</Button></Td></Tr>
-</Table>
+</ScrollableTable>

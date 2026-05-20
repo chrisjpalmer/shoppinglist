@@ -12,14 +12,36 @@ import (
 templ ShopPage(pageContext page.Context, shopItems []page.ShopItem) {
 	@base(pageContext) {
 		@templ.Fragment("content") {
-		<div id="content">
-			@components.Table() {
-				@components.TrTitle() {
-					@components.Td(components.TdOpts{Title: true}) { Shop }
-					@components.Td(components.TdOpts{Title: true})
-					@components.Td(components.TdOpts{Title: true})
+		<div id="content" class="h-full">
+			@components.ScrollableTable(components.ScrollableTableOpts{Fragment: "table-content", Classes: []string{"h-full"}}) {
+				@components.StickyTrTitle() {
+					@components.Td(components.TdOpts{
+							Title: true,
+							Colspan: 4,
+					}) { 
+					<div class="flex flex-row items-center justify-between">
+						<p>Shop</p>
+						<div class="flex flex-row pr-2">
+							@components.Button(components.ButtonOpts{
+								ID:        "save-button",
+								Title:     "Save",
+								HxPost:    "/shopping/shop?fragment=table-content",
+								HxInclude: ".col-shopped,.col-shopped-row",
+								HxTarget:  "#table-content",
+								HxOnClick: "setClean",
+								Classes:   []string{"invisible", "mr-2"},
+							})
+							@components.Button(components.ButtonOpts{
+								ID:      "reset-button",
+								Title:   "Reset",
+								HxPost:  "/shopping/shop/reset?fragment=table-content",
+								HxTarget: "#table-content",
+							})
+						</div>
+					</div>
+					}
 				}
-				@components.TrHeader() {
+				@components.StickyTrHeader() {
 					@components.Td(components.TdOpts{Header: true}){Item}
 					@components.Td(components.TdOpts{Header: true}){Need}
 					@components.Td(components.TdOpts{Header: true}){Shopped}
@@ -46,26 +68,6 @@ templ ShopPage(pageContext page.Context, shopItems []page.ShopItem) {
 				}
 				}
 			}
-
-			<div class="flex flex-row items-center justify-between mt-5">
-				<div class="flex flex-row">
-					@components.Button(components.ButtonOpts{
-						ID:        "save-button",
-						Title:     "Save",
-						HxPost:    "/shopping/shop?fragment=content",
-						HxInclude: ".col-shopped,.col-shopped-row",
-						HxTarget:  "#content",
-						HxOnClick: "setClean",
-						Classes:   []string{"invisible", "mr-2"},
-					})
-					@components.Button(components.ButtonOpts{
-						ID:      "reset-button",
-						Title:   "Reset",
-						HxPost:  "/shopping/shop/reset?fragment=content",
-						HxTarget: "#content",
-					})
-				</div>
-			</div>
 		</div>
 		}
 	}

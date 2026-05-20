@@ -3,11 +3,11 @@
   	import { BackendUrl, CreateShoppingListService } from '$lib/shopping_list_service';
 	import TextInput from '../../components/text-input.svelte';
 	import Button from '../../components/button.svelte';
-	import TrHeader from '../../components/tr-header.svelte';
 	import Td from '../../components/td.svelte';
 	import Tr from '../../components/tr.svelte';
-	import TrTitle from '../../components/tr-title.svelte';
-	import Table from '../../components/table.svelte';
+	import ScrollableTable from '../../components/scrollableTable.svelte';
+	import StickyTrTitle from '../../components/sticky-tr-title.svelte';
+	import StickyTrHeader from '../../components/sticky-tr-header.svelte';
 
 	const client = CreateShoppingListService()
 
@@ -236,21 +236,17 @@
 </svelte:head>
 
 
-<Table>
-	<TrTitle>
-		<Td title={true}>Meals</Td>
-		<Td title={true}></Td>
-		<Td title={true}></Td>
-		<Td title={true}></Td>
-		<Td title={true}></Td>
-	</TrTitle>
-	<TrHeader>
+<ScrollableTable classes="h-full">
+	<StickyTrTitle>
+		<Td title={true} colspan={5}>Meals</Td>
+	</StickyTrTitle>
+	<StickyTrHeader>
 		<Td header={true}>Name</Td>
 		<Td header={true}>Recipe Url</Td>
 		<Td header={true}>Preview Image Url</Td>
 		<Td header={true}>Ingredients Image Url</Td>
 		<Td header={true}>Action</Td>
-	</TrHeader>
+	</StickyTrHeader>
 	{#each displayMeals as dm (dm.id)}
 		{#if dm.isEdit}
 			<Tr>
@@ -325,4 +321,4 @@
 		<Td></Td>
 		<Td><Button onclick={addMeal}>+</Button></Td>
 	</Tr>
-</Table>
+</ScrollableTable>

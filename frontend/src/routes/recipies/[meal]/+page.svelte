@@ -227,73 +227,74 @@
 	<meta name="description" content="Build the recipes" />
 </svelte:head>
 
-{#if selectedMeal}
-<H1>{selectedMeal.name}</H1>
-<div class="flex flex-col justify-end w-full sm:h-100 h-70 rounded-xl shadow-md mb-5 bg-white bg-contain bg-no-repeat bg-center" style="background-image: url({selectedMeal.ingredientsImageUrl || "/carrot.svg"});">
-	<div class="flex flex-row justify-center w-full p-2 bg-white/70">
-		{#if selectedMeal.recipeUrl}
-		<a class="text-blue-500" href={selectedMeal.recipeUrl}>{selectedMeal.name}</a>
-		{:else}
-		<p>{selectedMeal.name}</p>
-		{/if}
-	</div>
-</div>
-<Table>
-	<TrTitle>
-		<Td title={true}>Ingredients</Td>
-		{#if isEditing}
-		<Td title={true}></Td>
-		<Td header={true}>
-			{#if dirty}
-			<div class="flex flex-row justify-end">
-				<Button disabled={!valid} classes="mr-2" onclick={() => save()}>Save</Button>
-			</div>
+<div class="overflow-y-auto h-full p-3 -m-3">
+	{#if selectedMeal}
+	<H1>{selectedMeal.name}</H1>
+	<div class="flex flex-col justify-end w-full sm:h-100 h-70 rounded-xl shadow-md mb-5 bg-white bg-contain bg-no-repeat bg-center" style="background-image: url({selectedMeal.ingredientsImageUrl || "/carrot.svg"});">
+		<div class="flex flex-row justify-center w-full p-2 bg-white/70">
+			{#if selectedMeal.recipeUrl}
+			<a class="text-blue-500" href={selectedMeal.recipeUrl}>{selectedMeal.name}</a>
+			{:else}
+			<p>{selectedMeal.name}</p>
 			{/if}
-		</Td>
-		{:else}
-			<Td title={true}>
-				<div class="flex flex-row justify-end">
-					<Button classes="mr-2" onclick={() => edit()}>Edit</Button>
+		</div>
+	</div>
+	<Table>
+		<TrTitle>
+			<Td colspan={3} title={true}>
+				<div class="flex flex-row items-center justify-between">
+					<p>Ingredients</p>
+					{#if isEditing}
+						{#if dirty}
+						<div class="flex flex-row justify-end">
+							<Button disabled={!valid} classes="mr-2" onclick={() => save()}>Save</Button>
+						</div>
+						{/if}
+					{:else}
+						<div class="flex flex-row justify-end">
+							<Button classes="mr-2" onclick={() => edit()}>Edit</Button>
+						</div>
+					{/if}
 				</div>
 			</Td>
-		{/if}
-	</TrTitle>
-	<TrHeader>
-		<Td header={true}>Ingredient</Td>
-		<Td header={true}>Number</Td>
-		{#if isEditing}
-		<Td header={true}>Action</Td>
-		{/if}
-	</TrHeader>
-	{#each selectedMeal.ingredients as ing (ing.id)}
-	<Tr>
-		<Td>
+		</TrTitle>
+		<TrHeader>
+			<Td header={true}>Ingredient</Td>
+			<Td header={true}>Number</Td>
 			{#if isEditing}
-				<Select bind:value={ing.id}>
-				{#each ingredients as ing}
-					<option value={ing.id}>{ing.name}</option>
-				{/each}
-				</Select>
-			{:else}
-				{ing.name}
+			<Td header={true}>Action</Td>
 			{/if}
-		</Td>
-		<Td>
+		</TrHeader>
+		{#each selectedMeal.ingredients as ing (ing.id)}
+		<Tr>
+			<Td>
+				{#if isEditing}
+					<Select bind:value={ing.id}>
+					{#each ingredients as ing}
+						<option value={ing.id}>{ing.name}</option>
+					{/each}
+					</Select>
+				{:else}
+					{ing.name}
+				{/if}
+			</Td>
+			<Td>
+				{#if isEditing}
+					<input class="w-12 bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
+				{:else}
+					{ing.number}
+				{/if}
+			</Td>
 			{#if isEditing}
-				<input class="w-12 bg-white rounded-md h-7 px-2 border-solid border-gray-500 border-1 focus:border-gray-900 focus:outline-none" bind:value={ing.number} type="number" min="1" max="20">
-			{:else}
-			 	{ing.number}
+			<Td>
+				<Button onclick={() => deleteIngredient(ing.id)}>Delete</Button>
+			</Td>
 			{/if}
-		</Td>
+		</Tr>
+		{/each}
 		{#if isEditing}
-		<Td>
-			<Button onclick={() => deleteIngredient(ing.id)}>Delete</Button>
-		</Td>
+		<Tr><Td></Td><Td></Td><Td><Button onclick={addNewIngredient}>+</Button></Td></Tr>
 		{/if}
-	</Tr>
-	{/each}
-	{#if isEditing}
-	<Tr><Td></Td><Td></Td><Td><Button onclick={addNewIngredient}>+</Button></Td></Tr>
+	</Table>
 	{/if}
-</Table>
-{/if}
+</div>
