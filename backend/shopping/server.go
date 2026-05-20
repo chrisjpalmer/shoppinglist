@@ -35,7 +35,7 @@ func NewServer(planningSiteURL string) (*Server, error) {
 }
 
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/shopping", handleRootPage)
+	mux.HandleFunc("/shopping/", handleRootPage)
 	mux.Handle("/shopping/assets/", http.StripPrefix("/shopping", http.FileServerFS(assets)))
 	mux.HandleFunc("/shopping/want", s.handleWantPage)
 	mux.HandleFunc("/shopping/got", s.handleGotPage)
