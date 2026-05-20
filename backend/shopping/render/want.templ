@@ -13,14 +13,24 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 	@base(pageContext) {
 		@templ.Fragment("content") {
 		<div id="content">
-			@components.Table() {
-				@components.TrTitle() {
-					@components.Td(components.TdOpts{Title: true}) { Want }
-					@components.Td(components.TdOpts{Title: true})
-					@components.Td(components.TdOpts{Title: true})
-					@components.Td(components.TdOpts{Title: true})
+			@components.ScrollableTable(components.ScrollableTableOpts{Fragment: "table-content", Classes: []string{"h-full"}}) {
+				@components.StickyTrTitle() {
+					@components.Td(components.TdOpts{Title: true, Colspan: 4}) { 
+						<div class="flex flex-row items-center justify-between">
+							<p>Want</p>
+							@components.Button(components.ButtonOpts{
+								ID: "save-button", 
+								Title: "Save", 
+								HxPost: "/shopping/want?fragment=table-content",
+								HxInclude: ".col-override", 
+								HxTarget: "#table-content", 
+								HxOnClick: "setClean", 
+								Classes:[]string{"invisible", "max-w-20", "self-end", "mr-2"},
+							})
+						</div>
+					}
 				}
-				@components.TrHeader() {
+				@components.StickyTrHeader() {
 					@components.Td(components.TdOpts{Header: true}){Item}
 					@components.Td(components.TdOpts{Header: true}){Required}
 					@components.Td(components.TdOpts{Header: true}){Override}
@@ -36,26 +46,15 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 						components.NumericInputOpts{Classes: []string{"col-override"}},
 					) }
 					{{ 
-					  var totalTd components.TdOpts
-					  if w.OverrideCount > w.Required {
+						var totalTd components.TdOpts
+						if w.OverrideCount > w.Required {
 						totalTd.Classes = []string{"text-red-500"}
-					  }
+						}
 					}}
 					@components.Td(totalTd){ {w.Total} }
 				}
 				}
-				
 			}
-
-			@components.Button(components.ButtonOpts{
-				ID: "save-button", 
-				Title: "Save", 
-				HxPost: "/shopping/want?fragment=content",
-				HxInclude: ".col-override", 
-				HxTarget: "#content", 
-				HxOnClick: "setClean", 
-				Classes:[]string{"invisible", "mt-5", "max-w-20", "self-end"},
-			})
 		</div>
 		}
 	}

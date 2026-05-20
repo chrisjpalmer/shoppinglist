@@ -102,7 +102,7 @@
 
 <div class="overflow-auto p-5 -m-5 w-[calc(100%_+_(var(--spacing)_*_10))]">
 	<Table classes="min-w-300">
-		<TrTitle><Td title={true}>Planner</Td>{#each days as day}<Td title={true}></Td>{/each}</TrTitle>
+		<TrTitle><Td title={true} colspan={days.length+1}>Planner</Td></TrTitle>
 		<TrHeader>
 			<Td header={true}></Td>
 			{#each days as day}

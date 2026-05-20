@@ -1,0 +1,41 @@
+package components
+
+import "strings"
+
+type ScrollableTableOpts struct {
+    Classes []string
+    Fragment string
+}
+
+templ ScrollableTable(opts ...ScrollableTableOpts) {
+    {{
+        var o ScrollableTableOpts
+
+        if len(opts) == 1 {
+            o = opts[0]
+        }
+
+        classes := []string{
+            "overflow-y-auto",
+            "rounded-lg",
+            "shadow-md",
+        }
+
+        classes = append(classes, o.Classes...)
+
+        class := strings.Join(classes, " ")
+    }}
+    <div class={class}>
+        @templ.Fragment(o.Fragment) {
+        <table 
+            if o.Fragment != "" {
+                id={o.Fragment}
+            } 
+             class="w-full border-separate border-spacing-0 sm:text-base text-sm">
+            <tbody>
+                {children...}
+            </tbody>
+        </table>
+        }
+    </div>
+}

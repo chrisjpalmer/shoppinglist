@@ -103,27 +103,44 @@ func GotPage(pageContext page.Context, gotItems []page.GotItem) templ.Component 
 								}()
 							}
 							ctx = templ.InitializeContext(ctx)
-							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "Got ")
+							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-row items-center justify-between\"><p>Got</p><div class=\"flex flex-row pr-2\">")
+							if templ_7745c5c3_Err != nil {
+								return templ_7745c5c3_Err
+							}
+							templ_7745c5c3_Err = components.Button(components.ButtonOpts{
+								ID:        "save-button",
+								Title:     "Save",
+								HxPost:    "/shopping/got?fragment=table-content",
+								HxInclude: ".col-got",
+								HxTarget:  "#table-content",
+								HxOnClick: "setClean",
+								Classes:   []string{"invisible", "mr-2"},
+							}).Render(ctx, templ_7745c5c3_Buffer)
+							if templ_7745c5c3_Err != nil {
+								return templ_7745c5c3_Err
+							}
+							templ_7745c5c3_Err = components.Button(components.ButtonOpts{
+								ID:       "reset-button",
+								Title:    "Reset",
+								HxPost:   "/shopping/got/reset?fragment=table-content",
+								HxTarget: "#table-content",
+							}).Render(ctx, templ_7745c5c3_Buffer)
+							if templ_7745c5c3_Err != nil {
+								return templ_7745c5c3_Err
+							}
+							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div>")
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}
 							return nil
 						})
-						templ_7745c5c3_Err = components.Td(components.TdOpts{Title: true}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " ")
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						templ_7745c5c3_Err = components.Td(components.TdOpts{Title: true}).Render(ctx, templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = components.Td(components.TdOpts{Title: true, Colspan: 4}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 						return nil
 					})
-					templ_7745c5c3_Err = components.TrTitle().Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = components.StickyTrTitle().Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -193,7 +210,7 @@ func GotPage(pageContext page.Context, gotItems []page.GotItem) templ.Component 
 						}
 						return nil
 					})
-					templ_7745c5c3_Err = components.TrHeader().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = components.StickyTrHeader().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -225,7 +242,7 @@ func GotPage(pageContext page.Context, gotItems []page.GotItem) templ.Component 
 								var templ_7745c5c3_Var12 string
 								templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(g.Ingredient)
 								if templ_7745c5c3_Err != nil {
-									return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/got.templ`, Line: 27, Col: 36}
+									return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/got.templ`, Line: 47, Col: 36}
 								}
 								_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 								if templ_7745c5c3_Err != nil {
@@ -276,36 +293,11 @@ func GotPage(pageContext page.Context, gotItems []page.GotItem) templ.Component 
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = components.Table().Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = components.ScrollableTable(components.ScrollableTableOpts{Fragment: "table-content", Classes: []string{"h-full"}}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"flex flex-row items-center justify-between mt-5\"><div class=\"flex flex-row\">")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = components.Button(components.ButtonOpts{
-					ID:        "save-button",
-					Title:     "Save",
-					HxPost:    "/shopping/got?fragment=content",
-					HxInclude: ".col-got",
-					HxTarget:  "#content",
-					HxOnClick: "setClean",
-					Classes:   []string{"invisible", "mr-2"},
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = components.Button(components.ButtonOpts{
-					ID:       "reset-button",
-					Title:    "Reset",
-					HxPost:   "/shopping/got/reset?fragment=content",
-					HxTarget: "#content",
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div></div></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

@@ -8,12 +8,12 @@
 
 <div class="flex flex-col bg-gray-100">
 	<MenuBar></MenuBar>
-	<div class="h-screen overflow-y-auto pt-26 sm:pt-16 pb-10">
-		<div class="flex flex-row px-8">
+	<div class="h-screen overflow-hidden pt-26 sm:pt-16 pb-10">
+		<div class="h-full flex flex-row px-8">
 			<div class="hidden sm:block w-40 flex-shrink-0">
 				<Nav />
 			</div>
-			<div class="flex flex-grow-1 flex-shrink-1 flex-basis-0 min-w-0 flex-col">
+			<div class="flex-grow-1 flex-shrink-1 flex-basis-0 min-w-0">
 				{@render children()}
 			</div>
 		</div>
