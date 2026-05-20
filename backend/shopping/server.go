@@ -45,7 +45,7 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 }
 
 func handleRootPage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Location", "/shopping/want")
+	w.Header().Add("Location", "/shopping/shop")
 	w.WriteHeader(http.StatusFound)
 }
 
