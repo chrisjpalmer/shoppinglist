@@ -933,13 +933,437 @@ func (*DeleteIngredientResponse) Descriptor() ([]byte, []int) {
 	return file_shopping_list_service_proto_rawDescGZIP(), []int{21}
 }
 
+type GetIngredientCategoriesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetIngredientCategoriesRequest) Reset() {
+	*x = GetIngredientCategoriesRequest{}
+	mi := &file_shopping_list_service_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetIngredientCategoriesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetIngredientCategoriesRequest) ProtoMessage() {}
+
+func (x *GetIngredientCategoriesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetIngredientCategoriesRequest.ProtoReflect.Descriptor instead.
+func (*GetIngredientCategoriesRequest) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{22}
+}
+
+type GetIngredientCategoriesResponse struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	IngredientCategories []*IngredientCategory  `protobuf:"bytes,1,rep,name=ingredient_categories,json=ingredientCategories,proto3" json:"ingredient_categories,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *GetIngredientCategoriesResponse) Reset() {
+	*x = GetIngredientCategoriesResponse{}
+	mi := &file_shopping_list_service_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetIngredientCategoriesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetIngredientCategoriesResponse) ProtoMessage() {}
+
+func (x *GetIngredientCategoriesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetIngredientCategoriesResponse.ProtoReflect.Descriptor instead.
+func (*GetIngredientCategoriesResponse) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *GetIngredientCategoriesResponse) GetIngredientCategories() []*IngredientCategory {
+	if x != nil {
+		return x.IngredientCategories
+	}
+	return nil
+}
+
+type CreateIngredientCategoryRequest struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	IngredientCategory *IngredientCategory    `protobuf:"bytes,1,opt,name=ingredient_category,json=ingredientCategory,proto3" json:"ingredient_category,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *CreateIngredientCategoryRequest) Reset() {
+	*x = CreateIngredientCategoryRequest{}
+	mi := &file_shopping_list_service_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateIngredientCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateIngredientCategoryRequest) ProtoMessage() {}
+
+func (x *CreateIngredientCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateIngredientCategoryRequest.ProtoReflect.Descriptor instead.
+func (*CreateIngredientCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *CreateIngredientCategoryRequest) GetIngredientCategory() *IngredientCategory {
+	if x != nil {
+		return x.IngredientCategory
+	}
+	return nil
+}
+
+type CreateIngredientCategoryResponse struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	IngredientCategoryId int64                  `protobuf:"varint,1,opt,name=ingredient_category_id,json=ingredientCategoryId,proto3" json:"ingredient_category_id,omitempty"`
+	SortIndex            int64                  `protobuf:"varint,2,opt,name=sort_index,json=sortIndex,proto3" json:"sort_index,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *CreateIngredientCategoryResponse) Reset() {
+	*x = CreateIngredientCategoryResponse{}
+	mi := &file_shopping_list_service_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateIngredientCategoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateIngredientCategoryResponse) ProtoMessage() {}
+
+func (x *CreateIngredientCategoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateIngredientCategoryResponse.ProtoReflect.Descriptor instead.
+func (*CreateIngredientCategoryResponse) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *CreateIngredientCategoryResponse) GetIngredientCategoryId() int64 {
+	if x != nil {
+		return x.IngredientCategoryId
+	}
+	return 0
+}
+
+func (x *CreateIngredientCategoryResponse) GetSortIndex() int64 {
+	if x != nil {
+		return x.SortIndex
+	}
+	return 0
+}
+
+type UpdateIngredientCategoryRequest struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	IngredientCategory *IngredientCategory    `protobuf:"bytes,1,opt,name=ingredient_category,json=ingredientCategory,proto3" json:"ingredient_category,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *UpdateIngredientCategoryRequest) Reset() {
+	*x = UpdateIngredientCategoryRequest{}
+	mi := &file_shopping_list_service_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateIngredientCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateIngredientCategoryRequest) ProtoMessage() {}
+
+func (x *UpdateIngredientCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateIngredientCategoryRequest.ProtoReflect.Descriptor instead.
+func (*UpdateIngredientCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *UpdateIngredientCategoryRequest) GetIngredientCategory() *IngredientCategory {
+	if x != nil {
+		return x.IngredientCategory
+	}
+	return nil
+}
+
+type UpdateIngredientCategoryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateIngredientCategoryResponse) Reset() {
+	*x = UpdateIngredientCategoryResponse{}
+	mi := &file_shopping_list_service_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateIngredientCategoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateIngredientCategoryResponse) ProtoMessage() {}
+
+func (x *UpdateIngredientCategoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateIngredientCategoryResponse.ProtoReflect.Descriptor instead.
+func (*UpdateIngredientCategoryResponse) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{27}
+}
+
+type DeleteIngredientCategoryRequest struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	IngredientCategoryId int64                  `protobuf:"varint,1,opt,name=ingredient_category_id,json=ingredientCategoryId,proto3" json:"ingredient_category_id,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *DeleteIngredientCategoryRequest) Reset() {
+	*x = DeleteIngredientCategoryRequest{}
+	mi := &file_shopping_list_service_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteIngredientCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteIngredientCategoryRequest) ProtoMessage() {}
+
+func (x *DeleteIngredientCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteIngredientCategoryRequest.ProtoReflect.Descriptor instead.
+func (*DeleteIngredientCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *DeleteIngredientCategoryRequest) GetIngredientCategoryId() int64 {
+	if x != nil {
+		return x.IngredientCategoryId
+	}
+	return 0
+}
+
+type DeleteIngredientCategoryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteIngredientCategoryResponse) Reset() {
+	*x = DeleteIngredientCategoryResponse{}
+	mi := &file_shopping_list_service_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteIngredientCategoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteIngredientCategoryResponse) ProtoMessage() {}
+
+func (x *DeleteIngredientCategoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteIngredientCategoryResponse.ProtoReflect.Descriptor instead.
+func (*DeleteIngredientCategoryResponse) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{29}
+}
+
+type SwapIngredientCategoriesRequest struct {
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	IngredientCategoryA int64                  `protobuf:"varint,1,opt,name=ingredient_category_a,json=ingredientCategoryA,proto3" json:"ingredient_category_a,omitempty"`
+	IngredientCategoryB int64                  `protobuf:"varint,2,opt,name=ingredient_category_b,json=ingredientCategoryB,proto3" json:"ingredient_category_b,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *SwapIngredientCategoriesRequest) Reset() {
+	*x = SwapIngredientCategoriesRequest{}
+	mi := &file_shopping_list_service_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SwapIngredientCategoriesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SwapIngredientCategoriesRequest) ProtoMessage() {}
+
+func (x *SwapIngredientCategoriesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SwapIngredientCategoriesRequest.ProtoReflect.Descriptor instead.
+func (*SwapIngredientCategoriesRequest) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *SwapIngredientCategoriesRequest) GetIngredientCategoryA() int64 {
+	if x != nil {
+		return x.IngredientCategoryA
+	}
+	return 0
+}
+
+func (x *SwapIngredientCategoriesRequest) GetIngredientCategoryB() int64 {
+	if x != nil {
+		return x.IngredientCategoryB
+	}
+	return 0
+}
+
+type SwapIngredientCategoriesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SwapIngredientCategoriesResponse) Reset() {
+	*x = SwapIngredientCategoriesResponse{}
+	mi := &file_shopping_list_service_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SwapIngredientCategoriesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SwapIngredientCategoriesResponse) ProtoMessage() {}
+
+func (x *SwapIngredientCategoriesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_shopping_list_service_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SwapIngredientCategoriesResponse.ProtoReflect.Descriptor instead.
+func (*SwapIngredientCategoriesResponse) Descriptor() ([]byte, []int) {
+	return file_shopping_list_service_proto_rawDescGZIP(), []int{31}
+}
+
 var File_shopping_list_service_proto protoreflect.FileDescriptor
 
 const file_shopping_list_service_proto_rawDesc = "" +
 	"\n" +
 	"\x1bshopping_list_service.proto\x1a\n" +
 	"plan.proto\x1a\n" +
-	"meal.proto\x1a\x10ingredient.proto\"\x10\n" +
+	"meal.proto\x1a\x10ingredient.proto\x1a\x19ingredient_category.proto\"\x10\n" +
 	"\x0eGetPlanRequest\"]\n" +
 	"\x0fGetPlanResponse\x12\x19\n" +
 	"\x04plan\x18\x01 \x01(\v2\x05.PlanR\x04plan\x12/\n" +
@@ -981,7 +1405,26 @@ const file_shopping_list_service_proto_rawDesc = "" +
 	"\x18UpdateIngredientResponse\">\n" +
 	"\x17DeleteIngredientRequest\x12#\n" +
 	"\ringredient_id\x18\x01 \x01(\x03R\fingredientId\"\x1a\n" +
-	"\x18DeleteIngredientResponse2\x9a\x06\n" +
+	"\x18DeleteIngredientResponse\" \n" +
+	"\x1eGetIngredientCategoriesRequest\"k\n" +
+	"\x1fGetIngredientCategoriesResponse\x12H\n" +
+	"\x15ingredient_categories\x18\x01 \x03(\v2\x13.IngredientCategoryR\x14ingredientCategories\"g\n" +
+	"\x1fCreateIngredientCategoryRequest\x12D\n" +
+	"\x13ingredient_category\x18\x01 \x01(\v2\x13.IngredientCategoryR\x12ingredientCategory\"w\n" +
+	" CreateIngredientCategoryResponse\x124\n" +
+	"\x16ingredient_category_id\x18\x01 \x01(\x03R\x14ingredientCategoryId\x12\x1d\n" +
+	"\n" +
+	"sort_index\x18\x02 \x01(\x03R\tsortIndex\"g\n" +
+	"\x1fUpdateIngredientCategoryRequest\x12D\n" +
+	"\x13ingredient_category\x18\x01 \x01(\v2\x13.IngredientCategoryR\x12ingredientCategory\"\"\n" +
+	" UpdateIngredientCategoryResponse\"W\n" +
+	"\x1fDeleteIngredientCategoryRequest\x124\n" +
+	"\x16ingredient_category_id\x18\x01 \x01(\x03R\x14ingredientCategoryId\"\"\n" +
+	" DeleteIngredientCategoryResponse\"\x89\x01\n" +
+	"\x1fSwapIngredientCategoriesRequest\x122\n" +
+	"\x15ingredient_category_a\x18\x01 \x01(\x03R\x13ingredientCategoryA\x122\n" +
+	"\x15ingredient_category_b\x18\x02 \x01(\x03R\x13ingredientCategoryB\"\"\n" +
+	" SwapIngredientCategoriesResponse2\xfc\t\n" +
 	"\x13ShoppingListService\x12,\n" +
 	"\aGetPlan\x12\x0f.GetPlanRequest\x1a\x10.GetPlanResponse\x125\n" +
 	"\n" +
@@ -998,7 +1441,12 @@ const file_shopping_list_service_proto_rawDesc = "" +
 	"\x0eGetIngredients\x12\x16.GetIngredientsRequest\x1a\x17.GetIngredientsResponse\x12G\n" +
 	"\x10CreateIngredient\x12\x18.CreateIngredientRequest\x1a\x19.CreateIngredientResponse\x12G\n" +
 	"\x10UpdateIngredient\x12\x18.UpdateIngredientRequest\x1a\x19.UpdateIngredientResponse\x12G\n" +
-	"\x10DeleteIngredient\x12\x18.DeleteIngredientRequest\x1a\x19.DeleteIngredientResponseBPB\x18ShoppingListServiceProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
+	"\x10DeleteIngredient\x12\x18.DeleteIngredientRequest\x1a\x19.DeleteIngredientResponse\x12\\\n" +
+	"\x17GetIngredientCategories\x12\x1f.GetIngredientCategoriesRequest\x1a .GetIngredientCategoriesResponse\x12_\n" +
+	"\x18CreateIngredientCategory\x12 .CreateIngredientCategoryRequest\x1a!.CreateIngredientCategoryResponse\x12_\n" +
+	"\x18UpdateIngredientCategory\x12 .UpdateIngredientCategoryRequest\x1a!.UpdateIngredientCategoryResponse\x12_\n" +
+	"\x18DeleteIngredientCategory\x12 .DeleteIngredientCategoryRequest\x1a!.DeleteIngredientCategoryResponse\x12_\n" +
+	"\x18SwapIngredientCategories\x12 .SwapIngredientCategoriesRequest\x1a!.SwapIngredientCategoriesResponseBPB\x18ShoppingListServiceProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
 
 var (
 	file_shopping_list_service_proto_rawDescOnce sync.Once
@@ -1012,74 +1460,98 @@ func file_shopping_list_service_proto_rawDescGZIP() []byte {
 	return file_shopping_list_service_proto_rawDescData
 }
 
-var file_shopping_list_service_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_shopping_list_service_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_shopping_list_service_proto_goTypes = []any{
-	(*GetPlanRequest)(nil),           // 0: GetPlanRequest
-	(*GetPlanResponse)(nil),          // 1: GetPlanResponse
-	(*UpdatePlanRequest)(nil),        // 2: UpdatePlanRequest
-	(*UpdatePlanResponse)(nil),       // 3: UpdatePlanResponse
-	(*GetMealsRequest)(nil),          // 4: GetMealsRequest
-	(*GetMealsResponse)(nil),         // 5: GetMealsResponse
-	(*CreateMealRequest)(nil),        // 6: CreateMealRequest
-	(*CreateMealResponse)(nil),       // 7: CreateMealResponse
-	(*UpdateMealRequest)(nil),        // 8: UpdateMealRequest
-	(*UpdateMealResponse)(nil),       // 9: UpdateMealResponse
-	(*UpdateMealImageRequest)(nil),   // 10: UpdateMealImageRequest
-	(*UpdateMealImageResponse)(nil),  // 11: UpdateMealImageResponse
-	(*DeleteMealRequest)(nil),        // 12: DeleteMealRequest
-	(*DeleteMealResponse)(nil),       // 13: DeleteMealResponse
-	(*GetIngredientsRequest)(nil),    // 14: GetIngredientsRequest
-	(*GetIngredientsResponse)(nil),   // 15: GetIngredientsResponse
-	(*CreateIngredientRequest)(nil),  // 16: CreateIngredientRequest
-	(*CreateIngredientResponse)(nil), // 17: CreateIngredientResponse
-	(*UpdateIngredientRequest)(nil),  // 18: UpdateIngredientRequest
-	(*UpdateIngredientResponse)(nil), // 19: UpdateIngredientResponse
-	(*DeleteIngredientRequest)(nil),  // 20: DeleteIngredientRequest
-	(*DeleteIngredientResponse)(nil), // 21: DeleteIngredientResponse
-	(*Plan)(nil),                     // 22: Plan
-	(*PlanSummary)(nil),              // 23: PlanSummary
-	(*Meal)(nil),                     // 24: Meal
-	(*Ingredient)(nil),               // 25: Ingredient
+	(*GetPlanRequest)(nil),                   // 0: GetPlanRequest
+	(*GetPlanResponse)(nil),                  // 1: GetPlanResponse
+	(*UpdatePlanRequest)(nil),                // 2: UpdatePlanRequest
+	(*UpdatePlanResponse)(nil),               // 3: UpdatePlanResponse
+	(*GetMealsRequest)(nil),                  // 4: GetMealsRequest
+	(*GetMealsResponse)(nil),                 // 5: GetMealsResponse
+	(*CreateMealRequest)(nil),                // 6: CreateMealRequest
+	(*CreateMealResponse)(nil),               // 7: CreateMealResponse
+	(*UpdateMealRequest)(nil),                // 8: UpdateMealRequest
+	(*UpdateMealResponse)(nil),               // 9: UpdateMealResponse
+	(*UpdateMealImageRequest)(nil),           // 10: UpdateMealImageRequest
+	(*UpdateMealImageResponse)(nil),          // 11: UpdateMealImageResponse
+	(*DeleteMealRequest)(nil),                // 12: DeleteMealRequest
+	(*DeleteMealResponse)(nil),               // 13: DeleteMealResponse
+	(*GetIngredientsRequest)(nil),            // 14: GetIngredientsRequest
+	(*GetIngredientsResponse)(nil),           // 15: GetIngredientsResponse
+	(*CreateIngredientRequest)(nil),          // 16: CreateIngredientRequest
+	(*CreateIngredientResponse)(nil),         // 17: CreateIngredientResponse
+	(*UpdateIngredientRequest)(nil),          // 18: UpdateIngredientRequest
+	(*UpdateIngredientResponse)(nil),         // 19: UpdateIngredientResponse
+	(*DeleteIngredientRequest)(nil),          // 20: DeleteIngredientRequest
+	(*DeleteIngredientResponse)(nil),         // 21: DeleteIngredientResponse
+	(*GetIngredientCategoriesRequest)(nil),   // 22: GetIngredientCategoriesRequest
+	(*GetIngredientCategoriesResponse)(nil),  // 23: GetIngredientCategoriesResponse
+	(*CreateIngredientCategoryRequest)(nil),  // 24: CreateIngredientCategoryRequest
+	(*CreateIngredientCategoryResponse)(nil), // 25: CreateIngredientCategoryResponse
+	(*UpdateIngredientCategoryRequest)(nil),  // 26: UpdateIngredientCategoryRequest
+	(*UpdateIngredientCategoryResponse)(nil), // 27: UpdateIngredientCategoryResponse
+	(*DeleteIngredientCategoryRequest)(nil),  // 28: DeleteIngredientCategoryRequest
+	(*DeleteIngredientCategoryResponse)(nil), // 29: DeleteIngredientCategoryResponse
+	(*SwapIngredientCategoriesRequest)(nil),  // 30: SwapIngredientCategoriesRequest
+	(*SwapIngredientCategoriesResponse)(nil), // 31: SwapIngredientCategoriesResponse
+	(*Plan)(nil),                             // 32: Plan
+	(*PlanSummary)(nil),                      // 33: PlanSummary
+	(*Meal)(nil),                             // 34: Meal
+	(*Ingredient)(nil),                       // 35: Ingredient
+	(*IngredientCategory)(nil),               // 36: IngredientCategory
 }
 var file_shopping_list_service_proto_depIdxs = []int32{
-	22, // 0: GetPlanResponse.plan:type_name -> Plan
-	23, // 1: GetPlanResponse.plan_summary:type_name -> PlanSummary
-	22, // 2: UpdatePlanRequest.plan:type_name -> Plan
-	24, // 3: GetMealsResponse.meals:type_name -> Meal
-	24, // 4: CreateMealRequest.meal:type_name -> Meal
-	24, // 5: UpdateMealRequest.meal:type_name -> Meal
-	25, // 6: GetIngredientsResponse.ingredients:type_name -> Ingredient
-	25, // 7: CreateIngredientRequest.ingredient:type_name -> Ingredient
-	25, // 8: UpdateIngredientRequest.ingredient:type_name -> Ingredient
-	0,  // 9: ShoppingListService.GetPlan:input_type -> GetPlanRequest
-	2,  // 10: ShoppingListService.UpdatePlan:input_type -> UpdatePlanRequest
-	4,  // 11: ShoppingListService.GetMeals:input_type -> GetMealsRequest
-	6,  // 12: ShoppingListService.CreateMeal:input_type -> CreateMealRequest
-	8,  // 13: ShoppingListService.UpdateMeal:input_type -> UpdateMealRequest
-	10, // 14: ShoppingListService.UpdateMealPreviewImageRequest:input_type -> UpdateMealImageRequest
-	10, // 15: ShoppingListService.UpdateMealIngredientsImageRequest:input_type -> UpdateMealImageRequest
-	12, // 16: ShoppingListService.DeleteMeal:input_type -> DeleteMealRequest
-	14, // 17: ShoppingListService.GetIngredients:input_type -> GetIngredientsRequest
-	16, // 18: ShoppingListService.CreateIngredient:input_type -> CreateIngredientRequest
-	18, // 19: ShoppingListService.UpdateIngredient:input_type -> UpdateIngredientRequest
-	20, // 20: ShoppingListService.DeleteIngredient:input_type -> DeleteIngredientRequest
-	1,  // 21: ShoppingListService.GetPlan:output_type -> GetPlanResponse
-	3,  // 22: ShoppingListService.UpdatePlan:output_type -> UpdatePlanResponse
-	5,  // 23: ShoppingListService.GetMeals:output_type -> GetMealsResponse
-	7,  // 24: ShoppingListService.CreateMeal:output_type -> CreateMealResponse
-	9,  // 25: ShoppingListService.UpdateMeal:output_type -> UpdateMealResponse
-	11, // 26: ShoppingListService.UpdateMealPreviewImageRequest:output_type -> UpdateMealImageResponse
-	11, // 27: ShoppingListService.UpdateMealIngredientsImageRequest:output_type -> UpdateMealImageResponse
-	13, // 28: ShoppingListService.DeleteMeal:output_type -> DeleteMealResponse
-	15, // 29: ShoppingListService.GetIngredients:output_type -> GetIngredientsResponse
-	17, // 30: ShoppingListService.CreateIngredient:output_type -> CreateIngredientResponse
-	19, // 31: ShoppingListService.UpdateIngredient:output_type -> UpdateIngredientResponse
-	21, // 32: ShoppingListService.DeleteIngredient:output_type -> DeleteIngredientResponse
-	21, // [21:33] is the sub-list for method output_type
-	9,  // [9:21] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	32, // 0: GetPlanResponse.plan:type_name -> Plan
+	33, // 1: GetPlanResponse.plan_summary:type_name -> PlanSummary
+	32, // 2: UpdatePlanRequest.plan:type_name -> Plan
+	34, // 3: GetMealsResponse.meals:type_name -> Meal
+	34, // 4: CreateMealRequest.meal:type_name -> Meal
+	34, // 5: UpdateMealRequest.meal:type_name -> Meal
+	35, // 6: GetIngredientsResponse.ingredients:type_name -> Ingredient
+	35, // 7: CreateIngredientRequest.ingredient:type_name -> Ingredient
+	35, // 8: UpdateIngredientRequest.ingredient:type_name -> Ingredient
+	36, // 9: GetIngredientCategoriesResponse.ingredient_categories:type_name -> IngredientCategory
+	36, // 10: CreateIngredientCategoryRequest.ingredient_category:type_name -> IngredientCategory
+	36, // 11: UpdateIngredientCategoryRequest.ingredient_category:type_name -> IngredientCategory
+	0,  // 12: ShoppingListService.GetPlan:input_type -> GetPlanRequest
+	2,  // 13: ShoppingListService.UpdatePlan:input_type -> UpdatePlanRequest
+	4,  // 14: ShoppingListService.GetMeals:input_type -> GetMealsRequest
+	6,  // 15: ShoppingListService.CreateMeal:input_type -> CreateMealRequest
+	8,  // 16: ShoppingListService.UpdateMeal:input_type -> UpdateMealRequest
+	10, // 17: ShoppingListService.UpdateMealPreviewImageRequest:input_type -> UpdateMealImageRequest
+	10, // 18: ShoppingListService.UpdateMealIngredientsImageRequest:input_type -> UpdateMealImageRequest
+	12, // 19: ShoppingListService.DeleteMeal:input_type -> DeleteMealRequest
+	14, // 20: ShoppingListService.GetIngredients:input_type -> GetIngredientsRequest
+	16, // 21: ShoppingListService.CreateIngredient:input_type -> CreateIngredientRequest
+	18, // 22: ShoppingListService.UpdateIngredient:input_type -> UpdateIngredientRequest
+	20, // 23: ShoppingListService.DeleteIngredient:input_type -> DeleteIngredientRequest
+	22, // 24: ShoppingListService.GetIngredientCategories:input_type -> GetIngredientCategoriesRequest
+	24, // 25: ShoppingListService.CreateIngredientCategory:input_type -> CreateIngredientCategoryRequest
+	26, // 26: ShoppingListService.UpdateIngredientCategory:input_type -> UpdateIngredientCategoryRequest
+	28, // 27: ShoppingListService.DeleteIngredientCategory:input_type -> DeleteIngredientCategoryRequest
+	30, // 28: ShoppingListService.SwapIngredientCategories:input_type -> SwapIngredientCategoriesRequest
+	1,  // 29: ShoppingListService.GetPlan:output_type -> GetPlanResponse
+	3,  // 30: ShoppingListService.UpdatePlan:output_type -> UpdatePlanResponse
+	5,  // 31: ShoppingListService.GetMeals:output_type -> GetMealsResponse
+	7,  // 32: ShoppingListService.CreateMeal:output_type -> CreateMealResponse
+	9,  // 33: ShoppingListService.UpdateMeal:output_type -> UpdateMealResponse
+	11, // 34: ShoppingListService.UpdateMealPreviewImageRequest:output_type -> UpdateMealImageResponse
+	11, // 35: ShoppingListService.UpdateMealIngredientsImageRequest:output_type -> UpdateMealImageResponse
+	13, // 36: ShoppingListService.DeleteMeal:output_type -> DeleteMealResponse
+	15, // 37: ShoppingListService.GetIngredients:output_type -> GetIngredientsResponse
+	17, // 38: ShoppingListService.CreateIngredient:output_type -> CreateIngredientResponse
+	19, // 39: ShoppingListService.UpdateIngredient:output_type -> UpdateIngredientResponse
+	21, // 40: ShoppingListService.DeleteIngredient:output_type -> DeleteIngredientResponse
+	23, // 41: ShoppingListService.GetIngredientCategories:output_type -> GetIngredientCategoriesResponse
+	25, // 42: ShoppingListService.CreateIngredientCategory:output_type -> CreateIngredientCategoryResponse
+	27, // 43: ShoppingListService.UpdateIngredientCategory:output_type -> UpdateIngredientCategoryResponse
+	29, // 44: ShoppingListService.DeleteIngredientCategory:output_type -> DeleteIngredientCategoryResponse
+	31, // 45: ShoppingListService.SwapIngredientCategories:output_type -> SwapIngredientCategoriesResponse
+	29, // [29:46] is the sub-list for method output_type
+	12, // [12:29] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_shopping_list_service_proto_init() }
@@ -1090,13 +1562,14 @@ func file_shopping_list_service_proto_init() {
 	file_plan_proto_init()
 	file_meal_proto_init()
 	file_ingredient_proto_init()
+	file_ingredient_category_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shopping_list_service_proto_rawDesc), len(file_shopping_list_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   22,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
