@@ -89,3 +89,28 @@ UPDATE ingredients SET shopped = FALSE;
 
 -- name: UpdateIngredientShopped :exec
 UPDATE ingredients SET shopped = ? WHERE id = ?;
+
+------- INGREDIENT CATEGORIES ------
+
+-- name: GetIngredientCategories :many
+SELECT id, name, sort_index FROM ingredient_categories
+ORDER BY sort_index ASC;
+
+-- name: CreateIngredientCategory :one
+INSERT INTO ingredient_categories (name, sort_index) VALUES (
+    ?, 
+    (COALESCE((SELECT sort_index FROM ingredient_categories ORDER BY sort_index DESC LIMIT 1), 0) + 1)
+) RETURNING id, sort_index;
+
+-- name: UpdateIngredientCategory :exec
+UPDATE ingredient_categories SET name = ? WHERE id = ?;
+
+-- name: GetIngredientCategorySortIndex :one
+SELECT sort_index FROM ingredient_categories WHERE id = ?;
+
+-- name: UpdateIngredientCategorySortIndex :exec
+UPDATE ingredient_categories SET sort_index = ? WHERE id = ?;
+
+-- name: DeleteIngredientCategory :exec
+DELETE FROM ingredient_categories WHERE id = ?;
+

@@ -20,6 +20,25 @@ func (q *Queries) CreateIngredient(ctx context.Context, name string) (int64, err
 	return id, err
 }
 
+const createIngredientCategory = `-- name: CreateIngredientCategory :one
+INSERT INTO ingredient_categories (name, sort_index) VALUES (
+    ?, 
+    (COALESCE((SELECT sort_index FROM ingredient_categories ORDER BY sort_index DESC LIMIT 1), 0) + 1)
+) RETURNING id, sort_index
+`
+
+type CreateIngredientCategoryRow struct {
+	ID        int64
+	SortIndex int64
+}
+
+func (q *Queries) CreateIngredientCategory(ctx context.Context, name string) (CreateIngredientCategoryRow, error) {
+	row := q.db.QueryRowContext(ctx, createIngredientCategory, name)
+	var i CreateIngredientCategoryRow
+	err := row.Scan(&i.ID, &i.SortIndex)
+	return i, err
+}
+
 const createMeal = `-- name: CreateMeal :one
 INSERT INTO meals (
  name,
@@ -75,6 +94,15 @@ func (q *Queries) DeleteIngredient(ctx context.Context, id int64) error {
 	return err
 }
 
+const deleteIngredientCategory = `-- name: DeleteIngredientCategory :exec
+DELETE FROM ingredient_categories WHERE id = ?
+`
+
+func (q *Queries) DeleteIngredientCategory(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteIngredientCategory, id)
+	return err
+}
+
 const deleteMeal = `-- name: DeleteMeal :exec
 DELETE FROM meals WHERE id = ?
 `
@@ -82,6 +110,47 @@ DELETE FROM meals WHERE id = ?
 func (q *Queries) DeleteMeal(ctx context.Context, id int64) error {
 	_, err := q.db.ExecContext(ctx, deleteMeal, id)
 	return err
+}
+
+const getIngredientCategories = `-- name: GetIngredientCategories :many
+
+SELECT id, name, sort_index FROM ingredient_categories
+ORDER BY sort_index ASC
+`
+
+// ----- INGREDIENT CATEGORIES ------
+func (q *Queries) GetIngredientCategories(ctx context.Context) ([]IngredientCategory, error) {
+	rows, err := q.db.QueryContext(ctx, getIngredientCategories)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []IngredientCategory
+	for rows.Next() {
+		var i IngredientCategory
+		if err := rows.Scan(&i.ID, &i.Name, &i.SortIndex); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getIngredientCategorySortIndex = `-- name: GetIngredientCategorySortIndex :one
+SELECT sort_index FROM ingredient_categories WHERE id = ?
+`
+
+func (q *Queries) GetIngredientCategorySortIndex(ctx context.Context, id int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getIngredientCategorySortIndex, id)
+	var sort_index int64
+	err := row.Scan(&sort_index)
+	return sort_index, err
 }
 
 const getIngredients = `-- name: GetIngredients :many
@@ -243,6 +312,34 @@ type UpdateIngredientParams struct {
 
 func (q *Queries) UpdateIngredient(ctx context.Context, arg UpdateIngredientParams) error {
 	_, err := q.db.ExecContext(ctx, updateIngredient, arg.Name, arg.ID)
+	return err
+}
+
+const updateIngredientCategory = `-- name: UpdateIngredientCategory :exec
+UPDATE ingredient_categories SET name = ? WHERE id = ?
+`
+
+type UpdateIngredientCategoryParams struct {
+	Name string
+	ID   int64
+}
+
+func (q *Queries) UpdateIngredientCategory(ctx context.Context, arg UpdateIngredientCategoryParams) error {
+	_, err := q.db.ExecContext(ctx, updateIngredientCategory, arg.Name, arg.ID)
+	return err
+}
+
+const updateIngredientCategorySortIndex = `-- name: UpdateIngredientCategorySortIndex :exec
+UPDATE ingredient_categories SET sort_index = ? WHERE id = ?
+`
+
+type UpdateIngredientCategorySortIndexParams struct {
+	SortIndex int64
+	ID        int64
+}
+
+func (q *Queries) UpdateIngredientCategorySortIndex(ctx context.Context, arg UpdateIngredientCategorySortIndexParams) error {
+	_, err := q.db.ExecContext(ctx, updateIngredientCategorySortIndex, arg.SortIndex, arg.ID)
 	return err
 }
 

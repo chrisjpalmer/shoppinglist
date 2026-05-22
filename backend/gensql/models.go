@@ -12,6 +12,12 @@ type Ingredient struct {
 	Shopped           bool
 }
 
+type IngredientCategory struct {
+	ID        int64
+	Name      string
+	SortIndex int64
+}
+
 type Meal struct {
 	ID                    int64
 	Name                  string

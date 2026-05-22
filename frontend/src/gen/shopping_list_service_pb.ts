@@ -10,13 +10,15 @@ import type { Meal } from "./meal_pb";
 import { file_meal } from "./meal_pb";
 import type { Ingredient } from "./ingredient_pb";
 import { file_ingredient } from "./ingredient_pb";
+import type { IngredientCategory } from "./ingredient_category_pb";
+import { file_ingredient_category } from "./ingredient_category_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file shopping_list_service.proto.
  */
 export const file_shopping_list_service: GenFile = /*@__PURE__*/
-  fileDesc("ChtzaG9wcGluZ19saXN0X3NlcnZpY2UucHJvdG8iEAoOR2V0UGxhblJlcXVlc3QiSgoPR2V0UGxhblJlc3BvbnNlEhMKBHBsYW4YASABKAsyBS5QbGFuEiIKDHBsYW5fc3VtbWFyeRgCIAEoCzIMLlBsYW5TdW1tYXJ5IigKEVVwZGF0ZVBsYW5SZXF1ZXN0EhMKBHBsYW4YASABKAsyBS5QbGFuIhQKElVwZGF0ZVBsYW5SZXNwb25zZSIRCg9HZXRNZWFsc1JlcXVlc3QiKAoQR2V0TWVhbHNSZXNwb25zZRIUCgVtZWFscxgBIAMoCzIFLk1lYWwiKAoRQ3JlYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiJQoSQ3JlYXRlTWVhbFJlc3BvbnNlEg8KB21lYWxfaWQYASABKAMiKAoRVXBkYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiFAoSVXBkYXRlTWVhbFJlc3BvbnNlIjkKFlVwZGF0ZU1lYWxJbWFnZVJlcXVlc3QSCgoCaWQYASABKAMSEwoLaW1hZ2VfYnl0ZXMYAiABKAwiGQoXVXBkYXRlTWVhbEltYWdlUmVzcG9uc2UiJAoRRGVsZXRlTWVhbFJlcXVlc3QSDwoHbWVhbF9pZBgBIAEoAyIUChJEZWxldGVNZWFsUmVzcG9uc2UiFwoVR2V0SW5ncmVkaWVudHNSZXF1ZXN0IjoKFkdldEluZ3JlZGllbnRzUmVzcG9uc2USIAoLaW5ncmVkaWVudHMYASADKAsyCy5JbmdyZWRpZW50IjoKF0NyZWF0ZUluZ3JlZGllbnRSZXF1ZXN0Eh8KCmluZ3JlZGllbnQYASABKAsyCy5JbmdyZWRpZW50IjEKGENyZWF0ZUluZ3JlZGllbnRSZXNwb25zZRIVCg1pbmdyZWRpZW50X2lkGAEgASgDIjoKF1VwZGF0ZUluZ3JlZGllbnRSZXF1ZXN0Eh8KCmluZ3JlZGllbnQYASABKAsyCy5JbmdyZWRpZW50IhoKGFVwZGF0ZUluZ3JlZGllbnRSZXNwb25zZSIwChdEZWxldGVJbmdyZWRpZW50UmVxdWVzdBIVCg1pbmdyZWRpZW50X2lkGAEgASgDIhoKGERlbGV0ZUluZ3JlZGllbnRSZXNwb25zZTKaBgoTU2hvcHBpbmdMaXN0U2VydmljZRIsCgdHZXRQbGFuEg8uR2V0UGxhblJlcXVlc3QaEC5HZXRQbGFuUmVzcG9uc2USNQoKVXBkYXRlUGxhbhISLlVwZGF0ZVBsYW5SZXF1ZXN0GhMuVXBkYXRlUGxhblJlc3BvbnNlEi8KCEdldE1lYWxzEhAuR2V0TWVhbHNSZXF1ZXN0GhEuR2V0TWVhbHNSZXNwb25zZRI1CgpDcmVhdGVNZWFsEhIuQ3JlYXRlTWVhbFJlcXVlc3QaEy5DcmVhdGVNZWFsUmVzcG9uc2USNQoKVXBkYXRlTWVhbBISLlVwZGF0ZU1lYWxSZXF1ZXN0GhMuVXBkYXRlTWVhbFJlc3BvbnNlElIKHVVwZGF0ZU1lYWxQcmV2aWV3SW1hZ2VSZXF1ZXN0EhcuVXBkYXRlTWVhbEltYWdlUmVxdWVzdBoYLlVwZGF0ZU1lYWxJbWFnZVJlc3BvbnNlElYKIVVwZGF0ZU1lYWxJbmdyZWRpZW50c0ltYWdlUmVxdWVzdBIXLlVwZGF0ZU1lYWxJbWFnZVJlcXVlc3QaGC5VcGRhdGVNZWFsSW1hZ2VSZXNwb25zZRI1CgpEZWxldGVNZWFsEhIuRGVsZXRlTWVhbFJlcXVlc3QaEy5EZWxldGVNZWFsUmVzcG9uc2USQQoOR2V0SW5ncmVkaWVudHMSFi5HZXRJbmdyZWRpZW50c1JlcXVlc3QaFy5HZXRJbmdyZWRpZW50c1Jlc3BvbnNlEkcKEENyZWF0ZUluZ3JlZGllbnQSGC5DcmVhdGVJbmdyZWRpZW50UmVxdWVzdBoZLkNyZWF0ZUluZ3JlZGllbnRSZXNwb25zZRJHChBVcGRhdGVJbmdyZWRpZW50EhguVXBkYXRlSW5ncmVkaWVudFJlcXVlc3QaGS5VcGRhdGVJbmdyZWRpZW50UmVzcG9uc2USRwoQRGVsZXRlSW5ncmVkaWVudBIYLkRlbGV0ZUluZ3JlZGllbnRSZXF1ZXN0GhkuRGVsZXRlSW5ncmVkaWVudFJlc3BvbnNlYgZwcm90bzM", [file_plan, file_meal, file_ingredient]);
+  fileDesc("ChtzaG9wcGluZ19saXN0X3NlcnZpY2UucHJvdG8iEAoOR2V0UGxhblJlcXVlc3QiSgoPR2V0UGxhblJlc3BvbnNlEhMKBHBsYW4YASABKAsyBS5QbGFuEiIKDHBsYW5fc3VtbWFyeRgCIAEoCzIMLlBsYW5TdW1tYXJ5IigKEVVwZGF0ZVBsYW5SZXF1ZXN0EhMKBHBsYW4YASABKAsyBS5QbGFuIhQKElVwZGF0ZVBsYW5SZXNwb25zZSIRCg9HZXRNZWFsc1JlcXVlc3QiKAoQR2V0TWVhbHNSZXNwb25zZRIUCgVtZWFscxgBIAMoCzIFLk1lYWwiKAoRQ3JlYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiJQoSQ3JlYXRlTWVhbFJlc3BvbnNlEg8KB21lYWxfaWQYASABKAMiKAoRVXBkYXRlTWVhbFJlcXVlc3QSEwoEbWVhbBgBIAEoCzIFLk1lYWwiFAoSVXBkYXRlTWVhbFJlc3BvbnNlIjkKFlVwZGF0ZU1lYWxJbWFnZVJlcXVlc3QSCgoCaWQYASABKAMSEwoLaW1hZ2VfYnl0ZXMYAiABKAwiGQoXVXBkYXRlTWVhbEltYWdlUmVzcG9uc2UiJAoRRGVsZXRlTWVhbFJlcXVlc3QSDwoHbWVhbF9pZBgBIAEoAyIUChJEZWxldGVNZWFsUmVzcG9uc2UiFwoVR2V0SW5ncmVkaWVudHNSZXF1ZXN0IjoKFkdldEluZ3JlZGllbnRzUmVzcG9uc2USIAoLaW5ncmVkaWVudHMYASADKAsyCy5JbmdyZWRpZW50IjoKF0NyZWF0ZUluZ3JlZGllbnRSZXF1ZXN0Eh8KCmluZ3JlZGllbnQYASABKAsyCy5JbmdyZWRpZW50IjEKGENyZWF0ZUluZ3JlZGllbnRSZXNwb25zZRIVCg1pbmdyZWRpZW50X2lkGAEgASgDIjoKF1VwZGF0ZUluZ3JlZGllbnRSZXF1ZXN0Eh8KCmluZ3JlZGllbnQYASABKAsyCy5JbmdyZWRpZW50IhoKGFVwZGF0ZUluZ3JlZGllbnRSZXNwb25zZSIwChdEZWxldGVJbmdyZWRpZW50UmVxdWVzdBIVCg1pbmdyZWRpZW50X2lkGAEgASgDIhoKGERlbGV0ZUluZ3JlZGllbnRSZXNwb25zZSIgCh5HZXRJbmdyZWRpZW50Q2F0ZWdvcmllc1JlcXVlc3QiVQofR2V0SW5ncmVkaWVudENhdGVnb3JpZXNSZXNwb25zZRIyChVpbmdyZWRpZW50X2NhdGVnb3JpZXMYASADKAsyEy5JbmdyZWRpZW50Q2F0ZWdvcnkiUwofQ3JlYXRlSW5ncmVkaWVudENhdGVnb3J5UmVxdWVzdBIwChNpbmdyZWRpZW50X2NhdGVnb3J5GAEgASgLMhMuSW5ncmVkaWVudENhdGVnb3J5IlYKIENyZWF0ZUluZ3JlZGllbnRDYXRlZ29yeVJlc3BvbnNlEh4KFmluZ3JlZGllbnRfY2F0ZWdvcnlfaWQYASABKAMSEgoKc29ydF9pbmRleBgCIAEoAyJTCh9VcGRhdGVJbmdyZWRpZW50Q2F0ZWdvcnlSZXF1ZXN0EjAKE2luZ3JlZGllbnRfY2F0ZWdvcnkYASABKAsyEy5JbmdyZWRpZW50Q2F0ZWdvcnkiIgogVXBkYXRlSW5ncmVkaWVudENhdGVnb3J5UmVzcG9uc2UiQQofRGVsZXRlSW5ncmVkaWVudENhdGVnb3J5UmVxdWVzdBIeChZpbmdyZWRpZW50X2NhdGVnb3J5X2lkGAEgASgDIiIKIERlbGV0ZUluZ3JlZGllbnRDYXRlZ29yeVJlc3BvbnNlIl8KH1N3YXBJbmdyZWRpZW50Q2F0ZWdvcmllc1JlcXVlc3QSHQoVaW5ncmVkaWVudF9jYXRlZ29yeV9hGAEgASgDEh0KFWluZ3JlZGllbnRfY2F0ZWdvcnlfYhgCIAEoAyIiCiBTd2FwSW5ncmVkaWVudENhdGVnb3JpZXNSZXNwb25zZTL8CQoTU2hvcHBpbmdMaXN0U2VydmljZRIsCgdHZXRQbGFuEg8uR2V0UGxhblJlcXVlc3QaEC5HZXRQbGFuUmVzcG9uc2USNQoKVXBkYXRlUGxhbhISLlVwZGF0ZVBsYW5SZXF1ZXN0GhMuVXBkYXRlUGxhblJlc3BvbnNlEi8KCEdldE1lYWxzEhAuR2V0TWVhbHNSZXF1ZXN0GhEuR2V0TWVhbHNSZXNwb25zZRI1CgpDcmVhdGVNZWFsEhIuQ3JlYXRlTWVhbFJlcXVlc3QaEy5DcmVhdGVNZWFsUmVzcG9uc2USNQoKVXBkYXRlTWVhbBISLlVwZGF0ZU1lYWxSZXF1ZXN0GhMuVXBkYXRlTWVhbFJlc3BvbnNlElIKHVVwZGF0ZU1lYWxQcmV2aWV3SW1hZ2VSZXF1ZXN0EhcuVXBkYXRlTWVhbEltYWdlUmVxdWVzdBoYLlVwZGF0ZU1lYWxJbWFnZVJlc3BvbnNlElYKIVVwZGF0ZU1lYWxJbmdyZWRpZW50c0ltYWdlUmVxdWVzdBIXLlVwZGF0ZU1lYWxJbWFnZVJlcXVlc3QaGC5VcGRhdGVNZWFsSW1hZ2VSZXNwb25zZRI1CgpEZWxldGVNZWFsEhIuRGVsZXRlTWVhbFJlcXVlc3QaEy5EZWxldGVNZWFsUmVzcG9uc2USQQoOR2V0SW5ncmVkaWVudHMSFi5HZXRJbmdyZWRpZW50c1JlcXVlc3QaFy5HZXRJbmdyZWRpZW50c1Jlc3BvbnNlEkcKEENyZWF0ZUluZ3JlZGllbnQSGC5DcmVhdGVJbmdyZWRpZW50UmVxdWVzdBoZLkNyZWF0ZUluZ3JlZGllbnRSZXNwb25zZRJHChBVcGRhdGVJbmdyZWRpZW50EhguVXBkYXRlSW5ncmVkaWVudFJlcXVlc3QaGS5VcGRhdGVJbmdyZWRpZW50UmVzcG9uc2USRwoQRGVsZXRlSW5ncmVkaWVudBIYLkRlbGV0ZUluZ3JlZGllbnRSZXF1ZXN0GhkuRGVsZXRlSW5ncmVkaWVudFJlc3BvbnNlElwKF0dldEluZ3JlZGllbnRDYXRlZ29yaWVzEh8uR2V0SW5ncmVkaWVudENhdGVnb3JpZXNSZXF1ZXN0GiAuR2V0SW5ncmVkaWVudENhdGVnb3JpZXNSZXNwb25zZRJfChhDcmVhdGVJbmdyZWRpZW50Q2F0ZWdvcnkSIC5DcmVhdGVJbmdyZWRpZW50Q2F0ZWdvcnlSZXF1ZXN0GiEuQ3JlYXRlSW5ncmVkaWVudENhdGVnb3J5UmVzcG9uc2USXwoYVXBkYXRlSW5ncmVkaWVudENhdGVnb3J5EiAuVXBkYXRlSW5ncmVkaWVudENhdGVnb3J5UmVxdWVzdBohLlVwZGF0ZUluZ3JlZGllbnRDYXRlZ29yeVJlc3BvbnNlEl8KGERlbGV0ZUluZ3JlZGllbnRDYXRlZ29yeRIgLkRlbGV0ZUluZ3JlZGllbnRDYXRlZ29yeVJlcXVlc3QaIS5EZWxldGVJbmdyZWRpZW50Q2F0ZWdvcnlSZXNwb25zZRJfChhTd2FwSW5ncmVkaWVudENhdGVnb3JpZXMSIC5Td2FwSW5ncmVkaWVudENhdGVnb3JpZXNSZXF1ZXN0GiEuU3dhcEluZ3JlZGllbnRDYXRlZ29yaWVzUmVzcG9uc2ViBnByb3RvMw", [file_plan, file_meal, file_ingredient, file_ingredient_category]);
 
 /**
  * @generated from message GetPlanRequest
@@ -367,6 +369,170 @@ export const DeleteIngredientResponseSchema: GenMessage<DeleteIngredientResponse
   messageDesc(file_shopping_list_service, 21);
 
 /**
+ * @generated from message GetIngredientCategoriesRequest
+ */
+export type GetIngredientCategoriesRequest = Message<"GetIngredientCategoriesRequest"> & {
+};
+
+/**
+ * Describes the message GetIngredientCategoriesRequest.
+ * Use `create(GetIngredientCategoriesRequestSchema)` to create a new message.
+ */
+export const GetIngredientCategoriesRequestSchema: GenMessage<GetIngredientCategoriesRequest> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 22);
+
+/**
+ * @generated from message GetIngredientCategoriesResponse
+ */
+export type GetIngredientCategoriesResponse = Message<"GetIngredientCategoriesResponse"> & {
+  /**
+   * @generated from field: repeated IngredientCategory ingredient_categories = 1;
+   */
+  ingredientCategories: IngredientCategory[];
+};
+
+/**
+ * Describes the message GetIngredientCategoriesResponse.
+ * Use `create(GetIngredientCategoriesResponseSchema)` to create a new message.
+ */
+export const GetIngredientCategoriesResponseSchema: GenMessage<GetIngredientCategoriesResponse> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 23);
+
+/**
+ * @generated from message CreateIngredientCategoryRequest
+ */
+export type CreateIngredientCategoryRequest = Message<"CreateIngredientCategoryRequest"> & {
+  /**
+   * @generated from field: IngredientCategory ingredient_category = 1;
+   */
+  ingredientCategory?: IngredientCategory;
+};
+
+/**
+ * Describes the message CreateIngredientCategoryRequest.
+ * Use `create(CreateIngredientCategoryRequestSchema)` to create a new message.
+ */
+export const CreateIngredientCategoryRequestSchema: GenMessage<CreateIngredientCategoryRequest> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 24);
+
+/**
+ * @generated from message CreateIngredientCategoryResponse
+ */
+export type CreateIngredientCategoryResponse = Message<"CreateIngredientCategoryResponse"> & {
+  /**
+   * @generated from field: int64 ingredient_category_id = 1;
+   */
+  ingredientCategoryId: bigint;
+
+  /**
+   * @generated from field: int64 sort_index = 2;
+   */
+  sortIndex: bigint;
+};
+
+/**
+ * Describes the message CreateIngredientCategoryResponse.
+ * Use `create(CreateIngredientCategoryResponseSchema)` to create a new message.
+ */
+export const CreateIngredientCategoryResponseSchema: GenMessage<CreateIngredientCategoryResponse> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 25);
+
+/**
+ * @generated from message UpdateIngredientCategoryRequest
+ */
+export type UpdateIngredientCategoryRequest = Message<"UpdateIngredientCategoryRequest"> & {
+  /**
+   * @generated from field: IngredientCategory ingredient_category = 1;
+   */
+  ingredientCategory?: IngredientCategory;
+};
+
+/**
+ * Describes the message UpdateIngredientCategoryRequest.
+ * Use `create(UpdateIngredientCategoryRequestSchema)` to create a new message.
+ */
+export const UpdateIngredientCategoryRequestSchema: GenMessage<UpdateIngredientCategoryRequest> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 26);
+
+/**
+ * @generated from message UpdateIngredientCategoryResponse
+ */
+export type UpdateIngredientCategoryResponse = Message<"UpdateIngredientCategoryResponse"> & {
+};
+
+/**
+ * Describes the message UpdateIngredientCategoryResponse.
+ * Use `create(UpdateIngredientCategoryResponseSchema)` to create a new message.
+ */
+export const UpdateIngredientCategoryResponseSchema: GenMessage<UpdateIngredientCategoryResponse> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 27);
+
+/**
+ * @generated from message DeleteIngredientCategoryRequest
+ */
+export type DeleteIngredientCategoryRequest = Message<"DeleteIngredientCategoryRequest"> & {
+  /**
+   * @generated from field: int64 ingredient_category_id = 1;
+   */
+  ingredientCategoryId: bigint;
+};
+
+/**
+ * Describes the message DeleteIngredientCategoryRequest.
+ * Use `create(DeleteIngredientCategoryRequestSchema)` to create a new message.
+ */
+export const DeleteIngredientCategoryRequestSchema: GenMessage<DeleteIngredientCategoryRequest> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 28);
+
+/**
+ * @generated from message DeleteIngredientCategoryResponse
+ */
+export type DeleteIngredientCategoryResponse = Message<"DeleteIngredientCategoryResponse"> & {
+};
+
+/**
+ * Describes the message DeleteIngredientCategoryResponse.
+ * Use `create(DeleteIngredientCategoryResponseSchema)` to create a new message.
+ */
+export const DeleteIngredientCategoryResponseSchema: GenMessage<DeleteIngredientCategoryResponse> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 29);
+
+/**
+ * @generated from message SwapIngredientCategoriesRequest
+ */
+export type SwapIngredientCategoriesRequest = Message<"SwapIngredientCategoriesRequest"> & {
+  /**
+   * @generated from field: int64 ingredient_category_a = 1;
+   */
+  ingredientCategoryA: bigint;
+
+  /**
+   * @generated from field: int64 ingredient_category_b = 2;
+   */
+  ingredientCategoryB: bigint;
+};
+
+/**
+ * Describes the message SwapIngredientCategoriesRequest.
+ * Use `create(SwapIngredientCategoriesRequestSchema)` to create a new message.
+ */
+export const SwapIngredientCategoriesRequestSchema: GenMessage<SwapIngredientCategoriesRequest> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 30);
+
+/**
+ * @generated from message SwapIngredientCategoriesResponse
+ */
+export type SwapIngredientCategoriesResponse = Message<"SwapIngredientCategoriesResponse"> & {
+};
+
+/**
+ * Describes the message SwapIngredientCategoriesResponse.
+ * Use `create(SwapIngredientCategoriesResponseSchema)` to create a new message.
+ */
+export const SwapIngredientCategoriesResponseSchema: GenMessage<SwapIngredientCategoriesResponse> = /*@__PURE__*/
+  messageDesc(file_shopping_list_service, 31);
+
+/**
  * @generated from service ShoppingListService
  */
 export const ShoppingListService: GenService<{
@@ -469,6 +635,48 @@ export const ShoppingListService: GenService<{
     methodKind: "unary";
     input: typeof DeleteIngredientRequestSchema;
     output: typeof DeleteIngredientResponseSchema;
+  },
+  /**
+   * ingredient categories
+   *
+   * @generated from rpc ShoppingListService.GetIngredientCategories
+   */
+  getIngredientCategories: {
+    methodKind: "unary";
+    input: typeof GetIngredientCategoriesRequestSchema;
+    output: typeof GetIngredientCategoriesResponseSchema;
+  },
+  /**
+   * @generated from rpc ShoppingListService.CreateIngredientCategory
+   */
+  createIngredientCategory: {
+    methodKind: "unary";
+    input: typeof CreateIngredientCategoryRequestSchema;
+    output: typeof CreateIngredientCategoryResponseSchema;
+  },
+  /**
+   * @generated from rpc ShoppingListService.UpdateIngredientCategory
+   */
+  updateIngredientCategory: {
+    methodKind: "unary";
+    input: typeof UpdateIngredientCategoryRequestSchema;
+    output: typeof UpdateIngredientCategoryResponseSchema;
+  },
+  /**
+   * @generated from rpc ShoppingListService.DeleteIngredientCategory
+   */
+  deleteIngredientCategory: {
+    methodKind: "unary";
+    input: typeof DeleteIngredientCategoryRequestSchema;
+    output: typeof DeleteIngredientCategoryResponseSchema;
+  },
+  /**
+   * @generated from rpc ShoppingListService.SwapIngredientCategories
+   */
+  swapIngredientCategories: {
+    methodKind: "unary";
+    input: typeof SwapIngredientCategoriesRequestSchema;
+    output: typeof SwapIngredientCategoriesResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_shopping_list_service, 0);

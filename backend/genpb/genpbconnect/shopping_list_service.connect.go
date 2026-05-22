@@ -69,6 +69,21 @@ const (
 	// ShoppingListServiceDeleteIngredientProcedure is the fully-qualified name of the
 	// ShoppingListService's DeleteIngredient RPC.
 	ShoppingListServiceDeleteIngredientProcedure = "/ShoppingListService/DeleteIngredient"
+	// ShoppingListServiceGetIngredientCategoriesProcedure is the fully-qualified name of the
+	// ShoppingListService's GetIngredientCategories RPC.
+	ShoppingListServiceGetIngredientCategoriesProcedure = "/ShoppingListService/GetIngredientCategories"
+	// ShoppingListServiceCreateIngredientCategoryProcedure is the fully-qualified name of the
+	// ShoppingListService's CreateIngredientCategory RPC.
+	ShoppingListServiceCreateIngredientCategoryProcedure = "/ShoppingListService/CreateIngredientCategory"
+	// ShoppingListServiceUpdateIngredientCategoryProcedure is the fully-qualified name of the
+	// ShoppingListService's UpdateIngredientCategory RPC.
+	ShoppingListServiceUpdateIngredientCategoryProcedure = "/ShoppingListService/UpdateIngredientCategory"
+	// ShoppingListServiceDeleteIngredientCategoryProcedure is the fully-qualified name of the
+	// ShoppingListService's DeleteIngredientCategory RPC.
+	ShoppingListServiceDeleteIngredientCategoryProcedure = "/ShoppingListService/DeleteIngredientCategory"
+	// ShoppingListServiceSwapIngredientCategoriesProcedure is the fully-qualified name of the
+	// ShoppingListService's SwapIngredientCategories RPC.
+	ShoppingListServiceSwapIngredientCategoriesProcedure = "/ShoppingListService/SwapIngredientCategories"
 )
 
 // ShoppingListServiceClient is a client for the ShoppingListService service.
@@ -87,6 +102,12 @@ type ShoppingListServiceClient interface {
 	CreateIngredient(context.Context, *connect.Request[genpb.CreateIngredientRequest]) (*connect.Response[genpb.CreateIngredientResponse], error)
 	UpdateIngredient(context.Context, *connect.Request[genpb.UpdateIngredientRequest]) (*connect.Response[genpb.UpdateIngredientResponse], error)
 	DeleteIngredient(context.Context, *connect.Request[genpb.DeleteIngredientRequest]) (*connect.Response[genpb.DeleteIngredientResponse], error)
+	// ingredient categories
+	GetIngredientCategories(context.Context, *connect.Request[genpb.GetIngredientCategoriesRequest]) (*connect.Response[genpb.GetIngredientCategoriesResponse], error)
+	CreateIngredientCategory(context.Context, *connect.Request[genpb.CreateIngredientCategoryRequest]) (*connect.Response[genpb.CreateIngredientCategoryResponse], error)
+	UpdateIngredientCategory(context.Context, *connect.Request[genpb.UpdateIngredientCategoryRequest]) (*connect.Response[genpb.UpdateIngredientCategoryResponse], error)
+	DeleteIngredientCategory(context.Context, *connect.Request[genpb.DeleteIngredientCategoryRequest]) (*connect.Response[genpb.DeleteIngredientCategoryResponse], error)
+	SwapIngredientCategories(context.Context, *connect.Request[genpb.SwapIngredientCategoriesRequest]) (*connect.Response[genpb.SwapIngredientCategoriesResponse], error)
 }
 
 // NewShoppingListServiceClient constructs a client for the ShoppingListService service. By default,
@@ -172,6 +193,36 @@ func NewShoppingListServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(shoppingListServiceMethods.ByName("DeleteIngredient")),
 			connect.WithClientOptions(opts...),
 		),
+		getIngredientCategories: connect.NewClient[genpb.GetIngredientCategoriesRequest, genpb.GetIngredientCategoriesResponse](
+			httpClient,
+			baseURL+ShoppingListServiceGetIngredientCategoriesProcedure,
+			connect.WithSchema(shoppingListServiceMethods.ByName("GetIngredientCategories")),
+			connect.WithClientOptions(opts...),
+		),
+		createIngredientCategory: connect.NewClient[genpb.CreateIngredientCategoryRequest, genpb.CreateIngredientCategoryResponse](
+			httpClient,
+			baseURL+ShoppingListServiceCreateIngredientCategoryProcedure,
+			connect.WithSchema(shoppingListServiceMethods.ByName("CreateIngredientCategory")),
+			connect.WithClientOptions(opts...),
+		),
+		updateIngredientCategory: connect.NewClient[genpb.UpdateIngredientCategoryRequest, genpb.UpdateIngredientCategoryResponse](
+			httpClient,
+			baseURL+ShoppingListServiceUpdateIngredientCategoryProcedure,
+			connect.WithSchema(shoppingListServiceMethods.ByName("UpdateIngredientCategory")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteIngredientCategory: connect.NewClient[genpb.DeleteIngredientCategoryRequest, genpb.DeleteIngredientCategoryResponse](
+			httpClient,
+			baseURL+ShoppingListServiceDeleteIngredientCategoryProcedure,
+			connect.WithSchema(shoppingListServiceMethods.ByName("DeleteIngredientCategory")),
+			connect.WithClientOptions(opts...),
+		),
+		swapIngredientCategories: connect.NewClient[genpb.SwapIngredientCategoriesRequest, genpb.SwapIngredientCategoriesResponse](
+			httpClient,
+			baseURL+ShoppingListServiceSwapIngredientCategoriesProcedure,
+			connect.WithSchema(shoppingListServiceMethods.ByName("SwapIngredientCategories")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -189,6 +240,11 @@ type shoppingListServiceClient struct {
 	createIngredient                  *connect.Client[genpb.CreateIngredientRequest, genpb.CreateIngredientResponse]
 	updateIngredient                  *connect.Client[genpb.UpdateIngredientRequest, genpb.UpdateIngredientResponse]
 	deleteIngredient                  *connect.Client[genpb.DeleteIngredientRequest, genpb.DeleteIngredientResponse]
+	getIngredientCategories           *connect.Client[genpb.GetIngredientCategoriesRequest, genpb.GetIngredientCategoriesResponse]
+	createIngredientCategory          *connect.Client[genpb.CreateIngredientCategoryRequest, genpb.CreateIngredientCategoryResponse]
+	updateIngredientCategory          *connect.Client[genpb.UpdateIngredientCategoryRequest, genpb.UpdateIngredientCategoryResponse]
+	deleteIngredientCategory          *connect.Client[genpb.DeleteIngredientCategoryRequest, genpb.DeleteIngredientCategoryResponse]
+	swapIngredientCategories          *connect.Client[genpb.SwapIngredientCategoriesRequest, genpb.SwapIngredientCategoriesResponse]
 }
 
 // GetPlan calls ShoppingListService.GetPlan.
@@ -251,6 +307,31 @@ func (c *shoppingListServiceClient) DeleteIngredient(ctx context.Context, req *c
 	return c.deleteIngredient.CallUnary(ctx, req)
 }
 
+// GetIngredientCategories calls ShoppingListService.GetIngredientCategories.
+func (c *shoppingListServiceClient) GetIngredientCategories(ctx context.Context, req *connect.Request[genpb.GetIngredientCategoriesRequest]) (*connect.Response[genpb.GetIngredientCategoriesResponse], error) {
+	return c.getIngredientCategories.CallUnary(ctx, req)
+}
+
+// CreateIngredientCategory calls ShoppingListService.CreateIngredientCategory.
+func (c *shoppingListServiceClient) CreateIngredientCategory(ctx context.Context, req *connect.Request[genpb.CreateIngredientCategoryRequest]) (*connect.Response[genpb.CreateIngredientCategoryResponse], error) {
+	return c.createIngredientCategory.CallUnary(ctx, req)
+}
+
+// UpdateIngredientCategory calls ShoppingListService.UpdateIngredientCategory.
+func (c *shoppingListServiceClient) UpdateIngredientCategory(ctx context.Context, req *connect.Request[genpb.UpdateIngredientCategoryRequest]) (*connect.Response[genpb.UpdateIngredientCategoryResponse], error) {
+	return c.updateIngredientCategory.CallUnary(ctx, req)
+}
+
+// DeleteIngredientCategory calls ShoppingListService.DeleteIngredientCategory.
+func (c *shoppingListServiceClient) DeleteIngredientCategory(ctx context.Context, req *connect.Request[genpb.DeleteIngredientCategoryRequest]) (*connect.Response[genpb.DeleteIngredientCategoryResponse], error) {
+	return c.deleteIngredientCategory.CallUnary(ctx, req)
+}
+
+// SwapIngredientCategories calls ShoppingListService.SwapIngredientCategories.
+func (c *shoppingListServiceClient) SwapIngredientCategories(ctx context.Context, req *connect.Request[genpb.SwapIngredientCategoriesRequest]) (*connect.Response[genpb.SwapIngredientCategoriesResponse], error) {
+	return c.swapIngredientCategories.CallUnary(ctx, req)
+}
+
 // ShoppingListServiceHandler is an implementation of the ShoppingListService service.
 type ShoppingListServiceHandler interface {
 	// plan
@@ -267,6 +348,12 @@ type ShoppingListServiceHandler interface {
 	CreateIngredient(context.Context, *connect.Request[genpb.CreateIngredientRequest]) (*connect.Response[genpb.CreateIngredientResponse], error)
 	UpdateIngredient(context.Context, *connect.Request[genpb.UpdateIngredientRequest]) (*connect.Response[genpb.UpdateIngredientResponse], error)
 	DeleteIngredient(context.Context, *connect.Request[genpb.DeleteIngredientRequest]) (*connect.Response[genpb.DeleteIngredientResponse], error)
+	// ingredient categories
+	GetIngredientCategories(context.Context, *connect.Request[genpb.GetIngredientCategoriesRequest]) (*connect.Response[genpb.GetIngredientCategoriesResponse], error)
+	CreateIngredientCategory(context.Context, *connect.Request[genpb.CreateIngredientCategoryRequest]) (*connect.Response[genpb.CreateIngredientCategoryResponse], error)
+	UpdateIngredientCategory(context.Context, *connect.Request[genpb.UpdateIngredientCategoryRequest]) (*connect.Response[genpb.UpdateIngredientCategoryResponse], error)
+	DeleteIngredientCategory(context.Context, *connect.Request[genpb.DeleteIngredientCategoryRequest]) (*connect.Response[genpb.DeleteIngredientCategoryResponse], error)
+	SwapIngredientCategories(context.Context, *connect.Request[genpb.SwapIngredientCategoriesRequest]) (*connect.Response[genpb.SwapIngredientCategoriesResponse], error)
 }
 
 // NewShoppingListServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -348,6 +435,36 @@ func NewShoppingListServiceHandler(svc ShoppingListServiceHandler, opts ...conne
 		connect.WithSchema(shoppingListServiceMethods.ByName("DeleteIngredient")),
 		connect.WithHandlerOptions(opts...),
 	)
+	shoppingListServiceGetIngredientCategoriesHandler := connect.NewUnaryHandler(
+		ShoppingListServiceGetIngredientCategoriesProcedure,
+		svc.GetIngredientCategories,
+		connect.WithSchema(shoppingListServiceMethods.ByName("GetIngredientCategories")),
+		connect.WithHandlerOptions(opts...),
+	)
+	shoppingListServiceCreateIngredientCategoryHandler := connect.NewUnaryHandler(
+		ShoppingListServiceCreateIngredientCategoryProcedure,
+		svc.CreateIngredientCategory,
+		connect.WithSchema(shoppingListServiceMethods.ByName("CreateIngredientCategory")),
+		connect.WithHandlerOptions(opts...),
+	)
+	shoppingListServiceUpdateIngredientCategoryHandler := connect.NewUnaryHandler(
+		ShoppingListServiceUpdateIngredientCategoryProcedure,
+		svc.UpdateIngredientCategory,
+		connect.WithSchema(shoppingListServiceMethods.ByName("UpdateIngredientCategory")),
+		connect.WithHandlerOptions(opts...),
+	)
+	shoppingListServiceDeleteIngredientCategoryHandler := connect.NewUnaryHandler(
+		ShoppingListServiceDeleteIngredientCategoryProcedure,
+		svc.DeleteIngredientCategory,
+		connect.WithSchema(shoppingListServiceMethods.ByName("DeleteIngredientCategory")),
+		connect.WithHandlerOptions(opts...),
+	)
+	shoppingListServiceSwapIngredientCategoriesHandler := connect.NewUnaryHandler(
+		ShoppingListServiceSwapIngredientCategoriesProcedure,
+		svc.SwapIngredientCategories,
+		connect.WithSchema(shoppingListServiceMethods.ByName("SwapIngredientCategories")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/ShoppingListService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ShoppingListServiceGetPlanProcedure:
@@ -374,6 +491,16 @@ func NewShoppingListServiceHandler(svc ShoppingListServiceHandler, opts ...conne
 			shoppingListServiceUpdateIngredientHandler.ServeHTTP(w, r)
 		case ShoppingListServiceDeleteIngredientProcedure:
 			shoppingListServiceDeleteIngredientHandler.ServeHTTP(w, r)
+		case ShoppingListServiceGetIngredientCategoriesProcedure:
+			shoppingListServiceGetIngredientCategoriesHandler.ServeHTTP(w, r)
+		case ShoppingListServiceCreateIngredientCategoryProcedure:
+			shoppingListServiceCreateIngredientCategoryHandler.ServeHTTP(w, r)
+		case ShoppingListServiceUpdateIngredientCategoryProcedure:
+			shoppingListServiceUpdateIngredientCategoryHandler.ServeHTTP(w, r)
+		case ShoppingListServiceDeleteIngredientCategoryProcedure:
+			shoppingListServiceDeleteIngredientCategoryHandler.ServeHTTP(w, r)
+		case ShoppingListServiceSwapIngredientCategoriesProcedure:
+			shoppingListServiceSwapIngredientCategoriesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -429,4 +556,24 @@ func (UnimplementedShoppingListServiceHandler) UpdateIngredient(context.Context,
 
 func (UnimplementedShoppingListServiceHandler) DeleteIngredient(context.Context, *connect.Request[genpb.DeleteIngredientRequest]) (*connect.Response[genpb.DeleteIngredientResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.DeleteIngredient is not implemented"))
+}
+
+func (UnimplementedShoppingListServiceHandler) GetIngredientCategories(context.Context, *connect.Request[genpb.GetIngredientCategoriesRequest]) (*connect.Response[genpb.GetIngredientCategoriesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.GetIngredientCategories is not implemented"))
+}
+
+func (UnimplementedShoppingListServiceHandler) CreateIngredientCategory(context.Context, *connect.Request[genpb.CreateIngredientCategoryRequest]) (*connect.Response[genpb.CreateIngredientCategoryResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.CreateIngredientCategory is not implemented"))
+}
+
+func (UnimplementedShoppingListServiceHandler) UpdateIngredientCategory(context.Context, *connect.Request[genpb.UpdateIngredientCategoryRequest]) (*connect.Response[genpb.UpdateIngredientCategoryResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.UpdateIngredientCategory is not implemented"))
+}
+
+func (UnimplementedShoppingListServiceHandler) DeleteIngredientCategory(context.Context, *connect.Request[genpb.DeleteIngredientCategoryRequest]) (*connect.Response[genpb.DeleteIngredientCategoryResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.DeleteIngredientCategory is not implemented"))
+}
+
+func (UnimplementedShoppingListServiceHandler) SwapIngredientCategories(context.Context, *connect.Request[genpb.SwapIngredientCategoriesRequest]) (*connect.Response[genpb.SwapIngredientCategoriesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("ShoppingListService.SwapIngredientCategories is not implemented"))
 }
