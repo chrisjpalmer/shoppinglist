@@ -2,6 +2,7 @@
   	import { CreateShoppingListService } from '$lib/shopping_list_service';
 	import Button from '../../components/button.svelte';
 	import ScrollableTable from '../../components/scrollableTable.svelte';
+	import Select from '../../components/select.svelte';
 	import StickyTrHeader from '../../components/sticky-tr-header.svelte';
 	import StickyTrTitle from '../../components/sticky-tr-title.svelte';
 
@@ -16,21 +17,40 @@
 
 	let displayIngredients: DisplayIngredient[] = $state([])
 	let displayNewIngredients: DisplayNewIngredient[] = $state([])
+	let displayCategories: { id: bigint; name: string }[] = $state([])
+
 	interface DisplayIngredient {
 		id: bigint
 		name: string
+		ingredientCategoryId: bigint
 		isEdit: boolean
 	}
 
 	interface DisplayNewIngredient {
 		pseudoId: number
 		name: string
+		ingredientCategoryId: bigint
 	}
 
 	async function refresh() {
-		const rs = await client.getIngredients({})
-		displayIngredients = rs.ingredients.map(ig => ({id: ig.id, name: ig.name, isEdit: false}))
+		const igRes = await client.getIngredients({})
+
+		const catRes = await client.getIngredientCategories({})
+
+		displayIngredients = igRes.ingredients.map(ig => ({
+			id: ig.id,
+			name: ig.name,
+			ingredientCategoryId: ig.ingredientCategoryId,
+			isEdit: false
+		}))
+
+		displayCategories = catRes.ingredientCategories.map(c => ({ id: c.id, name: c.name }))
+
 		displayNewIngredients = []
+	}
+
+	function findCategoryName(id: bigint): string {
+		return displayCategories.find(c => c.id === id)?.name ?? '--'
 	}
 
 	function editIngredient(id: bigint) {
@@ -58,6 +78,7 @@
 			ingredient: {
 				id: id,
 				name: m.name,
+				ingredientCategoryId: m.ingredientCategoryId,
 			},
 		})
 
@@ -74,6 +95,7 @@
 		await client.createIngredient({
 			ingredient: {
 				name: m.name,
+				ingredientCategoryId: m.ingredientCategoryId,
 			},
 		})
 
@@ -81,7 +103,7 @@
 	}
 
 	function addIngredient() {
-		displayNewIngredients.push({pseudoId: psuedoIdCounter, name: ""})
+		displayNewIngredients.push({pseudoId: psuedoIdCounter, name: "", ingredientCategoryId: 0n})
 		psuedoIdCounter++
 	}
 
@@ -92,17 +114,43 @@
 </svelte:head>
 
 <ScrollableTable classes="overflow-y-auto h-full">
-	<StickyTrTitle><Td title={true} colspan={2}>Ingredients</Td></StickyTrTitle>
-	<StickyTrHeader><Td header={true}>Name</Td><Td header={true}>Action</Td></StickyTrHeader>
+	<StickyTrTitle><Td title={true} colspan={3}>Ingredients</Td></StickyTrTitle>
+	<StickyTrHeader><Td header={true}>Name</Td><Td header={true}>Ingredient Category</Td><Td header={true}>Action</Td></StickyTrHeader>
 	{#each displayIngredients as dig (dig.id)}
 		{#if dig.isEdit}
-			<Tr><Td><TextInput bind:value={dig.name}/></Td><Td><Button onclick={() => saveIngredient(dig.id)}>Save</Button></Td></Tr>
+			<Tr>
+				<Td><TextInput bind:value={dig.name}/></Td>
+				<Td>
+					<Select bind:value={dig.ingredientCategoryId}>
+						<option value={0n}>--</option>
+						{#each displayCategories as cat}
+							<option value={cat.id}>{cat.name}</option>
+						{/each}
+					</Select>
+				</Td>
+				<Td><Button onclick={() => saveIngredient(dig.id)}>Save</Button></Td>
+			</Tr>
 		{:else}
-			<Tr><Td>{dig.name}</Td><Td><Button onclick={() => editIngredient(dig.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteIngredient(dig.id)}>Delete</Button></Td></Tr>
+			<Tr>
+				<Td>{dig.name}</Td>
+				<Td>{findCategoryName(dig.ingredientCategoryId)}</Td>
+				<Td><Button onclick={() => editIngredient(dig.id)}>Edit</Button><Button classes="ml-1" onclick={() => deleteIngredient(dig.id)}>Delete</Button></Td>
+			</Tr>
 		{/if}
 	{/each}
 	{#each displayNewIngredients as dig (psuedoIdCounter)}
-		<Tr><Td><TextInput bind:value={dig.name}/></Td><Td><Button onclick={() => saveNewIngredient(dig.pseudoId)}>Save</Button></Td></Tr>
+		<Tr>
+			<Td><TextInput bind:value={dig.name}/></Td>
+			<Td>
+				<Select bind:value={dig.ingredientCategoryId}>
+					<option value={0n}>--</option>
+					{#each displayCategories as cat}
+						<option value={cat.id}>{cat.name}</option>
+					{/each}
+				</Select>
+			</Td>
+			<Td><Button onclick={() => saveNewIngredient(dig.pseudoId)}>Save</Button></Td>
+		</Tr>
 	{/each}
-	<Tr><Td></Td><Td><Button onclick={addIngredient}>+</Button></Td></Tr>
+	<Tr><Td></Td><Td></Td><Td><Button onclick={addIngredient}>+</Button></Td></Tr>
 </ScrollableTable>

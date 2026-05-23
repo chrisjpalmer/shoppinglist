@@ -22,11 +22,12 @@ const (
 )
 
 type Ingredient struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	Id                   int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name                 string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	IngredientCategoryId int64                  `protobuf:"varint,3,opt,name=ingredient_category_id,json=ingredientCategoryId,proto3" json:"ingredient_category_id,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *Ingredient) Reset() {
@@ -73,15 +74,23 @@ func (x *Ingredient) GetName() string {
 	return ""
 }
 
+func (x *Ingredient) GetIngredientCategoryId() int64 {
+	if x != nil {
+		return x.IngredientCategoryId
+	}
+	return 0
+}
+
 var File_ingredient_proto protoreflect.FileDescriptor
 
 const file_ingredient_proto_rawDesc = "" +
 	"\n" +
-	"\x10ingredient.proto\"0\n" +
+	"\x10ingredient.proto\"f\n" +
 	"\n" +
 	"Ingredient\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04nameBGB\x0fIngredientProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
+	"\x04name\x18\x02 \x01(\tR\x04name\x124\n" +
+	"\x16ingredient_category_id\x18\x03 \x01(\x03R\x14ingredientCategoryIdBGB\x0fIngredientProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
 
 var (
 	file_ingredient_proto_rawDescOnce sync.Once

@@ -18,15 +18,19 @@ func (s *Server) GetIngredients(ctx context.Context, rq *connect.Request[genpb.G
 
 	for _, i := range ii {
 		gii = append(gii, &genpb.Ingredient{
-			Id:   i.ID,
-			Name: i.Name,
+			Id:                   i.ID,
+			Name:                 i.Name,
+			IngredientCategoryId: i.IngredientCategoryID,
 		})
 	}
 
 	return connect.NewResponse(&genpb.GetIngredientsResponse{Ingredients: gii}), nil
 }
 func (s *Server) CreateIngredient(ctx context.Context, rq *connect.Request[genpb.CreateIngredientRequest]) (*connect.Response[genpb.CreateIngredientResponse], error) {
-	id, err := s.sql.CreateIngredient(ctx, rq.Msg.Ingredient.Name)
+	id, err := s.sql.CreateIngredient(ctx, gensql.CreateIngredientParams{
+		Name:                 rq.Msg.Ingredient.Name,
+		IngredientCategoryID: rq.Msg.Ingredient.IngredientCategoryId,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -35,8 +39,9 @@ func (s *Server) CreateIngredient(ctx context.Context, rq *connect.Request[genpb
 }
 func (s *Server) UpdateIngredient(ctx context.Context, rq *connect.Request[genpb.UpdateIngredientRequest]) (*connect.Response[genpb.UpdateIngredientResponse], error) {
 	err := s.sql.UpdateIngredient(ctx, gensql.UpdateIngredientParams{
-		ID:   rq.Msg.Ingredient.Id,
-		Name: rq.Msg.Ingredient.Name,
+		ID:                   rq.Msg.Ingredient.Id,
+		Name:                 rq.Msg.Ingredient.Name,
+		IngredientCategoryID: rq.Msg.Ingredient.IngredientCategoryId,
 	})
 	if err != nil {
 		return nil, err

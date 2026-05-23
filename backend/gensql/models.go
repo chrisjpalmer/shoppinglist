@@ -5,11 +5,12 @@
 package gensql
 
 type Ingredient struct {
-	ID                int64
-	Name              string
-	WantOverrideCount int64
-	GotCount          int64
-	Shopped           bool
+	ID                   int64
+	Name                 string
+	IngredientCategoryID int64
+	WantOverrideCount    int64
+	GotCount             int64
+	Shopped              bool
 }
 
 type IngredientCategory struct {

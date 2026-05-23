@@ -10,11 +10,16 @@ import (
 )
 
 const createIngredient = `-- name: CreateIngredient :one
-INSERT INTO ingredients (name) VALUES (?) RETURNING id
+INSERT INTO ingredients (name, ingredient_category_id) VALUES (?, ?) RETURNING id
 `
 
-func (q *Queries) CreateIngredient(ctx context.Context, name string) (int64, error) {
-	row := q.db.QueryRowContext(ctx, createIngredient, name)
+type CreateIngredientParams struct {
+	Name                 string
+	IngredientCategoryID int64
+}
+
+func (q *Queries) CreateIngredient(ctx context.Context, arg CreateIngredientParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, createIngredient, arg.Name, arg.IngredientCategoryID)
 	var id int64
 	err := row.Scan(&id)
 	return id, err
@@ -155,7 +160,7 @@ func (q *Queries) GetIngredientCategorySortIndex(ctx context.Context, id int64) 
 
 const getIngredients = `-- name: GetIngredients :many
 
-SELECT id, name, want_override_count, got_count, shopped FROM ingredients
+SELECT id, name, ingredient_category_id, want_override_count, got_count, shopped FROM ingredients
 ORDER BY name
 `
 
@@ -172,6 +177,7 @@ func (q *Queries) GetIngredients(ctx context.Context) ([]Ingredient, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
+			&i.IngredientCategoryID,
 			&i.WantOverrideCount,
 			&i.GotCount,
 			&i.Shopped,
@@ -302,16 +308,17 @@ func (q *Queries) ResetIngredientShopped(ctx context.Context) error {
 }
 
 const updateIngredient = `-- name: UpdateIngredient :exec
-UPDATE ingredients set name = ? WHERE id = ?
+UPDATE ingredients set name = ?, ingredient_category_id = ? WHERE id = ?
 `
 
 type UpdateIngredientParams struct {
-	Name string
-	ID   int64
+	Name                 string
+	IngredientCategoryID int64
+	ID                   int64
 }
 
 func (q *Queries) UpdateIngredient(ctx context.Context, arg UpdateIngredientParams) error {
-	_, err := q.db.ExecContext(ctx, updateIngredient, arg.Name, arg.ID)
+	_, err := q.db.ExecContext(ctx, updateIngredient, arg.Name, arg.IngredientCategoryID, arg.ID)
 	return err
 }
 
