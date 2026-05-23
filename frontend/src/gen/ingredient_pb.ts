@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file ingredient.proto.
  */
 export const file_ingredient: GenFile = /*@__PURE__*/
-  fileDesc("ChBpbmdyZWRpZW50LnByb3RvIiYKCkluZ3JlZGllbnQSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCWIGcHJvdG8z");
+  fileDesc("ChBpbmdyZWRpZW50LnByb3RvIkYKCkluZ3JlZGllbnQSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRIeChZpbmdyZWRpZW50X2NhdGVnb3J5X2lkGAMgASgDYgZwcm90bzM");
 
 /**
  * @generated from message Ingredient
@@ -25,6 +25,11 @@ export type Ingredient = Message<"Ingredient"> & {
    * @generated from field: string name = 2;
    */
   name: string;
+
+  /**
+   * @generated from field: int64 ingredient_category_id = 3;
+   */
+  ingredientCategoryId: bigint;
 };
 
 /**

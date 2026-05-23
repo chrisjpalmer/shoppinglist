@@ -3,4 +3,5 @@ syntax = "proto3";
 message Ingredient {
     int64 id = 1;
     string name = 2;
+    int64 ingredient_category_id = 3;
 }
