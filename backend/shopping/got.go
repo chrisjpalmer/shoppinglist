@@ -65,14 +65,14 @@ func (s *Server) renderGotPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) gotItems(ctx context.Context) ([]page.GotItem, error) {
-	ingredientCounts, ingg, err := s.ingredients(ctx)
+	igs, err := s.ingredients(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	var gg []page.GotItem
-	for _, ing := range ingg {
-		if ingredientCounts[ing.ID] == 0 && ing.WantOverrideCount == 0 {
+	for _, ing := range igs {
+		if ing.RequiredCount == 0 && ing.WantOverrideCount == 0 {
 			continue
 		}
 		gg = append(gg, page.GotItem{

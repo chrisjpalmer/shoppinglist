@@ -67,14 +67,14 @@ func (s *Server) renderShopPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) shopItems(ctx context.Context) ([]page.ShopItem, error) {
-	ingredientCounts, ingg, err := s.ingredients(ctx)
+	igs, err := s.ingredients(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	var ss []page.ShopItem
-	for _, ing := range ingg {
-		need := max(int(ingredientCounts[ing.ID]), int(ing.WantOverrideCount)) - int(ing.GotCount)
+	for _, ing := range igs {
+		need := max(int(ing.RequiredCount), int(ing.WantOverrideCount)) - int(ing.GotCount)
 		if need <= 0 {
 			continue
 		}
