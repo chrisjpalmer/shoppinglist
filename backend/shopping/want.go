@@ -121,56 +121,88 @@ func parseNumericFormValue(idstr string, value []string) (id int64, ct int64, er
 }
 
 func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
-	ingredientCounts, ingg, err := s.ingredients(ctx)
+	igs, err := s.ingredients(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	var ww []page.WantItem
-	for _, ing := range ingg {
-		ct := ingredientCounts[ing.ID]
+	for _, ing := range igs {
 
-		total := int(ct)
-		if int(ing.WantOverrideCount) > total {
-			total = int(ing.WantOverrideCount)
+		total := ing.RequiredCount
+		if ing.WantOverrideCount > total {
+			total = ing.WantOverrideCount
 		}
 
 		ww = append(ww, page.WantItem{
 			ID:            ing.ID,
 			Ingredient:    ing.Name,
-			Required:      int(ct),
+			Required:      int(ing.RequiredCount),
 			OverrideCount: int(ing.WantOverrideCount),
-			Total:         total,
+			Total:         int(total),
 		})
 	}
 
 	return ww, nil
 }
 
-func (s *Server) ingredients(ctx context.Context) (map[int64]int32, []gensql.Ingredient, error) {
+type ingredient struct {
+	ID                   int64
+	Name                 string
+	IngredientCategoryID int64
+	RequiredCount        int64
+	WantOverrideCount    int64
+	GotCount             int64
+	Shopped              bool
+}
+
+func (s *Server) ingredients(ctx context.Context) ([]ingredient, error) {
+	igs, err := s.sql.GetIngredients(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	reqCt, err := s.requiredCounts(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var retIgs []ingredient
+
+	for _, ig := range igs {
+		retIgs = append(retIgs, ingredient{
+			ID:                   ig.ID,
+			Name:                 ig.Name,
+			IngredientCategoryID: ig.IngredientCategoryID,
+			RequiredCount:        reqCt[ig.ID],
+			WantOverrideCount:    ig.WantOverrideCount,
+			GotCount:             ig.GotCount,
+			Shopped:              ig.Shopped,
+		})
+	}
+
+	return retIgs, nil
+}
+
+func (s *Server) requiredCounts(ctx context.Context) (map[int64]int64, error) {
 	plan, err := s.plan(ctx)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	meals, err := s.sql.GetMeals(ctx)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	mealsmap, err := mealsMap(meals)
 	if err != nil {
-		return nil, nil, err
-	}
-
-	ingg, err := s.sql.GetIngredients(ctx)
-	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	smIds := selectedMealIds(plan)
 
-	ingredientCounts := make(map[int64]int32)
+	ingredientCounts := make(map[int64]int64)
 
 	for _, smId := range smIds {
 		meal, ok := mealsmap[smId]
@@ -179,11 +211,11 @@ func (s *Server) ingredients(ctx context.Context) (map[int64]int32, []gensql.Ing
 		}
 
 		for _, igref := range meal.IngredientRefs {
-			ingredientCounts[igref.IngredientId] += igref.Number
+			ingredientCounts[igref.IngredientId] += int64(igref.Number)
 		}
 	}
 
-	return ingredientCounts, ingg, nil
+	return ingredientCounts, nil
 }
 
 func (s *Server) plan(ctx context.Context) (*genpb.Plan, error) {
