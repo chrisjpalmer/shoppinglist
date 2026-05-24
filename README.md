@@ -19,6 +19,8 @@ A preview version of the sites is hosted on railway:
 
 The full project and its [settings can be viewed here](https://railway.com/project/8c0aadfe-273e-469b-a372-ad00f4f5b025)
 
+*For more information on the architecture, [see the architecture doc](./doc/reference/architecture.md)*
+
 ## Running the project
 
 ### Prerequisites
