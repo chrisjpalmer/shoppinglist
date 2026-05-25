@@ -20,6 +20,9 @@ func NewContext(r *http.Request, planningSiteURL string) Context {
 
 // WantItem - an item to display on the want page
 type WantItem struct {
+	// if set, indicates this row is a category heading
+	Category string
+
 	ID            int64
 	Ingredient    string
 	Required      int
@@ -29,6 +32,9 @@ type WantItem struct {
 
 // GotItem - an item to display on the got page
 type GotItem struct {
+	// if set, indicates this row is a category heading
+	Category string
+
 	ID         int64
 	Ingredient string
 	GotCount   int
@@ -36,6 +42,9 @@ type GotItem struct {
 
 // ShopItem - an item to display on the shop page
 type ShopItem struct {
+	// if set, indicates this row is a category heading
+	Category string
+
 	ID         int64
 	Ingredient string
 	NeedCount  int

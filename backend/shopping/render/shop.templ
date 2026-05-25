@@ -47,25 +47,33 @@ templ ShopPage(pageContext page.Context, shopItems []page.ShopItem) {
 					@components.Td(components.TdOpts{Header: true}){Shopped}
 				}
 				for _, s := range shopItems {
-				@components.Tr() {
-					@components.Td(){ {s.Ingredient} }
-					@components.Td(){ {s.NeedCount} }
-					@components.Td(){
-						<input
-							name={ fmt.Sprintf("col-shopped-row.%d", s.ID) }
-							class="col-shopped-row"
-							type="hidden"
-							value="0"
-						/>
-						<input
-							name={ fmt.Sprintf("col-shopped.%d", s.ID) }
-							class="col-shopped"
-							type="checkbox"
-							checked?={ s.Shopped }
-							hx-on:change="setDirty()"
-						/>
+					if s.Category != "" {
+						@components.TrSubHeading() {
+							@components.Td(components.TdOpts{Colspan: 4}){ 
+								<p class="font-bold">{s.Category}</p>
+							}
+						}
+					} else {
+						@components.Tr() {
+							@components.Td(){ {s.Ingredient} }
+							@components.Td(){ {s.NeedCount} }
+							@components.Td(){
+								<input
+									name={ fmt.Sprintf("col-shopped-row.%d", s.ID) }
+									class="col-shopped-row"
+									type="hidden"
+									value="0"
+								/>
+								<input
+									name={ fmt.Sprintf("col-shopped.%d", s.ID) }
+									class="col-shopped"
+									type="checkbox"
+									checked?={ s.Shopped }
+									hx-on:change="setDirty()"
+								/>
+							}
+						}
 					}
-				}
 				}
 			}
 		</div>

@@ -67,23 +67,31 @@ func (s *Server) renderShopPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) shopItems(ctx context.Context) ([]page.ShopItem, error) {
-	igs, err := s.ingredients(ctx)
+	cats, err := s.ingredients(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	needCt := func(ing ingredient) int {
+		return max(int(ing.RequiredCount), int(ing.WantOverrideCount)) - int(ing.GotCount)
+	}
+
+	cats = filterIngredients(cats, func(ing ingredient) bool {
+		return needCt(ing) > 0
+	})
+
 	var ss []page.ShopItem
-	for _, ing := range igs {
-		need := max(int(ing.RequiredCount), int(ing.WantOverrideCount)) - int(ing.GotCount)
-		if need <= 0 {
-			continue
+	for _, cat := range cats {
+		ss = append(ss, page.ShopItem{Category: cat.name})
+
+		for _, ing := range cat.ingredients {
+			ss = append(ss, page.ShopItem{
+				ID:         ing.ID,
+				Ingredient: ing.Name,
+				NeedCount:  needCt(ing),
+				Shopped:    ing.Shopped,
+			})
 		}
-		ss = append(ss, page.ShopItem{
-			ID:         ing.ID,
-			Ingredient: ing.Name,
-			NeedCount:  need,
-			Shopped:    ing.Shopped,
-		})
 	}
 
 	return ss, nil

@@ -121,29 +121,38 @@ func parseNumericFormValue(idstr string, value []string) (id int64, ct int64, er
 }
 
 func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
-	igs, err := s.ingredients(ctx)
+	cats, err := s.ingredients(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	var ww []page.WantItem
-	for _, ing := range igs {
+	for _, cat := range cats {
+		ww = append(ww, page.WantItem{Category: cat.name})
 
-		total := ing.RequiredCount
-		if ing.WantOverrideCount > total {
-			total = ing.WantOverrideCount
+		for _, ing := range cat.ingredients {
+
+			total := ing.RequiredCount
+			if ing.WantOverrideCount > total {
+				total = ing.WantOverrideCount
+			}
+
+			ww = append(ww, page.WantItem{
+				ID:            ing.ID,
+				Ingredient:    ing.Name,
+				Required:      int(ing.RequiredCount),
+				OverrideCount: int(ing.WantOverrideCount),
+				Total:         int(total),
+			})
 		}
-
-		ww = append(ww, page.WantItem{
-			ID:            ing.ID,
-			Ingredient:    ing.Name,
-			Required:      int(ing.RequiredCount),
-			OverrideCount: int(ing.WantOverrideCount),
-			Total:         int(total),
-		})
 	}
 
 	return ww, nil
+}
+
+type category struct {
+	name        string
+	ingredients []ingredient
 }
 
 type ingredient struct {
@@ -156,8 +165,16 @@ type ingredient struct {
 	Shopped              bool
 }
 
-func (s *Server) ingredients(ctx context.Context) ([]ingredient, error) {
+const unknownCategoryID = -1
+
+// ingredients - returns the ingredients indexed by category id
+func (s *Server) ingredients(ctx context.Context) ([]category, error) {
 	igs, err := s.sql.GetIngredients(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	cats, err := s.sql.GetIngredientCategories(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -167,13 +184,19 @@ func (s *Server) ingredients(ctx context.Context) ([]ingredient, error) {
 		return nil, err
 	}
 
-	var retIgs []ingredient
+	igsMap := make(map[int64][]ingredient, len(igs))
 
 	for _, ig := range igs {
-		retIgs = append(retIgs, ingredient{
+		catID := ig.IngredientCategoryID
+
+		if !categoryExists(cats, ig.IngredientCategoryID) {
+			catID = unknownCategoryID
+		}
+
+		igsMap[catID] = append(igsMap[catID], ingredient{
 			ID:                   ig.ID,
 			Name:                 ig.Name,
-			IngredientCategoryID: ig.IngredientCategoryID,
+			IngredientCategoryID: catID,
 			RequiredCount:        reqCt[ig.ID],
 			WantOverrideCount:    ig.WantOverrideCount,
 			GotCount:             ig.GotCount,
@@ -181,7 +204,37 @@ func (s *Server) ingredients(ctx context.Context) ([]ingredient, error) {
 		})
 	}
 
-	return retIgs, nil
+	outCats := make([]category, 0, len(cats))
+
+	for _, cat := range cats {
+		if len(igsMap[cat.ID]) == 0 {
+			continue
+		}
+
+		outCats = append(outCats, category{
+			name:        cat.Name,
+			ingredients: igsMap[cat.ID],
+		})
+	}
+
+	if len(igsMap[unknownCategoryID]) != 0 {
+		outCats = append(outCats, category{
+			name:        "Miscellaneous",
+			ingredients: igsMap[unknownCategoryID],
+		})
+	}
+
+	return outCats, nil
+}
+
+func categoryExists(cats []gensql.IngredientCategory, catID int64) bool {
+	for _, cat := range cats {
+		if cat.ID == catID {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (s *Server) requiredCounts(ctx context.Context) (map[int64]int64, error) {

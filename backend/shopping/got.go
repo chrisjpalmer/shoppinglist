@@ -65,24 +65,54 @@ func (s *Server) renderGotPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) gotItems(ctx context.Context) ([]page.GotItem, error) {
-	igs, err := s.ingredients(ctx)
+	cats, err := s.ingredients(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	cats = filterIngredients(cats, func(ing ingredient) bool {
+		return !(ing.RequiredCount == 0 && ing.WantOverrideCount == 0)
+	})
+
 	var gg []page.GotItem
-	for _, ing := range igs {
-		if ing.RequiredCount == 0 && ing.WantOverrideCount == 0 {
-			continue
+	for _, cat := range cats {
+		gg = append(gg, page.GotItem{Category: cat.name})
+
+		for _, ing := range cat.ingredients {
+			gg = append(gg, page.GotItem{
+				ID:         ing.ID,
+				Ingredient: ing.Name,
+				GotCount:   int(ing.GotCount),
+			})
 		}
-		gg = append(gg, page.GotItem{
-			ID:         ing.ID,
-			Ingredient: ing.Name,
-			GotCount:   int(ing.GotCount),
-		})
 	}
 
 	return gg, nil
+}
+
+func filterIngredients(cats []category, filter func(ingredient) bool) []category {
+	outCats := make([]category, 0, len(cats))
+
+	for _, cat := range cats {
+		outIgs := make([]ingredient, 0, len(cat.ingredients))
+
+		for _, ing := range cat.ingredients {
+			if filter(ing) {
+				outIgs = append(outIgs, ing)
+			}
+		}
+
+		if len(outIgs) == 0 {
+			continue
+		}
+
+		outCats = append(outCats, category{
+			name:        cat.name,
+			ingredients: outIgs,
+		})
+	}
+
+	return outCats
 }
 
 func (s *Server) saveGotColumns(ctx context.Context, gotCt map[int64]int64) error {
