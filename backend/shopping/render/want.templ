@@ -37,22 +37,30 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 					@components.Td(components.TdOpts{Header: true}){Total}
 				}
 				for _, w := range wantItems {
-				@components.Tr() {
-					@components.Td(){ {w.Ingredient} }
-					@components.Td(){ {w.Required} }
-					@components.Td(){ @components.NumericInput(
-						fmt.Sprintf("col-override.%d", w.ID), 
-						w.OverrideCount, 
-						components.NumericInputOpts{Classes: []string{"col-override"}},
-					) }
-					{{ 
-						var totalTd components.TdOpts
-						if w.OverrideCount > w.Required {
-						totalTd.Classes = []string{"text-red-500"}
+					if w.Category != "" {
+						@components.TrSubHeading() {
+							@components.Td(components.TdOpts{Colspan: 4}){ 
+								<p class="font-bold">{w.Category}</p>
+							}
 						}
-					}}
-					@components.Td(totalTd){ {w.Total} }
-				}
+					} else {
+						@components.Tr() {
+							@components.Td(){ {w.Ingredient} }
+							@components.Td(){ {w.Required} }
+							@components.Td(){ @components.NumericInput(
+								fmt.Sprintf("col-override.%d", w.ID), 
+								w.OverrideCount, 
+								components.NumericInputOpts{Classes: []string{"col-override"}},
+							) }
+							{{ 
+								var totalTd components.TdOpts
+								if w.OverrideCount > w.Required {
+								totalTd.Classes = []string{"text-red-500"}
+								}
+							}}
+							@components.Td(totalTd){ {w.Total} }
+						}
+					}
 				}
 			}
 		</div>

@@ -43,14 +43,22 @@ templ GotPage(pageContext page.Context, gotItems []page.GotItem) {
 					@components.Td(components.TdOpts{Header: true}){Got}
 				}
 				for _, g := range gotItems {
-				@components.Tr() {
-					@components.Td(){ {g.Ingredient} }
-					@components.Td(){ @components.NumericInput(
-						fmt.Sprintf("col-got.%d", g.ID),
-						g.GotCount,
-						components.NumericInputOpts{Classes: []string{"col-got"}},
-					) }
-				}
+					if g.Category != "" {
+						@components.TrSubHeading() {
+							@components.Td(components.TdOpts{Colspan: 4}){ 
+								<p class="font-bold">{g.Category}</p>
+							}
+						}
+					} else {
+						@components.Tr() {
+							@components.Td(){ {g.Ingredient} }
+							@components.Td(){ @components.NumericInput(
+								fmt.Sprintf("col-got.%d", g.ID),
+								g.GotCount,
+								components.NumericInputOpts{Classes: []string{"col-got"}},
+							) }
+						}
+					}
 				}
 
 			}
