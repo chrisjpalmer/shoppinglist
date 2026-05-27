@@ -34,7 +34,7 @@ func base(pageContext page.Context) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<html><head><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/shopping/assets/apple-touch-icon.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/shopping/assets/favicon-32x32.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/shopping/assets/favicon-16x16.png\"><link rel=\"manifest\" href=\"/shopping/assets/site.webmanifest\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link href=\"/shopping/assets/maintw.css\" rel=\"stylesheet\"><script src=\"https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js\"></script><script src=\"/shopping/assets/main.js\"></script></head><body><div class=\"flex flex-col bg-gray-100\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<html class=\"h-full\"><head><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/shopping/assets/apple-touch-icon.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/shopping/assets/favicon-32x32.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/shopping/assets/favicon-16x16.png\"><link rel=\"manifest\" href=\"/shopping/assets/site.webmanifest\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link href=\"/shopping/assets/maintw.css\" rel=\"stylesheet\"><script src=\"https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js\"></script><script src=\"/shopping/assets/main.js\"></script></head><body class=\"h-full\"><div class=\"h-full flex flex-col bg-gray-100\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -42,7 +42,7 @@ func base(pageContext page.Context) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"h-screen overflow-hidden pt-26 sm:pt-16 pb-10\"><div class=\"h-full flex flex-row px-8\"><div class=\"hidden sm:block w-40 flex-shrink-0\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"h-full overflow-hidden pt-26 sm:pt-16 pb-10\"><div class=\"h-full flex flex-row px-8\"><div class=\"hidden sm:block w-40 flex-shrink-0\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
