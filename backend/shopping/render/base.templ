@@ -6,7 +6,7 @@ import (
 )
 
 templ base(pageContext page.Context) {
-	<html>
+	<html class="h-full">
 		<head>
 			<link rel="apple-touch-icon" sizes="180x180" href="/shopping/assets/apple-touch-icon.png">
 			<link rel="icon" type="image/png" sizes="32x32" href="/shopping/assets/favicon-32x32.png">
@@ -18,10 +18,10 @@ templ base(pageContext page.Context) {
 			<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
 			<script src="/shopping/assets/main.js"></script>
 		</head>
-		<body>
-			<div class="flex flex-col bg-gray-100">
+		<body class="h-full">
+			<div class="h-full flex flex-col bg-gray-100">
 				@components.MenuBar(pageContext)
-				<div class="h-screen overflow-hidden pt-26 sm:pt-16 pb-10">
+				<div class="h-full overflow-hidden pt-26 sm:pt-16 pb-10">
 					<div class="h-full flex flex-row px-8">
 						<div class="hidden sm:block w-40 flex-shrink-0">
 							@components.Nav(pageContext)
