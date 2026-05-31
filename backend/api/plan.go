@@ -176,7 +176,10 @@ func emptyPlan() genpb.Plan {
 		days = append(days, &genpb.Day{
 			CategoryMeals: []*genpb.CategoryMeal{
 				// 0 = lunch, 1 = dinner, 2 = snack
-				{Category: genpb.Category_CATEGORY_LUNCH}, {Category: genpb.Category_CATEGORY_DINNER}, {Category: genpb.Category_CATEGORY_SNACK},
+				{Category: genpb.Category_CATEGORY_LUNCH},
+				{Category: genpb.Category_CATEGORY_DINNER},
+				{Category: genpb.Category_CATEGORY_SNACK},
+				{Category: genpb.Category_CATEGORY_BABY},
 			},
 		})
 	}

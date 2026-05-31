@@ -17,6 +17,7 @@
 		Category.LUNCH,
 		Category.DINNER,
 		Category.SNACK,
+		Category.BABY,
 	]
 
 	const days = [
@@ -44,6 +45,8 @@
 		// plan
 		const planRs = await client.getPlan({})
 		plan = <Plan> planRs.plan
+
+		normalizePlan(plan)
 
 		// all meals
 		const mealRs = await client.getMeals({})
@@ -92,6 +95,24 @@
 		refresh()
 	}
 
+	function normalizePlan(p:Plan) {
+		for (let day of p.days) {
+			for(let c = 0; c < categories.length; c++) {
+
+				// fill category
+				if (day.categoryMeals.length < (c+1)) {
+					console.log(`filled category ${c}`)
+
+					day.categoryMeals.push({
+						category: categories[c],
+						mealId: 0n,
+						$typeName: 'CategoryMeal'
+					})
+				}
+			}
+		}
+	}
+
 	refresh()
 	
 </script>
@@ -110,7 +131,7 @@
 			{/each}
 		</TrHeader>
 		{#each categories as category}
-		<Tr classes="h-40">
+		<Tr classes="h-25">
 			<Td classes="font-bold">{Category[category]}</Td>
 			{#each days as day, i}
 			<Td>
