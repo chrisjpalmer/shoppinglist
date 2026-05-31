@@ -42,7 +42,7 @@ func base(pageContext page.Context) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"h-full overflow-hidden pt-26 sm:pt-16 pb-10\"><div class=\"h-full flex flex-row px-8\"><div class=\"hidden sm:block w-40 flex-shrink-0\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"h-full overflow-hidden pt-22 pb-6 sm:pt-16 sm:pb-10\"><div class=\"h-full flex flex-row px-6 sm:px-8\"><div class=\"hidden sm:block w-40 flex-shrink-0\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

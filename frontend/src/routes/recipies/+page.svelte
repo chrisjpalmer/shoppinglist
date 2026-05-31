@@ -43,7 +43,7 @@
 
 <div class="flex flex-row flex-wrap w-full justify-center overflow-y-auto h-full">
 	{#each meals as m (m.id)}
-	<a href="/recipies/{m.id}" class="flex flex-col justify-end relative overflow-hidden items-center w-25 h-25 m-1 sm:w-50 sm:h-50 sm:m-4 rounded-md bg-white shadow-md">
+	<a href="/recipies/{m.id}" class="flex flex-col justify-end relative overflow-hidden items-center w-30 h-30 m-1 sm:w-50 sm:h-50 sm:m-4 rounded-md bg-white shadow-md">
 		<p class="bg-white/70 z-2 px-3 font-medium w-full text-center sm:text-base text-xs">{m.name}</p>
 		<div class="absolute top-0 left-0 w-full h-full bg-cover" style="background-image: url({m.previewImageUrl || '/ramen.svg'})"></div>
 	</a>
