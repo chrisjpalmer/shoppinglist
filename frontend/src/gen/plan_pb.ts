@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file plan.proto.
  */
 export const file_plan: GenFile = /*@__PURE__*/
-  fileDesc("CgpwbGFuLnByb3RvIhoKBFBsYW4SEgoEZGF5cxgBIAMoCzIELkRheSIsCgNEYXkSJQoOY2F0ZWdvcnlfbWVhbHMYASADKAsyDS5DYXRlZ29yeU1lYWwiPAoMQ2F0ZWdvcnlNZWFsEhsKCGNhdGVnb3J5GAEgASgOMgkuQ2F0ZWdvcnkSDwoHbWVhbF9pZBgCIAEoAyI1CgtQbGFuU3VtbWFyeRImCg5pbmdyZWRpZW50X3JlZhgBIAMoCzIOLkluZ3JlZGllbnRSZWYqRwoIQ2F0ZWdvcnkSEgoOQ0FURUdPUllfTFVOQ0gQABITCg9DQVRFR09SWV9ESU5ORVIQARISCg5DQVRFR09SWV9TTkFDSxACYgZwcm90bzM", [file_meal]);
+  fileDesc("CgpwbGFuLnByb3RvIhoKBFBsYW4SEgoEZGF5cxgBIAMoCzIELkRheSIsCgNEYXkSJQoOY2F0ZWdvcnlfbWVhbHMYASADKAsyDS5DYXRlZ29yeU1lYWwiPAoMQ2F0ZWdvcnlNZWFsEhsKCGNhdGVnb3J5GAEgASgOMgkuQ2F0ZWdvcnkSDwoHbWVhbF9pZBgCIAEoAyI1CgtQbGFuU3VtbWFyeRImCg5pbmdyZWRpZW50X3JlZhgBIAMoCzIOLkluZ3JlZGllbnRSZWYqWgoIQ2F0ZWdvcnkSEgoOQ0FURUdPUllfTFVOQ0gQABITCg9DQVRFR09SWV9ESU5ORVIQARISCg5DQVRFR09SWV9TTkFDSxACEhEKDUNBVEVHT1JZX0JBQlkQA2IGcHJvdG8z", [file_meal]);
 
 /**
  * @generated from message Plan
@@ -105,6 +105,11 @@ export enum Category {
    * @generated from enum value: CATEGORY_SNACK = 2;
    */
   SNACK = 2,
+
+  /**
+   * @generated from enum value: CATEGORY_BABY = 3;
+   */
+  BABY = 3,
 }
 
 /**

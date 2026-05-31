@@ -20,6 +20,7 @@ enum Category {
   CATEGORY_LUNCH = 0;
   CATEGORY_DINNER = 1;
   CATEGORY_SNACK = 2;
+  CATEGORY_BABY = 3;
 }
 
 message PlanSummary {

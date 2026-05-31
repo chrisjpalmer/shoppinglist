@@ -27,6 +27,7 @@ const (
 	Category_CATEGORY_LUNCH  Category = 0
 	Category_CATEGORY_DINNER Category = 1
 	Category_CATEGORY_SNACK  Category = 2
+	Category_CATEGORY_BABY   Category = 3
 )
 
 // Enum value maps for Category.
@@ -35,11 +36,13 @@ var (
 		0: "CATEGORY_LUNCH",
 		1: "CATEGORY_DINNER",
 		2: "CATEGORY_SNACK",
+		3: "CATEGORY_BABY",
 	}
 	Category_value = map[string]int32{
 		"CATEGORY_LUNCH":  0,
 		"CATEGORY_DINNER": 1,
 		"CATEGORY_SNACK":  2,
+		"CATEGORY_BABY":   3,
 	}
 )
 
@@ -269,11 +272,12 @@ const file_plan_proto_rawDesc = "" +
 	"\bcategory\x18\x01 \x01(\x0e2\t.CategoryR\bcategory\x12\x17\n" +
 	"\ameal_id\x18\x02 \x01(\x03R\x06mealId\"D\n" +
 	"\vPlanSummary\x125\n" +
-	"\x0eingredient_ref\x18\x01 \x03(\v2\x0e.IngredientRefR\ringredientRef*G\n" +
+	"\x0eingredient_ref\x18\x01 \x03(\v2\x0e.IngredientRefR\ringredientRef*Z\n" +
 	"\bCategory\x12\x12\n" +
 	"\x0eCATEGORY_LUNCH\x10\x00\x12\x13\n" +
 	"\x0fCATEGORY_DINNER\x10\x01\x12\x12\n" +
-	"\x0eCATEGORY_SNACK\x10\x02BAB\tPlanProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
+	"\x0eCATEGORY_SNACK\x10\x02\x12\x11\n" +
+	"\rCATEGORY_BABY\x10\x03BAB\tPlanProtoP\x01Z2github.com/chrisjpalmer/shoppinglist/backend/genpbb\x06proto3"
 
 var (
 	file_plan_proto_rawDescOnce sync.Once
