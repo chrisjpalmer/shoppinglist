@@ -1,7 +1,32 @@
 package components
 
-templ Tr() {
-    <tr class="group bg-white even:bg-gray-100">
+import "strings"
+
+type TrOpts struct {
+    Strikethrough bool
+}
+
+templ Tr(opts ...TrOpts) {
+    {{
+
+        var o TrOpts
+        if len(opts) == 1 {
+            o = opts[0]
+        }
+
+        classes := []string{
+            "group", 
+            "bg-white", 
+            "even:bg-gray-100",
+        }
+
+        if o.Strikethrough {
+            classes = append(classes, "line-through", "text-gray-400")
+        }
+
+        class := strings.Join(classes, " ")
+    }}
+    <tr class={class}>
         {children...}
     </tr>
 }

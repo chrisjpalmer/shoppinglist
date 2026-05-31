@@ -433,7 +433,7 @@ func ShopPage(pageContext page.Context, shopItems []page.ShopItem) templ.Compone
 								}
 								return nil
 							})
-							templ_7745c5c3_Err = components.Tr().Render(templ.WithChildren(ctx, templ_7745c5c3_Var14), templ_7745c5c3_Buffer)
+							templ_7745c5c3_Err = components.Tr(components.TrOpts{Strikethrough: s.Shopped}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var14), templ_7745c5c3_Buffer)
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}

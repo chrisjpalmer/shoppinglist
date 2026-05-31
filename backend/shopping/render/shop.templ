@@ -54,7 +54,7 @@ templ ShopPage(pageContext page.Context, shopItems []page.ShopItem) {
 							}
 						}
 					} else {
-						@components.Tr() {
+						@components.Tr(components.TrOpts{Strikethrough: s.Shopped}) {
 							@components.Td(){ {s.Ingredient} }
 							@components.Td(){ {s.NeedCount} }
 							@components.Td(){
