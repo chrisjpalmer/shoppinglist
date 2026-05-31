@@ -95,6 +95,21 @@
 		refresh()
 	}
 
+	async function reset() {
+		if(!plan) {
+			console.log("tried to reset the plan, but plan is null")
+			return
+		}
+
+		for(let d of plan.days) {
+			for(let c of d.categoryMeals) {
+				c.mealId = 0n
+			}
+		}
+
+		dirty = true
+	}
+
 	function normalizePlan(p:Plan) {
 		for (let day of p.days) {
 			for(let c = 0; c < categories.length; c++) {
@@ -152,6 +167,9 @@
 	</Table>
 </div>
 
-{#if dirty}
-<Button onclick={save}>Save</Button>
-{/if}
+<div class="mt-5">
+	{#if dirty}
+	<Button onclick={save}>Save</Button>
+	{/if}
+	<Button onclick={reset}>Reset</Button>
+</div>
