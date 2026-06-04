@@ -6,11 +6,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"dagger.io/dagger/querybuilder"
+	"github.com/dagger/querybuilder"
 )
-
-// The `FrontendID` scalar type represents an identifier for an object of type Frontend.
-type FrontendID string // frontend (../../../frontend/.dagger/main.go:30:6)
 
 // Retrieve the binding value, as type Frontend
 func (r *Binding) AsFrontend() *Frontend { // frontend (../../../frontend/.dagger/main.go:30:6)
@@ -48,9 +45,8 @@ func (r *Env) WithFrontendOutput(name string, description string) *Env { // fron
 type Frontend struct { // frontend (../../../frontend/.dagger/main.go:30:6)
 	query *querybuilder.Selection
 
-	checkProtos *Void
-	id          *FrontendID
-	publish     *Void
+	id      *ID
+	publish *Void
 }
 
 func (r *Frontend) WithGraphQLQuery(q *querybuilder.Selection) *Frontend {
@@ -67,16 +63,6 @@ func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dag
 	}
 }
 
-// CheckProtos - check that the working tree's proto generated files are in sync.
-func (r *Frontend) CheckProtos(ctx context.Context) error { // frontend (../../../frontend/.dagger/generated.go:22:1)
-	if r.checkProtos != nil {
-		return nil
-	}
-	q := r.query.Select("checkProtos")
-
-	return q.Execute(ctx)
-}
-
 // FrontendService - runs the frontend service inside a container
 func (r *Frontend) FrontendService() *Service { // frontend (../../../frontend/.dagger/service.go:25:1)
 	q := r.query.Select("frontendService")
@@ -87,7 +73,7 @@ func (r *Frontend) FrontendService() *Service { // frontend (../../../frontend/.
 }
 
 // GenerateProtos - generate protobuf codegen from .proto files
-func (r *Frontend) GenerateProtos() *Changeset { // frontend (../../../frontend/.dagger/generated.go:11:1)
+func (r *Frontend) GenerateProtos() *Changeset { // frontend (../../../frontend/.dagger/generated.go:9:1)
 	q := r.query.Select("generateProtos")
 
 	return &Changeset{
@@ -96,13 +82,13 @@ func (r *Frontend) GenerateProtos() *Changeset { // frontend (../../../frontend/
 }
 
 // A unique identifier for this Frontend.
-func (r *Frontend) ID(ctx context.Context) (FrontendID, error) {
+func (r *Frontend) ID(ctx context.Context) (ID, error) {
 	if r.id != nil {
 		return *r.id, nil
 	}
 	q := r.query.Select("id")
 
-	var response FrontendID
+	var response ID
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
@@ -115,7 +101,7 @@ func (r *Frontend) XXX_GraphQLType() string {
 
 // XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
 func (r *Frontend) XXX_GraphQLIDType() string {
-	return "FrontendID"
+	return "ID"
 }
 
 // XXX_GraphQLID is an internal function. It returns the underlying type ID
@@ -140,7 +126,7 @@ func (r *Frontend) UnmarshalJSON(bs []byte) error {
 	if err != nil {
 		return err
 	}
-	*r = *dag.LoadFrontendFromID(FrontendID(id))
+	*r = Frontend{query: selectNode(dag.query, id, "Frontend")}
 	return nil
 }
 
@@ -161,6 +147,14 @@ func (r *Frontend) Src() *Directory { // frontend (../../../frontend/.dagger/mai
 
 	return &Directory{
 		query: q,
+	}
+}
+
+// AsNode returns this Frontend as a Node.
+// This is a local type conversion — no GraphQL call.
+func (r *Frontend) AsNode() Node {
+	return &NodeClient{
+		query: r.query,
 	}
 }
 
@@ -190,16 +184,6 @@ func (r *Query) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../..
 			q = q.Arg("ws", opts[i].Ws)
 		}
 	}
-
-	return &Frontend{
-		query: q,
-	}
-}
-
-// Load a Frontend from its ID.
-func (r *Query) LoadFrontendFromID(id FrontendID) *Frontend { // frontend (../../../frontend/.dagger/main.go:30:6)
-	q := r.query.Select("loadFrontendFromID")
-	q = q.Arg("id", id)
 
 	return &Frontend{
 		query: q,
