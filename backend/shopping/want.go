@@ -132,7 +132,7 @@ func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
 
 		for _, ing := range cat.ingredients {
 
-			total := ing.RequiredCount
+			total := ing.PlannedCount
 			if ing.WantOverrideCount > total {
 				total = ing.WantOverrideCount
 			}
@@ -140,7 +140,7 @@ func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
 			ww = append(ww, page.WantItem{
 				ID:            ing.ID,
 				Ingredient:    ing.Name,
-				Required:      int(ing.RequiredCount),
+				Required:      int(ing.PlannedCount),
 				OverrideCount: int(ing.WantOverrideCount),
 				Total:         int(total),
 			})
@@ -159,8 +159,9 @@ type ingredient struct {
 	ID                   int64
 	Name                 string
 	IngredientCategoryID int64
-	RequiredCount        int64
+	PlannedCount         int64
 	WantOverrideCount    int64
+	RequiredCount        int64
 	GotCount             int64
 	Shopped              bool
 }
@@ -197,8 +198,9 @@ func (s *Server) ingredients(ctx context.Context) ([]category, error) {
 			ID:                   ig.ID,
 			Name:                 ig.Name,
 			IngredientCategoryID: catID,
-			RequiredCount:        reqCt[ig.ID],
+			PlannedCount:         reqCt[ig.ID],
 			WantOverrideCount:    ig.WantOverrideCount,
+			RequiredCount:        max(reqCt[ig.ID], ig.WantOverrideCount),
 			GotCount:             ig.GotCount,
 			Shopped:              ig.Shopped,
 		})
