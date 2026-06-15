@@ -71,7 +71,7 @@ func (s *Server) gotItems(ctx context.Context) ([]page.GotItem, error) {
 	}
 
 	cats = filterIngredients(cats, func(ing ingredient) bool {
-		return !(ing.RequiredCount == 0 && ing.WantOverrideCount == 0)
+		return ing.RequiredCount != 0
 	})
 
 	var gg []page.GotItem

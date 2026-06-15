@@ -73,7 +73,7 @@ func (s *Server) shopItems(ctx context.Context) ([]page.ShopItem, error) {
 	}
 
 	needCt := func(ing ingredient) int {
-		return max(int(ing.RequiredCount), int(ing.WantOverrideCount)) - int(ing.GotCount)
+		return int(ing.RequiredCount) - int(ing.GotCount)
 	}
 
 	cats = filterIngredients(cats, func(ing ingredient) bool {
