@@ -233,7 +233,7 @@
 	<div class="flex flex-col justify-end w-full sm:h-100 h-70 rounded-xl shadow-md mb-5 bg-white bg-contain bg-no-repeat bg-center" style="background-image: url({selectedMeal.ingredientsImageUrl || "/carrot.svg"});">
 		<div class="flex flex-row justify-center w-full p-2 bg-white/70">
 			{#if selectedMeal.recipeUrl}
-			<a class="text-blue-500" href={selectedMeal.recipeUrl}>{selectedMeal.name}</a>
+			<a class="text-blue-500" href={selectedMeal.recipeUrl} target="_blank">{selectedMeal.name}</a>
 			{:else}
 			<p>{selectedMeal.name}</p>
 			{/if}
