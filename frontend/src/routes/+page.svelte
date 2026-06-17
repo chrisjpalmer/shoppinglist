@@ -40,6 +40,7 @@
 	let dirty = $state(false);
 	let plan:Plan | null = $state(null);
 	let allMeals:Meal[] | null = $state(null);
+	let isEditing = $state(false)
 
 	async function refresh() {
 		// plan
@@ -68,6 +69,22 @@
 
 		return meal.mealId
 	}
+	function getMealName(day: number, category: Category): string {
+		const mealId = getMealId(day, category)
+
+		if(mealId == BigInt(0)) {
+			return ""
+		}
+
+		const meal = allMeals?.find(m => m.id == mealId)
+
+		if(!meal) {
+			console.log("could not find the meal id in the list of meals")
+			return ""
+		}
+
+		return meal.name
+	}
 	function setMealId(day: number, category: Category, mealId: bigint) {
 		if(!plan) {
 			console.log("no plan but trying to call setMealId")
@@ -85,13 +102,25 @@
 		dirty = true;
 	}
 
+	function edit() {
+		isEditing = true;
+	}
+
 	async function save() {
 		if(!plan) {
 			console.log("tried to update the plan, but plan is null")
 			return
 		}
+
+		if(!dirty) {
+			console.log("not saving the plan since nothing changed")
+			isEditing = false;
+			return
+		}
+
 		await client.updatePlan({plan: plan})
 		dirty = false;
+		isEditing = false;
 		refresh()
 	}
 
@@ -138,7 +167,21 @@
 
 <div class="overflow-auto p-5 -m-5 w-[calc(100%_+_(var(--spacing)_*_10))]">
 	<Table classes="min-w-300">
-		<TrTitle><Td title={true} colspan={days.length+1}>Planner</Td></TrTitle>
+		<TrTitle>
+			<Td title={true} colspan={days.length+1}>
+				<p>Planner</p>
+				{#if isEditing}
+					<div class="flex flex-row justify-end">
+						<Button classes="mr-2" onclick={() => save()}>Save</Button>
+						<Button classes="mr-2" onclick={reset}>Reset</Button>
+					</div>
+				{:else}
+					<div class="flex flex-row justify-end">
+						<Button classes="mr-2" onclick={() => edit()}>Edit</Button>
+					</div>
+				{/if}
+			</Td>
+		</TrTitle>
 		<TrHeader>
 			<Td header={true}></Td>
 			{#each days as day}
@@ -150,6 +193,7 @@
 			<Td classes="font-bold">{Category[category]}</Td>
 			{#each days as day, i}
 			<Td>
+				{#if isEditing}
 				<Select classes="mx-1" bind:value={
 						()=>getMealId(i, category),
 						(v) => setMealId(i, category, v)
@@ -160,16 +204,12 @@
 					{/each}
 					{/if}
 				</Select>
+				{:else}
+				<a class="text-blue-500" href="/recipies/{getMealId(i, category)}">{getMealName(i, category)}</a>
+				{/if}
 			</Td>
 			{/each}
 		</Tr>
 		{/each}
 	</Table>
-</div>
-
-<div class="mt-5">
-	{#if dirty}
-	<Button onclick={save}>Save</Button>
-	{/if}
-	<Button onclick={reset}>Reset</Button>
 </div>
