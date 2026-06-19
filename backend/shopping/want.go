@@ -131,18 +131,12 @@ func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
 		ww = append(ww, page.WantItem{Category: cat.name})
 
 		for _, ing := range cat.ingredients {
-
-			total := ing.PlannedCount
-			if ing.WantOverrideCount > total {
-				total = ing.WantOverrideCount
-			}
-
 			ww = append(ww, page.WantItem{
 				ID:            ing.ID,
 				Ingredient:    ing.Name,
 				Required:      int(ing.PlannedCount),
 				OverrideCount: int(ing.WantOverrideCount),
-				Total:         int(total),
+				Total:         int(ing.RequiredCount),
 			})
 		}
 	}
@@ -194,13 +188,19 @@ func (s *Server) ingredients(ctx context.Context) ([]category, error) {
 			catID = unknownCategoryID
 		}
 
+		req := reqCt[ig.ID]
+
+		if ig.WantOverrideCount != 0 {
+			req = ig.WantOverrideCount
+		}
+
 		igsMap[catID] = append(igsMap[catID], ingredient{
 			ID:                   ig.ID,
 			Name:                 ig.Name,
 			IngredientCategoryID: catID,
 			PlannedCount:         reqCt[ig.ID],
 			WantOverrideCount:    ig.WantOverrideCount,
-			RequiredCount:        max(reqCt[ig.ID], ig.WantOverrideCount),
+			RequiredCount:        req,
 			GotCount:             ig.GotCount,
 			Shopped:              ig.Shopped,
 		})

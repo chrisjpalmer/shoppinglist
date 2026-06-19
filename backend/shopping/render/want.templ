@@ -54,7 +54,7 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 							) }
 							{{ 
 								var totalTd components.TdOpts
-								if w.OverrideCount > w.Required {
+								if w.Total != w.Required {
 								totalTd.Classes = []string{"text-red-500"}
 								}
 							}}

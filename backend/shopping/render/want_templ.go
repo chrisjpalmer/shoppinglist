@@ -418,7 +418,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 									return templ_7745c5c3_Err
 								}
 								var totalTd components.TdOpts
-								if w.OverrideCount > w.Required {
+								if w.Total != w.Required {
 									totalTd.Classes = []string{"text-red-500"}
 								}
 								templ_7745c5c3_Var21 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
