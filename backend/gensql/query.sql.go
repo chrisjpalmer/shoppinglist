@@ -160,25 +160,38 @@ func (q *Queries) GetIngredientCategorySortIndex(ctx context.Context, id int64) 
 
 const getIngredients = `-- name: GetIngredients :many
 
-SELECT id, name, ingredient_category_id, want_override_count, got_count, shopped FROM ingredients
+SELECT id, name, ingredient_category_id, want_override_count, min_count, max_count, got_count, shopped FROM ingredients
 ORDER BY name
 `
 
+type GetIngredientsRow struct {
+	ID                   int64
+	Name                 string
+	IngredientCategoryID int64
+	WantOverrideCount    int64
+	MinCount             int64
+	MaxCount             int64
+	GotCount             int64
+	Shopped              bool
+}
+
 // ----- INGREDIENTS ------
-func (q *Queries) GetIngredients(ctx context.Context) ([]Ingredient, error) {
+func (q *Queries) GetIngredients(ctx context.Context) ([]GetIngredientsRow, error) {
 	rows, err := q.db.QueryContext(ctx, getIngredients)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Ingredient
+	var items []GetIngredientsRow
 	for rows.Next() {
-		var i Ingredient
+		var i GetIngredientsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
 			&i.IngredientCategoryID,
 			&i.WantOverrideCount,
+			&i.MinCount,
+			&i.MaxCount,
 			&i.GotCount,
 			&i.Shopped,
 		); err != nil {
@@ -350,6 +363,27 @@ func (q *Queries) UpdateIngredientCategorySortIndex(ctx context.Context, arg Upd
 	return err
 }
 
+const updateIngredientCounts = `-- name: UpdateIngredientCounts :exec
+UPDATE ingredients set min_count = ?, max_count = ?, want_override_count = ? WHERE id = ?
+`
+
+type UpdateIngredientCountsParams struct {
+	MinCount          int64
+	MaxCount          int64
+	WantOverrideCount int64
+	ID                int64
+}
+
+func (q *Queries) UpdateIngredientCounts(ctx context.Context, arg UpdateIngredientCountsParams) error {
+	_, err := q.db.ExecContext(ctx, updateIngredientCounts,
+		arg.MinCount,
+		arg.MaxCount,
+		arg.WantOverrideCount,
+		arg.ID,
+	)
+	return err
+}
+
 const updateIngredientGotCount = `-- name: UpdateIngredientGotCount :exec
 UPDATE ingredients SET got_count = ? WHERE id = ?
 `
@@ -375,20 +409,6 @@ type UpdateIngredientShoppedParams struct {
 
 func (q *Queries) UpdateIngredientShopped(ctx context.Context, arg UpdateIngredientShoppedParams) error {
 	_, err := q.db.ExecContext(ctx, updateIngredientShopped, arg.Shopped, arg.ID)
-	return err
-}
-
-const updateIngredientWantOverrideCount = `-- name: UpdateIngredientWantOverrideCount :exec
-UPDATE ingredients set want_override_count = ? WHERE id = ?
-`
-
-type UpdateIngredientWantOverrideCountParams struct {
-	WantOverrideCount int64
-	ID                int64
-}
-
-func (q *Queries) UpdateIngredientWantOverrideCount(ctx context.Context, arg UpdateIngredientWantOverrideCountParams) error {
-	_, err := q.db.ExecContext(ctx, updateIngredientWantOverrideCount, arg.WantOverrideCount, arg.ID)
 	return err
 }
 

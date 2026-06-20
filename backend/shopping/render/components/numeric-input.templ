@@ -3,6 +3,7 @@ package components
 import "strings"
 
 type NumericInputOpts struct {
+    BackgroundColor string
     Classes []string
 }
 
@@ -10,7 +11,6 @@ templ NumericInput(name string, value int, opts ...NumericInputOpts) {
     {{
         classes := []string{
             "w-12",
-            "bg-white",
             "rounded-md",
             "h-7",
             "px-2",
@@ -25,6 +25,12 @@ templ NumericInput(name string, value int, opts ...NumericInputOpts) {
             o := opts[0]
 
             classes = append(classes, o.Classes...)
+
+            if o.BackgroundColor == "" {
+                o.BackgroundColor = "bg-white"
+            }
+
+            classes = append(classes, o.BackgroundColor)
         }
 
         class := strings.Join(classes, " ")

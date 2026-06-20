@@ -63,7 +63,7 @@ UPDATE meals set ingredients_image_bytes = ? WHERE id = ?;
 ------- INGREDIENTS ------
 
 -- name: GetIngredients :many
-SELECT id, name, ingredient_category_id, want_override_count, got_count, shopped FROM ingredients
+SELECT id, name, ingredient_category_id, want_override_count, min_count, max_count, got_count, shopped FROM ingredients
 ORDER BY name;
 
 -- name: CreateIngredient :one
@@ -72,8 +72,8 @@ INSERT INTO ingredients (name, ingredient_category_id) VALUES (?, ?) RETURNING i
 -- name: UpdateIngredient :exec
 UPDATE ingredients set name = ?, ingredient_category_id = ? WHERE id = ?;
 
--- name: UpdateIngredientWantOverrideCount :exec
-UPDATE ingredients set want_override_count = ? WHERE id = ?;
+-- name: UpdateIngredientCounts :exec
+UPDATE ingredients set min_count = ?, max_count = ?, want_override_count = ? WHERE id = ?;
 
 -- name: DeleteIngredient :exec
 DELETE FROM ingredients WHERE id = ?;

@@ -25,6 +25,8 @@ type WantItem struct {
 
 	ID            int64
 	Ingredient    string
+	MinCount      int
+	MaxCount      int
 	Required      int
 	OverrideCount int
 	Total         int
