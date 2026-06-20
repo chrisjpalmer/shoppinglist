@@ -169,17 +169,19 @@
 	<Table classes="min-w-300">
 		<TrTitle>
 			<Td title={true} colspan={days.length+1}>
-				<p>Planner</p>
-				{#if isEditing}
+				<div class="flex flex-row items-center justify-between">
+					<p>Planner</p>
+					{#if isEditing}
 					<div class="flex flex-row justify-end">
 						<Button classes="mr-2" onclick={() => save()}>Save</Button>
 						<Button classes="mr-2" onclick={reset}>Reset</Button>
 					</div>
-				{:else}
+					{:else}
 					<div class="flex flex-row justify-end">
 						<Button classes="mr-2" onclick={() => edit()}>Edit</Button>
 					</div>
-				{/if}
+					{/if}
+				</div>
 			</Td>
 		</TrTitle>
 		<TrHeader>
