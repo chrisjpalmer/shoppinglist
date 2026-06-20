@@ -37,9 +37,11 @@ type GotItem struct {
 	// if set, indicates this row is a category heading
 	Category string
 
-	ID         int64
-	Ingredient string
-	GotCount   int
+	ID            int64
+	Ingredient    string
+	PlannedCount  int
+	RequiredCount int
+	GotCount      int
 }
 
 // ShopItem - an item to display on the shop page

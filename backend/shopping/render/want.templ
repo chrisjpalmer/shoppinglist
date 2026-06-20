@@ -32,11 +32,11 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 				}
 				@components.StickyTrHeader() {
 					@components.Td(components.TdOpts{Header: true}){Item}
-					@components.Td(components.TdOpts{Header: true}){Required}
+					@components.Td(components.TdOpts{Header: true}){Planned}
 					@components.Td(components.TdOpts{Header: true}){Min}
 					@components.Td(components.TdOpts{Header: true}){Max}
 					@components.Td(components.TdOpts{Header: true}){Override}
-					@components.Td(components.TdOpts{Header: true}){Total}
+					@components.Td(components.TdOpts{Header: true}){Required}
 				}
 				for _, w := range wantItems {
 					if w.Category != "" {
