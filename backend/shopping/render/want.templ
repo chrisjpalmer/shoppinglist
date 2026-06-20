@@ -15,14 +15,14 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 		<div id="content">
 			@components.ScrollableTable(components.ScrollableTableOpts{Fragment: "table-content", Classes: []string{"h-full"}}) {
 				@components.StickyTrTitle() {
-					@components.Td(components.TdOpts{Title: true, Colspan: 4}) { 
+					@components.Td(components.TdOpts{Title: true, Colspan: 6}) { 
 						<div class="flex flex-row items-center justify-between">
 							<p>Want</p>
 							@components.Button(components.ButtonOpts{
 								ID: "save-button", 
 								Title: "Save", 
 								HxPost: "/shopping/want?fragment=table-content",
-								HxInclude: ".col-override", 
+								HxInclude: ".col-min,.col-max,.col-override", 
 								HxTarget: "#table-content", 
 								HxOnClick: "setClean", 
 								Classes:[]string{"invisible", "max-w-20", "self-end", "mr-2"},
@@ -33,13 +33,15 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 				@components.StickyTrHeader() {
 					@components.Td(components.TdOpts{Header: true}){Item}
 					@components.Td(components.TdOpts{Header: true}){Required}
+					@components.Td(components.TdOpts{Header: true}){Min}
+					@components.Td(components.TdOpts{Header: true}){Max}
 					@components.Td(components.TdOpts{Header: true}){Override}
 					@components.Td(components.TdOpts{Header: true}){Total}
 				}
 				for _, w := range wantItems {
 					if w.Category != "" {
 						@components.TrSubHeading() {
-							@components.Td(components.TdOpts{Colspan: 4}){ 
+							@components.Td(components.TdOpts{Colspan: 6}){ 
 								<p class="font-bold">{w.Category}</p>
 							}
 						}
@@ -47,11 +49,45 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 						@components.Tr() {
 							@components.Td(){ {w.Ingredient} }
 							@components.Td(){ {w.Required} }
-							@components.Td(){ @components.NumericInput(
-								fmt.Sprintf("col-override.%d", w.ID), 
-								w.OverrideCount, 
-								components.NumericInputOpts{Classes: []string{"col-override"}},
-							) }
+							@components.Td(){ 
+								{{ 
+									var bg string
+									if w.MinCount > 0 {
+										bg = "bg-blue-100"
+									}
+								}}
+								@components.NumericInput(
+									fmt.Sprintf("col-min.%d", w.ID), 
+									w.MinCount, 
+									components.NumericInputOpts{Classes: []string{"col-min"}, BackgroundColor: bg},
+								) 
+							}
+							@components.Td(){ 
+								{{ 
+									var bg string
+									if w.MaxCount > 0 {
+										bg = "bg-orange-100"
+									}
+								}}
+								@components.NumericInput(
+									fmt.Sprintf("col-max.%d", w.ID), 
+									w.MaxCount, 
+									components.NumericInputOpts{Classes: []string{"col-max"}, BackgroundColor: bg},
+								) 
+							}
+							@components.Td(){ 
+								{{ 
+									var bg string
+									if w.OverrideCount > 0 {
+										bg = "bg-red-100"
+									}
+								}}
+								@components.NumericInput(
+									fmt.Sprintf("col-override.%d", w.ID), 
+									w.OverrideCount, 
+									components.NumericInputOpts{Classes: []string{"col-override"}, BackgroundColor: bg},
+								)
+							}
 							{{ 
 								var totalTd components.TdOpts
 								if w.Total != w.Required {

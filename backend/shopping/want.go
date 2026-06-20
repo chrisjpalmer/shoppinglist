@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/a-h/templ"
 	"github.com/chrisjpalmer/shoppinglist/backend/genpb"
@@ -19,14 +19,14 @@ import (
 
 func (m *Server) handleWantPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
-		ovCt, err := parseOverrideColumns(r)
+		want, err := parseWantColumns(r)
 		if err != nil {
 			w.WriteHeader(400)
 			fmt.Println("error while parsing override columns", err.Error())
 			return
 		}
 
-		err = m.saveOverrideColumns(r.Context(), ovCt)
+		err = m.saveWantColumns(r.Context(), want)
 		if err != nil {
 			w.WriteHeader(500)
 			fmt.Println("error updating override counts", err.Error())
@@ -58,46 +58,97 @@ func (m *Server) renderWantPage(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(render.WantPage(pctx, ww), opts...).ServeHTTP(w, r)
 }
 
-func (m *Server) saveOverrideColumns(ctx context.Context, ovCt map[int64]int64) error {
-	for id, ct := range ovCt {
-		err := m.sql.UpdateIngredientWantOverrideCount(ctx, gensql.UpdateIngredientWantOverrideCountParams{
+func (m *Server) saveWantColumns(ctx context.Context, want map[int64]*wantColumns) error {
+	for id, w := range want {
+		err := m.sql.UpdateIngredientCounts(ctx, gensql.UpdateIngredientCountsParams{
 			ID:                id,
-			WantOverrideCount: ct,
+			WantOverrideCount: w.WantOverrideCount,
+			MinCount:          w.MinCount,
+			MaxCount:          w.MaxCount,
 		})
 
 		if err != nil {
-			return fmt.Errorf("error updating want override count for ingredient %d: %w", id, err)
+			return fmt.Errorf("error updating counts for ingredient %d: %w", id, err)
 		}
 	}
 
 	return nil
 }
 
-func parseOverrideColumns(r *http.Request) (map[int64]int64, error) {
+type wantColumns struct {
+	MinCount          int64
+	MaxCount          int64
+	WantOverrideCount int64
+}
+
+func parseWantColumns(r *http.Request) (map[int64]*wantColumns, error) {
 	const maxMemory = 100000
 
-	const prefix = "col-override."
+	const (
+		ovr = "col-override"
+		min = "col-min"
+		max = "col-max"
+	)
 
 	r.ParseMultipartForm(maxMemory)
 
-	ovCt := make(map[int64]int64, len(r.Form))
+	want := make(map[int64]*wantColumns, len(r.Form))
 
-	for k, v := range r.Form {
-		if !strings.HasPrefix(k, prefix) {
-			continue
-		}
-
-		idstr := strings.TrimPrefix(k, prefix)
-
-		id, ct, err := parseNumericFormValue(idstr, v)
-		if err != nil {
-			return nil, fmt.Errorf("could not parse override column %q: %w", k, err)
-		}
-
-		ovCt[id] = ct
+	// remove all query paramters from the form data
+	for q := range r.URL.Query() {
+		delete(r.Form, q)
 	}
 
-	return ovCt, nil
+	for k, v := range r.Form {
+		name, id, err := parseFormKey(k)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing id for key %s: %w", k, err)
+		}
+
+		if len(v) == 0 {
+			return nil, fmt.Errorf("empty value for key: %s", k)
+		}
+
+		ct, err := strconv.ParseInt(v[0], 10, 64)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing value for key %s: %w", k, err)
+		}
+
+		if _, ok := want[id]; !ok {
+			want[id] = &wantColumns{}
+		}
+
+		switch name {
+		case ovr:
+			want[id].WantOverrideCount = ct
+		case min:
+			want[id].MinCount = ct
+		case max:
+			want[id].MaxCount = ct
+		}
+	}
+
+	return want, nil
+}
+
+var idreg = regexp.MustCompile(`^(\S+)\.([0-9]+)$`)
+
+func parseFormKey(key string) (string, int64, error) {
+	m := idreg.FindStringSubmatch(key)
+	if len(m) != 3 {
+		return "", 0, fmt.Errorf("unable to parse key as id: %s", key)
+	}
+
+	name := m[1]
+
+	sid := m[2]
+
+	id, err := strconv.ParseInt(sid, 10, 64)
+	if err != nil {
+		return "", 0, fmt.Errorf("could not parse %q as int64: %w", sid, err)
+	}
+
+	return name, id, nil
 }
 
 func parseNumericFormValue(idstr string, value []string) (id int64, ct int64, err error) {
@@ -135,6 +186,8 @@ func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
 				ID:            ing.ID,
 				Ingredient:    ing.Name,
 				Required:      int(ing.PlannedCount),
+				MinCount:      int(ing.MinCount),
+				MaxCount:      int(ing.MaxCount),
 				OverrideCount: int(ing.WantOverrideCount),
 				Total:         int(ing.RequiredCount),
 			})
@@ -154,6 +207,8 @@ type ingredient struct {
 	Name                 string
 	IngredientCategoryID int64
 	PlannedCount         int64
+	MinCount             int64
+	MaxCount             int64
 	WantOverrideCount    int64
 	RequiredCount        int64
 	GotCount             int64
@@ -190,6 +245,14 @@ func (s *Server) ingredients(ctx context.Context) ([]category, error) {
 
 		req := reqCt[ig.ID]
 
+		if ig.MinCount != 0 {
+			req = max(ig.MinCount, req)
+		}
+
+		if ig.MaxCount != 0 {
+			req = min(ig.MaxCount, req)
+		}
+
 		if ig.WantOverrideCount != 0 {
 			req = ig.WantOverrideCount
 		}
@@ -199,6 +262,8 @@ func (s *Server) ingredients(ctx context.Context) ([]category, error) {
 			Name:                 ig.Name,
 			IngredientCategoryID: catID,
 			PlannedCount:         reqCt[ig.ID],
+			MinCount:             ig.MinCount,
+			MaxCount:             ig.MaxCount,
 			WantOverrideCount:    ig.WantOverrideCount,
 			RequiredCount:        req,
 			GotCount:             ig.GotCount,

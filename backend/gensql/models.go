@@ -8,6 +8,8 @@ type Ingredient struct {
 	ID                   int64
 	Name                 string
 	IngredientCategoryID int64
+	MinCount             int64
+	MaxCount             int64
 	WantOverrideCount    int64
 	GotCount             int64
 	Shopped              bool
