@@ -15,7 +15,7 @@ templ GotPage(pageContext page.Context, gotItems []page.GotItem) {
 		<div id="content">
 			@components.ScrollableTable(components.ScrollableTableOpts{Fragment: "table-content", Classes: []string{"h-full"}}) {
 				@components.StickyTrTitle() {
-					@components.Td(components.TdOpts{Title: true, Colspan: 4}) { 
+					@components.Td(components.TdOpts{Title: true, Colspan: 3}) { 
 						<div class="flex flex-row items-center justify-between">
 							<p>Got</p>
 							<div class="flex flex-row pr-2">
@@ -40,18 +40,26 @@ templ GotPage(pageContext page.Context, gotItems []page.GotItem) {
 				}
 				@components.StickyTrHeader() {
 					@components.Td(components.TdOpts{Header: true}){Item}
+					@components.Td(components.TdOpts{Header: true}){Required}
 					@components.Td(components.TdOpts{Header: true}){Got}
 				}
 				for _, g := range gotItems {
 					if g.Category != "" {
 						@components.TrSubHeading() {
-							@components.Td(components.TdOpts{Colspan: 4}){ 
+							@components.Td(components.TdOpts{Colspan: 3}){ 
 								<p class="font-bold">{g.Category}</p>
 							}
 						}
 					} else {
 						@components.Tr() {
 							@components.Td(){ {g.Ingredient} }
+							{{ 
+								var plannedTd components.TdOpts
+								if g.PlannedCount != g.RequiredCount {
+								plannedTd.Classes = []string{"text-red-500"}
+								}
+							}}
+							@components.Td(plannedTd){ {g.RequiredCount} }
 							@components.Td(){ @components.NumericInput(
 								fmt.Sprintf("col-got.%d", g.ID),
 								g.GotCount,

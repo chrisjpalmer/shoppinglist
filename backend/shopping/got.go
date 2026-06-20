@@ -80,9 +80,11 @@ func (s *Server) gotItems(ctx context.Context) ([]page.GotItem, error) {
 
 		for _, ing := range cat.ingredients {
 			gg = append(gg, page.GotItem{
-				ID:         ing.ID,
-				Ingredient: ing.Name,
-				GotCount:   int(ing.GotCount),
+				ID:            ing.ID,
+				Ingredient:    ing.Name,
+				PlannedCount:  int(ing.PlannedCount),
+				RequiredCount: int(ing.RequiredCount),
+				GotCount:      int(ing.GotCount),
 			})
 		}
 	}
