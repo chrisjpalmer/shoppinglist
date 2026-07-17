@@ -1,0 +1,27 @@
+[modules.shoppinglist]
+source = ".dagger/modules/shoppinglist"
+entrypoint = true
+
+[modules.backend]
+source = "backend/.dagger"
+
+[modules.dagger-go-sdk]
+source = "github.com/dagger/go-sdk"
+
+[modules.frontend]
+source = "frontend/.dagger"
+
+[modules.dagger-go-sdk.as-sdk]
+name = "go"
+
+[[modules.dagger-go-sdk.as-sdk.modules]]
+path = ".dagger/modules/shoppinglist"
+
+[[modules.dagger-go-sdk.as-sdk.modules]]
+path = ".dagger/modules/helm"
+
+[[modules.dagger-go-sdk.as-sdk.modules]]
+path = "backend/.dagger"
+
+[[modules.dagger-go-sdk.as-sdk.modules]]
+path = "frontend/.dagger"

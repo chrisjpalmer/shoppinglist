@@ -15,18 +15,20 @@ jobs:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           audience: ${{ secrets.TS_AUDIENCE }}
           tags: tag:ci
+
       - name: Deploy
-        uses: dagger/dagger-for-github@8.0.0
-        with:
-          verb: call
-          args: build-and-deploy --registry-password=env://GH_API_KEY --kube-env1=env://KUBECTL_FILE --kube-env2=env://KUBECTL2_FILE
-          cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
-          version: "0.21.7"
-          dagger-flags: "--progress=logs"
+        run:
+          dagger --x-release=v1.0.0-beta.6 \
+          --progress=logs \
+          api call build-and-deploy \
+          --registry-password=env://GH_API_KEY \
+          --kube-env1=env://KUBECTL_FILE \
+          --kube-env2=env://KUBECTL2_FILE
         env:
           GH_API_KEY: ${{ secrets.GH_API_KEY }}
           KUBECTL_FILE: ${{ secrets.KUBECTL_FILE }}
           KUBECTL2_FILE: ${{ secrets.KUBECTL2_FILE }}
+          DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
 
 permissions:
   id-token: write

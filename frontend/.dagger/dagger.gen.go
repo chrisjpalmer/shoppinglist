@@ -261,6 +261,41 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
+	case "":
+		return dag.Module().
+			WithDescription("A generated module for Frontend functions\n\nThis module has been generated via dagger init and serves as a reference to\nbasic module structure as you get started with Dagger.\n\nTwo functions have been pre-created. You can modify, delete, or add to them,\nas needed. They demonstrate usage of arguments and return types using simple\necho and grep commands. The functions can be called from the dagger CLI or\nfrom one of the SDKs.\n\nThe first line in this comment block is a short description line and the\nrest is a long description with more detail on the module's purpose or usage,\nif appropriate. All modules should have a short description.\n").
+			WithObject(
+				dag.TypeDef().WithObject("Frontend", dagger.TypeDefWithObjectOpts{SourceMap: dag.SourceMap("main.go", 30, 6)}).
+					WithFunction(
+						dag.Function("BuildCheck",
+							dag.TypeDef().WithObject("Container")).
+							WithSourceMap(dag.SourceMap("main.go", 46, 1)).
+							WithCheck()).
+					WithFunction(
+						dag.Function("FrontendService",
+							dag.TypeDef().WithObject("Service")).
+							WithDescription("FrontendService - runs the frontend service inside a container").
+							WithSourceMap(dag.SourceMap("service.go", 25, 1)).
+							WithUp()).
+					WithFunction(
+						dag.Function("GenerateProtos",
+							dag.TypeDef().WithObject("Changeset")).
+							WithDescription("GenerateProtos - generate protobuf codegen from .proto files").
+							WithSourceMap(dag.SourceMap("generated.go", 9, 1)).
+							WithGenerator()).
+					WithFunction(
+						dag.Function("Publish",
+							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
+							WithCachePolicy(dagger.FunctionCachePolicyNever).
+							WithSourceMap(dag.SourceMap("main.go", 89, 1)).
+							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 91, 2)}).
+							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 92, 2)})).
+					WithField("Src", dag.TypeDef().WithObject("Directory"), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("main.go", 33, 2)}).
+					WithConstructor(
+						dag.Function("New",
+							dag.TypeDef().WithObject("Frontend")).
+							WithSourceMap(dag.SourceMap("main.go", 36, 1)).
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 37, 2)}))), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}

@@ -1161,6 +1161,233 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
+	case "":
+		return dag.Module().
+			WithDescription("The package manager for Kubernetes.\n").
+			WithObject(
+				dag.TypeDef().WithObject("Helm", dagger.TypeDefWithObjectOpts{SourceMap: dag.SourceMap("main.go", 17, 6)}).
+					WithFunction(
+						dag.Function("Chart",
+							dag.TypeDef().WithObject("Chart")).
+							WithDescription("Returns a Helm chart from a source directory.").
+							WithSourceMap(dag.SourceMap("chart.go", 9, 1)).
+							WithArg("source", dag.TypeDef().WithObject("Directory"), dagger.FunctionWithArgOpts{Description: "A directory containing a Helm chart.", SourceMap: dag.SourceMap("chart.go", 11, 2)})).
+					WithFunction(
+						dag.Function("Create",
+							dag.TypeDef().WithObject("Chart")).
+							WithDescription("Create a new chart directory along with the common files and directories used in a chart.").
+							WithSourceMap(dag.SourceMap("main.go", 108, 1)).
+							WithArg("name", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 108, 23)})).
+					WithFunction(
+						dag.Function("Lint",
+							dag.TypeDef().WithObject("Container")).
+							WithDescription("Lint a Helm chart directory.").
+							WithSourceMap(dag.SourceMap("main.go", 122, 1)).
+							WithArg("chart", dag.TypeDef().WithObject("Directory"), dagger.FunctionWithArgOpts{Description: "A directory containing a Helm chart.", SourceMap: dag.SourceMap("main.go", 126, 2)})).
+					WithFunction(
+						dag.Function("Login",
+							dag.TypeDef().WithObject("Helm")).
+							WithDescription("Authenticate to an OCI registry.\n\nNote: Login stores credentials in the filesystem in plain text. Use WithRegistryAuth as a safer alternative.").
+							WithSourceMap(dag.SourceMap("main.go", 214, 1)).
+							WithArg("host", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{Description: "Host of the OCI registry.", SourceMap: dag.SourceMap("main.go", 218, 2)}).
+							WithArg("username", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{Description: "Registry username.", SourceMap: dag.SourceMap("main.go", 221, 2)}).
+							WithArg("password", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{Description: "Registry password.", SourceMap: dag.SourceMap("main.go", 224, 2)}).
+							WithArg("insecure", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Allow connections to TLS registry without certs.", SourceMap: dag.SourceMap("main.go", 229, 2)})).
+					WithFunction(
+						dag.Function("Logout",
+							dag.TypeDef().WithObject("Helm")).
+							WithDescription("Remove credentials stored for an OCI registry.").
+							WithSourceMap(dag.SourceMap("main.go", 253, 1)).
+							WithArg("host", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 253, 23)})).
+					WithFunction(
+						dag.Function("Package",
+							dag.TypeDef().WithObject("File")).
+							WithDescription("Build a Helm chart package.").
+							WithSourceMap(dag.SourceMap("main.go", 150, 1)).
+							WithArg("chart", dag.TypeDef().WithObject("Directory"), dagger.FunctionWithArgOpts{Description: "A directory containing a Helm chart.", SourceMap: dag.SourceMap("main.go", 154, 2)}).
+							WithArg("appVersion", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Set the appVersion on the chart to this version.", SourceMap: dag.SourceMap("main.go", 159, 2)}).
+							WithArg("version", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Set the version on the chart to this semver version.", SourceMap: dag.SourceMap("main.go", 164, 2)}).
+							WithArg("dependencyUpdate", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Update dependencies from \"Chart.yaml\" to dir \"charts/\" before packaging.", SourceMap: dag.SourceMap("main.go", 169, 2)})).
+					WithFunction(
+						dag.Function("Push",
+							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
+							WithDescription("Push a Helm chart package to an OCI registry.").
+							WithCachePolicy(dagger.FunctionCachePolicyNever).
+							WithSourceMap(dag.SourceMap("main.go", 267, 1)).
+							WithArg("pkg", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{Description: "Packaged Helm chart.", SourceMap: dag.SourceMap("main.go", 271, 2)}).
+							WithArg("registry", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{Description: "OCI registry to push to (including the path except the chart name).", SourceMap: dag.SourceMap("main.go", 274, 2)}).
+							WithArg("plainHttp", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Use insecure HTTP connections for the chart upload.", SourceMap: dag.SourceMap("main.go", 279, 2)}).
+							WithArg("insecureSkipTlsVerify", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Skip tls certificate checks for the chart upload.", SourceMap: dag.SourceMap("main.go", 284, 2)}).
+							WithArg("caFile", dag.TypeDef().WithObject("File").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Verify certificates of HTTPS-enabled servers using this CA bundle.", SourceMap: dag.SourceMap("main.go", 289, 2)}).
+							WithArg("certFile", dag.TypeDef().WithObject("File").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Identify registry client using this SSL certificate file.", SourceMap: dag.SourceMap("main.go", 294, 2)}).
+							WithArg("keyFile", dag.TypeDef().WithObject("Secret").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Identify registry client using this SSL key file.", SourceMap: dag.SourceMap("main.go", 299, 2)})).
+					WithFunction(
+						dag.Function("WithKubeconfigFile",
+							dag.TypeDef().WithObject("Helm")).
+							WithDescription("Mount a file as the kubeconfig file.").
+							WithSourceMap(dag.SourceMap("main.go", 90, 1)).
+							WithArg("file", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 90, 35)})).
+					WithFunction(
+						dag.Function("WithKubeconfigSecret",
+							dag.TypeDef().WithObject("Helm")).
+							WithDescription("Mount a secret as the kubeconfig file.").
+							WithSourceMap(dag.SourceMap("main.go", 99, 1)).
+							WithArg("secret", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 99, 37)})).
+					WithFunction(
+						dag.Function("WithRegistryAuth",
+							dag.TypeDef().WithObject("Helm")).
+							WithDescription("Add credentials for a registry.\n\nNote: WithRegistryAuth overrides any previous or subsequent calls to Login/Logout.").
+							WithSourceMap(dag.SourceMap("main.go", 76, 1)).
+							WithArg("address", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 76, 33)}).
+							WithArg("username", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 76, 49)}).
+							WithArg("secret", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 76, 66)})).
+					WithFunction(
+						dag.Function("WithoutRegistryAuth",
+							dag.TypeDef().WithObject("Helm")).
+							WithDescription("Removes credentials for a registry.").
+							WithSourceMap(dag.SourceMap("main.go", 83, 1)).
+							WithArg("address", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 83, 36)})).
+					WithField("Container", dag.TypeDef().WithObject("Container"), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("main.go", 18, 2)}).
+					WithConstructor(
+						dag.Function("New",
+							dag.TypeDef().WithObject("Helm")).
+							WithSourceMap(dag.SourceMap("main.go", 24, 1)).
+							WithArg("version", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Version (image tag) to use from the official image repository as a base container.", SourceMap: dag.SourceMap("main.go", 27, 2)}).
+							WithArg("container", dag.TypeDef().WithObject("Container").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Custom container to use as a base container.", SourceMap: dag.SourceMap("main.go", 31, 2)}))).
+			WithObject(
+				dag.TypeDef().WithObject("Chart", dagger.TypeDefWithObjectOpts{Description: "A Helm chart.", SourceMap: dag.SourceMap("chart.go", 20, 6)}).
+					WithFunction(
+						dag.Function("Install",
+							dag.TypeDef().WithObject("Release")).
+							WithDescription("Install a Helm chart.").
+							WithSourceMap(dag.SourceMap("release.go", 13, 1)).
+							WithArg("name", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{Description: "Helm release name.", SourceMap: dag.SourceMap("release.go", 17, 2)}).
+							WithArg("atomic", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, the installation process deletes the installation on failure. Wait flag will be set automatically if atomic is used.", SourceMap: dag.SourceMap("release.go", 22, 2)}).
+							WithArg("caFile", dag.TypeDef().WithObject("File").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Verify certificates of HTTPS-enabled servers using this CA bundle.", SourceMap: dag.SourceMap("release.go", 27, 2)}).
+							WithArg("certFile", dag.TypeDef().WithObject("File").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Identify HTTPS client using this SSL certificate file.", SourceMap: dag.SourceMap("release.go", 32, 2)}).
+							WithArg("createNamespace", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Create the release namespace if not present.", SourceMap: dag.SourceMap("release.go", 37, 2)}).
+							WithArg("dependencyUpdate", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Update dependencies if they are missing before installing the chart.", SourceMap: dag.SourceMap("release.go", 42, 2)}).
+							WithArg("description", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Add a custom description.", SourceMap: dag.SourceMap("release.go", 47, 2)}).
+							WithArg("disableOpenapiValidation", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, the installation process will not validate rendered templates against the Kubernetes OpenAPI Schema.", SourceMap: dag.SourceMap("release.go", 52, 2)}).
+							WithArg("enableDns", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Enable DNS lookups when rendering templates.", SourceMap: dag.SourceMap("release.go", 62, 2)}).
+							WithArg("force", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Force resource updates through a replacement strategy.", SourceMap: dag.SourceMap("release.go", 67, 2)}).
+							WithArg("generateName", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Generate the name.", SourceMap: dag.SourceMap("release.go", 72, 2)}).
+							WithArg("insecureSkipTlsVerify", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Skip tls certificate checks for the chart download.", SourceMap: dag.SourceMap("release.go", 82, 2)}).
+							WithArg("keyFile", dag.TypeDef().WithObject("Secret").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Identify HTTPS client using this SSL key file.", SourceMap: dag.SourceMap("release.go", 87, 2)}).
+							WithArg("labels", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Labels that would be added to release metadata.", SourceMap: dag.SourceMap("release.go", 92, 2)}).
+							WithArg("nameTemplate", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Specify template used to name the release.", SourceMap: dag.SourceMap("release.go", 97, 2)}).
+							WithArg("noHooks", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Prevent hooks from running during install.", SourceMap: dag.SourceMap("release.go", 102, 2)}).
+							WithArg("plainHttp", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Use insecure HTTP connections for the chart download.", SourceMap: dag.SourceMap("release.go", 111, 2)}).
+							WithArg("postRenderer", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "The path to an executable to be used for post rendering. If it exists in $PATH, the binary will be used, otherwise it will try to look for the executable at the given path.", SourceMap: dag.SourceMap("release.go", 116, 2)}).
+							WithArg("postRendererArgs", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Arguments to the post-renderer.", SourceMap: dag.SourceMap("release.go", 121, 2)}).
+							WithArg("renderSubchartNotes", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, render subchart notes along with the parent.", SourceMap: dag.SourceMap("release.go", 126, 2)}).
+							WithArg("replace", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Re-use the given name, only if that name is a deleted release which remains in the history. This is unsafe in production.", SourceMap: dag.SourceMap("release.go", 131, 2)}).
+							WithArg("skipCrds", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, no CRDs will be installed. By default, CRDs are installed if not already present.", SourceMap: dag.SourceMap("release.go", 144, 2)}).
+							WithArg("timeout", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Time to wait for any individual Kubernetes operation (like Jobs for hooks).", SourceMap: dag.SourceMap("release.go", 149, 2)}).
+							WithArg("values", dag.TypeDef().WithListOf(dag.TypeDef().WithObject("File")).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Specify values in a YAML file.", SourceMap: dag.SourceMap("release.go", 156, 2)}).
+							WithArg("verify", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Verify the package before using it.", SourceMap: dag.SourceMap("release.go", 161, 2)}).
+							WithArg("wait", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment, StatefulSet, or ReplicaSet are in a ready state before marking the release as successful. It will wait for as long as timeout.", SourceMap: dag.SourceMap("release.go", 166, 2)}).
+							WithArg("waitForJobs", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set and wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as timeout.", SourceMap: dag.SourceMap("release.go", 171, 2)}).
+							WithArg("namespace", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Namespace scope for this request.", SourceMap: dag.SourceMap("release.go", 178, 2)})).
+					WithFunction(
+						dag.Function("Lint",
+							dag.TypeDef().WithObject("Container")).
+							WithDescription("Lint a Helm chart.").
+							WithSourceMap(dag.SourceMap("chart.go", 28, 1))).
+					WithFunction(
+						dag.Function("Package",
+							dag.TypeDef().WithObject("Package")).
+							WithDescription("Build a Helm chart package.").
+							WithSourceMap(dag.SourceMap("chart.go", 44, 1)).
+							WithArg("appVersion", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Set the appVersion on the chart to this version.", SourceMap: dag.SourceMap("chart.go", 50, 2)}).
+							WithArg("version", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Set the version on the chart to this semver version.", SourceMap: dag.SourceMap("chart.go", 55, 2)}).
+							WithArg("dependencyUpdate", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Update dependencies from \"Chart.yaml\" to dir \"charts/\" before packaging.", SourceMap: dag.SourceMap("chart.go", 60, 2)})).
+					WithField("Directory", dag.TypeDef().WithObject("Directory"), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("chart.go", 21, 2)})).
+			WithObject(
+				dag.TypeDef().WithObject("Release", dagger.TypeDefWithObjectOpts{SourceMap: dag.SourceMap("release.go", 637, 6)}).
+					WithFunction(
+						dag.Function("Test",
+							dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)).
+							WithDescription("Run Helm tests.").
+							WithSourceMap(dag.SourceMap("release.go", 646, 1)).
+							WithArg("filter", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Specify tests by attribute (currently \"name\") using attribute=value syntax or '!attribute=value' to exclude a test.", SourceMap: dag.SourceMap("release.go", 652, 2)}).
+							WithArg("logs", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Dump the logs from test pods (this runs after all tests are complete, but before any cleanup).", SourceMap: dag.SourceMap("release.go", 657, 2)}).
+							WithArg("timeout", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Time to wait for any individual Kubernetes operation (like Jobs for hooks) (default 5m0s).", SourceMap: dag.SourceMap("release.go", 662, 2)})).
+					WithField("Name", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("release.go", 638, 2)}).
+					WithField("Namespace", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("release.go", 639, 2)})).
+			WithObject(
+				dag.TypeDef().WithObject("Package", dagger.TypeDefWithObjectOpts{Description: "A Helm chart package.", SourceMap: dag.SourceMap("chart.go", 33, 6)}).
+					WithFunction(
+						dag.Function("Install",
+							dag.TypeDef().WithObject("Release")).
+							WithDescription("Install a Helm chart.").
+							WithSourceMap(dag.SourceMap("release.go", 232, 1)).
+							WithArg("name", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{Description: "Helm release name.", SourceMap: dag.SourceMap("release.go", 236, 2)}).
+							WithArg("atomic", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, the installation process deletes the installation on failure. Wait flag will be set automatically if atomic is used.", SourceMap: dag.SourceMap("release.go", 241, 2)}).
+							WithArg("caFile", dag.TypeDef().WithObject("File").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Verify certificates of HTTPS-enabled servers using this CA bundle.", SourceMap: dag.SourceMap("release.go", 246, 2)}).
+							WithArg("certFile", dag.TypeDef().WithObject("File").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Identify HTTPS client using this SSL certificate file.", SourceMap: dag.SourceMap("release.go", 251, 2)}).
+							WithArg("createNamespace", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Create the release namespace if not present.", SourceMap: dag.SourceMap("release.go", 256, 2)}).
+							WithArg("dependencyUpdate", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Update dependencies if they are missing before installing the chart.", SourceMap: dag.SourceMap("release.go", 261, 2)}).
+							WithArg("description", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Add a custom description.", SourceMap: dag.SourceMap("release.go", 266, 2)}).
+							WithArg("disableOpenapiValidation", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, the installation process will not validate rendered templates against the Kubernetes OpenAPI Schema.", SourceMap: dag.SourceMap("release.go", 271, 2)}).
+							WithArg("enableDns", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Enable DNS lookups when rendering templates.", SourceMap: dag.SourceMap("release.go", 281, 2)}).
+							WithArg("force", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Force resource updates through a replacement strategy.", SourceMap: dag.SourceMap("release.go", 286, 2)}).
+							WithArg("generateName", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Generate the name.", SourceMap: dag.SourceMap("release.go", 291, 2)}).
+							WithArg("insecureSkipTlsVerify", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Skip tls certificate checks for the chart download.", SourceMap: dag.SourceMap("release.go", 301, 2)}).
+							WithArg("keyFile", dag.TypeDef().WithObject("Secret").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Identify HTTPS client using this SSL key file.", SourceMap: dag.SourceMap("release.go", 306, 2)}).
+							WithArg("labels", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Labels that would be added to release metadata.", SourceMap: dag.SourceMap("release.go", 311, 2)}).
+							WithArg("nameTemplate", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Specify template used to name the release.", SourceMap: dag.SourceMap("release.go", 316, 2)}).
+							WithArg("noHooks", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Prevent hooks from running during install.", SourceMap: dag.SourceMap("release.go", 321, 2)}).
+							WithArg("plainHttp", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Use insecure HTTP connections for the chart download.", SourceMap: dag.SourceMap("release.go", 330, 2)}).
+							WithArg("postRenderer", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "The path to an executable to be used for post rendering. If it exists in $PATH, the binary will be used, otherwise it will try to look for the executable at the given path.", SourceMap: dag.SourceMap("release.go", 335, 2)}).
+							WithArg("postRendererArgs", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Arguments to the post-renderer.", SourceMap: dag.SourceMap("release.go", 340, 2)}).
+							WithArg("renderSubchartNotes", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, render subchart notes along with the parent.", SourceMap: dag.SourceMap("release.go", 345, 2)}).
+							WithArg("replace", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Re-use the given name, only if that name is a deleted release which remains in the history. This is unsafe in production.", SourceMap: dag.SourceMap("release.go", 350, 2)}).
+							WithArg("skipCrds", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, no CRDs will be installed. By default, CRDs are installed if not already present.", SourceMap: dag.SourceMap("release.go", 363, 2)}).
+							WithArg("timeout", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Time to wait for any individual Kubernetes operation (like Jobs for hooks).", SourceMap: dag.SourceMap("release.go", 368, 2)}).
+							WithArg("values", dag.TypeDef().WithListOf(dag.TypeDef().WithObject("File")).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Specify values in a YAML file.", SourceMap: dag.SourceMap("release.go", 375, 2)}).
+							WithArg("verify", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Verify the package before using it.", SourceMap: dag.SourceMap("release.go", 380, 2)}).
+							WithArg("wait", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment, StatefulSet, or ReplicaSet are in a ready state before marking the release as successful. It will wait for as long as timeout.", SourceMap: dag.SourceMap("release.go", 385, 2)}).
+							WithArg("waitForJobs", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "If set and wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as timeout.", SourceMap: dag.SourceMap("release.go", 390, 2)}).
+							WithArg("namespace", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Namespace scope for this request.", SourceMap: dag.SourceMap("release.go", 397, 2)})).
+					WithFunction(
+						dag.Function("Publish",
+							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
+							WithDescription("Publishes this Helm chart package to an OCI registry.").
+							WithSourceMap(dag.SourceMap("chart.go", 103, 1)).
+							WithArg("registry", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{Description: "OCI registry to push to (including the path except the chart name).", SourceMap: dag.SourceMap("chart.go", 107, 2)}).
+							WithArg("plainHttp", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Use insecure HTTP connections for the chart upload.", SourceMap: dag.SourceMap("chart.go", 112, 2)}).
+							WithArg("insecureSkipTlsVerify", dag.TypeDef().WithKind(dagger.TypeDefKindBooleanKind).WithOptional(true), dagger.FunctionWithArgOpts{Description: "Skip tls certificate checks for the chart upload.", SourceMap: dag.SourceMap("chart.go", 117, 2)}).
+							WithArg("caFile", dag.TypeDef().WithObject("File").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Verify certificates of HTTPS-enabled servers using this CA bundle.", SourceMap: dag.SourceMap("chart.go", 122, 2)}).
+							WithArg("certFile", dag.TypeDef().WithObject("File").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Identify registry client using this SSL certificate file.", SourceMap: dag.SourceMap("chart.go", 127, 2)}).
+							WithArg("keyFile", dag.TypeDef().WithObject("Secret").WithOptional(true), dagger.FunctionWithArgOpts{Description: "Identify registry client using this SSL key file.", SourceMap: dag.SourceMap("chart.go", 132, 2)})).
+					WithFunction(
+						dag.Function("WithKubeconfigFile",
+							dag.TypeDef().WithObject("Package")).
+							WithDescription("Mount a file as the kubeconfig file.").
+							WithSourceMap(dag.SourceMap("chart.go", 89, 1)).
+							WithArg("file", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("chart.go", 89, 38)})).
+					WithFunction(
+						dag.Function("WithKubeconfigSecret",
+							dag.TypeDef().WithObject("Package")).
+							WithDescription("Mount a secret as the kubeconfig file.").
+							WithSourceMap(dag.SourceMap("chart.go", 96, 1)).
+							WithArg("secret", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("chart.go", 96, 40)})).
+					WithFunction(
+						dag.Function("WithRegistryAuth",
+							dag.TypeDef().WithObject("Package")).
+							WithDescription("Add credentials for a registry.").
+							WithSourceMap(dag.SourceMap("chart.go", 75, 1)).
+							WithArg("address", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("chart.go", 75, 36)}).
+							WithArg("username", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("chart.go", 75, 52)}).
+							WithArg("secret", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("chart.go", 75, 69)})).
+					WithFunction(
+						dag.Function("WithoutRegistryAuth",
+							dag.TypeDef().WithObject("Package")).
+							WithDescription("Removes credentials for a registry.").
+							WithSourceMap(dag.SourceMap("chart.go", 82, 1)).
+							WithArg("address", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("chart.go", 82, 39)})).
+					WithField("File", dag.TypeDef().WithObject("File"), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("chart.go", 34, 2)})), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}

@@ -18,7 +18,7 @@ func (m *Backend) GenerateProtos() *dagger.Changeset {
 		WithExec([]string{"buf", "generate"}).
 		Directory("genpb")
 
-	return m.Src.WithDirectory("genpb", gen).Changes(m.Src)
+	return m.RootSrc.WithDirectory("backend/genpb", gen).Changes(m.RootSrc)
 }
 
 // GenerateSqlc - generate sqlc codegen from .sql files
@@ -32,7 +32,7 @@ func (m *Backend) GenerateSqlc() *dagger.Changeset {
 		WithExec([]string{"generate"}, dagger.ContainerWithExecOpts{UseEntrypoint: true}).
 		Directory("gensql")
 
-	return m.Src.WithDirectory("gensql", gensql).Changes(m.Src)
+	return m.RootSrc.WithDirectory("backend/gensql", gensql).Changes(m.RootSrc)
 }
 
 // GenerateTempl - generate templ codegen from .templ files
@@ -45,7 +45,7 @@ func (m *Backend) GenerateTempl(ctx context.Context) (*dagger.Changeset, error) 
 
 	gen := withTemplGenerate(ctr).Directory(".")
 
-	return m.Src.WithDirectory(".", gen).Changes(m.Src), nil
+	return m.RootSrc.WithDirectory("backend", gen).Changes(m.RootSrc), nil
 }
 
 func withTemplGenerate(ctr *dagger.Container) *dagger.Container {

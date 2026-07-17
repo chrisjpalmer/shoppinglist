@@ -1,0 +1,21 @@
+name = "shoppinglist"
+engineVersion = "v0.21.7"
+source = "."
+
+[runtime]
+  source = "go"
+
+[[dependencies]]
+  name = "helm"
+  source = "../helm"
+
+[[dependencies]]
+  name = "backend"
+  source = "../../../backend/.dagger"
+
+[[dependencies]]
+  name = "frontend"
+  source = "../../../frontend/.dagger"
+
+[codegen]
+  automaticGitignore = false
