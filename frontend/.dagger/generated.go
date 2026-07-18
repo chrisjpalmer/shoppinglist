@@ -12,5 +12,5 @@ func (m *Frontend) GenerateProtos() *dagger.Changeset {
 		WithExec([]string{"npm", "run", "generate-protos"}).
 		Directory("src/gen")
 
-	return m.Src.WithDirectory("src/gen", gen).Changes(m.Src)
+	return m.RootSrc.WithDirectory("frontend/src/gen", gen).Changes(m.RootSrc)
 }

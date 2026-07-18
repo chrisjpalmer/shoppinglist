@@ -1,0 +1,13 @@
+name = "helm"
+engineVersion = "v0.21.7"
+
+[runtime]
+  source = "go"
+
+[[dependencies]]
+  name = "registry-config"
+  source = "github.com/dagger/dagger/toolchains/release/registry-config@v0.19.11"
+  pin = "d8811256e5e901e6760f7011431080fedd61fc47"
+
+[codegen]
+  automaticGitignore = false
