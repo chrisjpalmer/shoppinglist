@@ -16,6 +16,11 @@ jobs:
           audience: ${{ secrets.TS_AUDIENCE }}
           tags: tag:ci
 
+      - name: Install dagger
+        uses: dagger/dagger-for-github@8.0.0
+        with:
+          version: "0.21.7"
+
       - name: Deploy
         run:
           dagger --x-release=v1.0.0-beta.6 \
