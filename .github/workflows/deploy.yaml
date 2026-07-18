@@ -22,7 +22,7 @@ jobs:
           version: "0.21.7"
 
       - name: Deploy
-        run:
+        run: |
           dagger --x-release=v1.0.0-beta.6 \
           --progress=logs \
           api call build-and-deploy \
