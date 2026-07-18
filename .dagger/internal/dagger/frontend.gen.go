@@ -45,9 +45,8 @@ func (r *Env) WithFrontendOutput(name string, description string) *Env { // fron
 type Frontend struct { // frontend (../../../frontend/.dagger/main.go:30:6)
 	query *querybuilder.Selection
 
-	checkProtos *Void
-	id          *ID
-	publish     *Void
+	id      *ID
+	publish *Void
 }
 
 func (r *Frontend) WithGraphQLQuery(q *querybuilder.Selection) *Frontend {
@@ -64,16 +63,6 @@ func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dag
 	}
 }
 
-// CheckProtos - check that the working tree's proto generated files are in sync.
-func (r *Frontend) CheckProtos(ctx context.Context) error { // frontend (../../../frontend/.dagger/generated.go:22:1)
-	if r.checkProtos != nil {
-		return nil
-	}
-	q := r.query.Select("checkProtos")
-
-	return q.Execute(ctx)
-}
-
 // FrontendService - runs the frontend service inside a container
 func (r *Frontend) FrontendService() *Service { // frontend (../../../frontend/.dagger/service.go:25:1)
 	q := r.query.Select("frontendService")
@@ -84,7 +73,7 @@ func (r *Frontend) FrontendService() *Service { // frontend (../../../frontend/.
 }
 
 // GenerateProtos - generate protobuf codegen from .proto files
-func (r *Frontend) GenerateProtos() *Changeset { // frontend (../../../frontend/.dagger/generated.go:11:1)
+func (r *Frontend) GenerateProtos() *Changeset { // frontend (../../../frontend/.dagger/generated.go:9:1)
 	q := r.query.Select("generateProtos")
 
 	return &Changeset{

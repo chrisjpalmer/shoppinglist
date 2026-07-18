@@ -22,17 +22,6 @@ func (m *Backend) GenerateTailwind(ctx context.Context) (*dagger.Changeset, erro
 	return m.Src.WithFile("shopping/assets/maintw.css", maintw).Changes(m.Src), nil
 }
 
-// CheckTailwind checks that maintw.css file is in sync
-// +check
-func (m *Backend) CheckTailwind(ctx context.Context) error {
-	chgset, err := m.GenerateTailwind(ctx)
-	if err != nil {
-		return fmt.Errorf("error generating tailwind: %w", err)
-	}
-
-	return assertEmpty(ctx, chgset)
-}
-
 func (m *Backend) tailwind(ctx context.Context) (*dagger.Container, error) {
 	nodeVer, err := m.nodeVersion(ctx)
 	if err != nil {

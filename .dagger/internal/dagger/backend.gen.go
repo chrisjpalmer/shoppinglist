@@ -12,10 +12,6 @@ import (
 type Backend struct { // backend (../../../backend/.dagger/main.go:25:6)
 	query *querybuilder.Selection
 
-	checkProtos               *Void
-	checkSqlc                 *Void
-	checkTailwind             *Void
-	checkTempl                *Void
 	id                        *ID
 	migrateCheck              *Void
 	publish                   *Void
@@ -58,46 +54,6 @@ func (r *Backend) BuildCheck() *Container { // backend (../../../backend/.dagger
 	}
 }
 
-// CheckProtos - check that the working tree's proto generated files are in sync.
-func (r *Backend) CheckProtos(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:26:1)
-	if r.checkProtos != nil {
-		return nil
-	}
-	q := r.query.Select("checkProtos")
-
-	return q.Execute(ctx)
-}
-
-// CheckSqlc - check that the working tree's sqlc generated files are in sync.
-func (r *Backend) CheckSqlc(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:47:1)
-	if r.checkSqlc != nil {
-		return nil
-	}
-	q := r.query.Select("checkSqlc")
-
-	return q.Execute(ctx)
-}
-
-// CheckTailwind checks that maintw.css file is in sync
-func (r *Backend) CheckTailwind(ctx context.Context) error { // backend (../../../backend/.dagger/generated_tailwind.go:27:1)
-	if r.checkTailwind != nil {
-		return nil
-	}
-	q := r.query.Select("checkTailwind")
-
-	return q.Execute(ctx)
-}
-
-// CheckTempl - check that the working tree's templ generated files are in sync.
-func (r *Backend) CheckTempl(ctx context.Context) error { // backend (../../../backend/.dagger/generated.go:67:1)
-	if r.checkTempl != nil {
-		return nil
-	}
-	q := r.query.Select("checkTempl")
-
-	return q.Execute(ctx)
-}
-
 // GenerateProtos - generate protobuf codegen from .proto files
 func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.dagger/generated.go:11:1)
 	q := r.query.Select("generateProtos")
@@ -108,7 +64,7 @@ func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.da
 }
 
 // GenerateSqlc - generate sqlc codegen from .sql files
-func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagger/generated.go:33:1)
+func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagger/generated.go:26:1)
 	q := r.query.Select("generateSqlc")
 
 	return &Changeset{
@@ -126,7 +82,7 @@ func (r *Backend) GenerateTailwind() *Changeset { // backend (../../../backend/.
 }
 
 // GenerateTempl - generate templ codegen from .templ files
-func (r *Backend) GenerateTempl() *Changeset { // backend (../../../backend/.dagger/generated.go:54:1)
+func (r *Backend) GenerateTempl() *Changeset { // backend (../../../backend/.dagger/generated.go:40:1)
 	q := r.query.Select("generateTempl")
 
 	return &Changeset{
