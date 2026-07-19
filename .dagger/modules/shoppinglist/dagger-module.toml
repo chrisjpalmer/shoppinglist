@@ -1,6 +1,5 @@
 name = "shoppinglist"
 engineVersion = "v0.21.7"
-source = "."
 
 [runtime]
   source = "go"

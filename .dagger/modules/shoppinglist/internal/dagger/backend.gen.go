@@ -9,7 +9,7 @@ import (
 	"github.com/dagger/querybuilder"
 )
 
-type Backend struct { // backend (../../../backend/.dagger/main.go:25:6)
+type Backend struct { // backend (../../../../../backend/.dagger/main.go:25:6)
 	query *querybuilder.Selection
 
 	id                        *ID
@@ -28,11 +28,11 @@ func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
 
 // BackendBackendServiceOpts contains options for Backend.BackendService
 type BackendBackendServiceOpts struct {
-	Ws *Workspace // backend (../../../backend/.dagger/service.go:17:55)
+	Ws *Workspace // backend (../../../../../backend/.dagger/service.go:17:55)
 }
 
 // BackendService - runs the backend service inside a container
-func (r *Backend) BackendService(opts ...BackendBackendServiceOpts) *Service { // backend (../../../backend/.dagger/service.go:17:1)
+func (r *Backend) BackendService(opts ...BackendBackendServiceOpts) *Service { // backend (../../../../../backend/.dagger/service.go:17:1)
 	q := r.query.Select("backendService")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `ws` optional argument
@@ -46,7 +46,7 @@ func (r *Backend) BackendService(opts ...BackendBackendServiceOpts) *Service { /
 	}
 }
 
-func (r *Backend) BuildCheck() *Container { // backend (../../../backend/.dagger/build.go:14:1)
+func (r *Backend) BuildCheck() *Container { // backend (../../../../../backend/.dagger/build.go:14:1)
 	q := r.query.Select("buildCheck")
 
 	return &Container{
@@ -55,7 +55,7 @@ func (r *Backend) BuildCheck() *Container { // backend (../../../backend/.dagger
 }
 
 // GenerateProtos - generate protobuf codegen from .proto files
-func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.dagger/generated.go:11:1)
+func (r *Backend) GenerateProtos() *Changeset { // backend (../../../../../backend/.dagger/generated.go:11:1)
 	q := r.query.Select("generateProtos")
 
 	return &Changeset{
@@ -64,7 +64,7 @@ func (r *Backend) GenerateProtos() *Changeset { // backend (../../../backend/.da
 }
 
 // GenerateSqlc - generate sqlc codegen from .sql files
-func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagger/generated.go:26:1)
+func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../../../backend/.dagger/generated.go:26:1)
 	q := r.query.Select("generateSqlc")
 
 	return &Changeset{
@@ -73,7 +73,7 @@ func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../backend/.dagg
 }
 
 // GenerateTailwind generates the maintw.css file using tailwindcss
-func (r *Backend) GenerateTailwind() *Changeset { // backend (../../../backend/.dagger/generated_tailwind.go:12:1)
+func (r *Backend) GenerateTailwind() *Changeset { // backend (../../../../../backend/.dagger/generated_tailwind.go:12:1)
 	q := r.query.Select("generateTailwind")
 
 	return &Changeset{
@@ -82,7 +82,7 @@ func (r *Backend) GenerateTailwind() *Changeset { // backend (../../../backend/.
 }
 
 // GenerateTempl - generate templ codegen from .templ files
-func (r *Backend) GenerateTempl() *Changeset { // backend (../../../backend/.dagger/generated.go:40:1)
+func (r *Backend) GenerateTempl() *Changeset { // backend (../../../../../backend/.dagger/generated.go:40:1)
 	q := r.query.Select("generateTempl")
 
 	return &Changeset{
@@ -141,7 +141,7 @@ func (r *Backend) UnmarshalJSON(bs []byte) error {
 
 // MigrateCheck - checks whether the previous schema on the master branch
 // can be successfully migrated to the new schema
-func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../../backend/.dagger/migrate.go:23:1)
+func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../../../../backend/.dagger/migrate.go:23:1)
 	if r.migrateCheck != nil {
 		return nil
 	}
@@ -151,7 +151,7 @@ func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../..
 }
 
 // MigrateLocal - migrates the passed in database and returns it
-func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../backend/.dagger/migrate.go:14:1)
+func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../../../backend/.dagger/migrate.go:14:1)
 	assertNotNil("localdb", localdb)
 	q := r.query.Select("migrateLocal")
 	q = q.Arg("localdb", localdb)
@@ -161,7 +161,7 @@ func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../backe
 	}
 }
 
-func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../backend/.dagger/main.go:42:1)
+func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../../../backend/.dagger/main.go:42:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -174,7 +174,7 @@ func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Sec
 }
 
 // TestMigrationToolsNODB - tests that the migration tools work if the DB doesn't exist
-func (r *Backend) TestMigrationToolsNodb(ctx context.Context) error { // backend (../../../backend/.dagger/migration_tools.go:46:1)
+func (r *Backend) TestMigrationToolsNodb(ctx context.Context) error { // backend (../../../../../backend/.dagger/migration_tools.go:46:1)
 	if r.testMigrationToolsNodb != nil {
 		return nil
 	}
@@ -184,7 +184,7 @@ func (r *Backend) TestMigrationToolsNodb(ctx context.Context) error { // backend
 }
 
 // TestMigrationToolsNoDBEnv - tests that the migration tools correctly fail if the DATABASE_FILE var isn't present
-func (r *Backend) TestMigrationToolsNodbenv(ctx context.Context) error { // backend (../../../backend/.dagger/migration_tools.go:59:1)
+func (r *Backend) TestMigrationToolsNodbenv(ctx context.Context) error { // backend (../../../../../backend/.dagger/migration_tools.go:59:1)
 	if r.testMigrationToolsNodbenv != nil {
 		return nil
 	}
@@ -194,7 +194,7 @@ func (r *Backend) TestMigrationToolsNodbenv(ctx context.Context) error { // back
 }
 
 // TestMigrationToolsWithDB - tests that the migration tools work if the DB exists
-func (r *Backend) TestMigrationToolsWithDb(ctx context.Context) error { // backend (../../../backend/.dagger/migration_tools.go:28:1)
+func (r *Backend) TestMigrationToolsWithDb(ctx context.Context) error { // backend (../../../../../backend/.dagger/migration_tools.go:28:1)
 	if r.testMigrationToolsWithDb != nil {
 		return nil
 	}
@@ -212,7 +212,7 @@ func (r *Backend) AsNode() Node {
 }
 
 // Retrieve the binding value, as type Backend
-func (r *Binding) AsBackend() *Backend { // backend (../../../backend/.dagger/main.go:25:6)
+func (r *Binding) AsBackend() *Backend { // backend (../../../../../backend/.dagger/main.go:25:6)
 	q := r.query.Select("asBackend")
 
 	return &Backend{
@@ -221,7 +221,7 @@ func (r *Binding) AsBackend() *Backend { // backend (../../../backend/.dagger/ma
 }
 
 // Create or update a binding of type Backend in the environment
-func (r *Env) WithBackendInput(name string, value *Backend, description string) *Env { // backend (../../../backend/.dagger/main.go:25:6)
+func (r *Env) WithBackendInput(name string, value *Backend, description string) *Env { // backend (../../../../../backend/.dagger/main.go:25:6)
 	assertNotNil("value", value)
 	q := r.query.Select("withBackendInput")
 	q = q.Arg("name", name)
@@ -234,7 +234,7 @@ func (r *Env) WithBackendInput(name string, value *Backend, description string) 
 }
 
 // Declare a desired Backend output to be assigned in the environment
-func (r *Env) WithBackendOutput(name string, description string) *Env { // backend (../../../backend/.dagger/main.go:25:6)
+func (r *Env) WithBackendOutput(name string, description string) *Env { // backend (../../../../../backend/.dagger/main.go:25:6)
 	q := r.query.Select("withBackendOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
@@ -246,7 +246,7 @@ func (r *Env) WithBackendOutput(name string, description string) *Env { // backe
 
 // BackendOpts contains options for Query.Backend
 type BackendOpts struct {
-	Ws *Workspace // backend (../../../backend/.dagger/main.go:33:2)
+	Ws *Workspace // backend (../../../../../backend/.dagger/main.go:33:2)
 }
 
 // A generated module for Backend functions
@@ -262,7 +262,7 @@ type BackendOpts struct {
 // The first line in this comment block is a short description line and the
 // rest is a long description with more detail on the module's purpose or usage,
 // if appropriate. All modules should have a short description.
-func (r *Query) Backend(opts ...BackendOpts) *Backend { // backend (../../../backend/.dagger/main.go:32:1)
+func (r *Query) Backend(opts ...BackendOpts) *Backend { // backend (../../../../../backend/.dagger/main.go:32:1)
 	q := r.query.Select("backend")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `ws` optional argument

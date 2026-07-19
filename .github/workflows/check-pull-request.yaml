@@ -24,7 +24,7 @@ jobs:
         
       - name: Checks
         run:
-          dagger --x-release=v1.0.0-beta.6 --progress=logs check
+          dagger --x-release=v1.0.0-beta.7 --progress=logs check
         env:
           GH_API_KEY: ${{ secrets.GH_API_KEY }}
           KUBECTL_FILE: ${{ secrets.KUBECTL_FILE }}

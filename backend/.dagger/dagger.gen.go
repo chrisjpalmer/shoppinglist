@@ -331,6 +331,89 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
+	case "":
+		return dag.Module().
+			WithDescription("A generated module for Backend functions\n\nThis module has been generated via dagger init and serves as a reference to\nbasic module structure as you get started with Dagger.\n\nTwo functions have been pre-created. You can modify, delete, or add to them,\nas needed. They demonstrate usage of arguments and return types using simple\necho and grep commands. The functions can be called from the dagger CLI or\nfrom one of the SDKs.\n\nThe first line in this comment block is a short description line and the\nrest is a long description with more detail on the module's purpose or usage,\nif appropriate. All modules should have a short description.\n").
+			WithObject(
+				dag.TypeDef().WithObject("Backend", dagger.TypeDefWithObjectOpts{SourceMap: dag.SourceMap("main.go", 25, 6)}).
+					WithFunction(
+						dag.Function("BackendService",
+							dag.TypeDef().WithObject("Service")).
+							WithDescription("BackendService - runs the backend service inside a container").
+							WithSourceMap(dag.SourceMap("service.go", 17, 1)).
+							WithUp().
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("service.go", 17, 55)})).
+					WithFunction(
+						dag.Function("BuildCheck",
+							dag.TypeDef().WithObject("Container")).
+							WithSourceMap(dag.SourceMap("build.go", 14, 1)).
+							WithCheck()).
+					WithFunction(
+						dag.Function("GenerateProtos",
+							dag.TypeDef().WithObject("Changeset")).
+							WithDescription("GenerateProtos - generate protobuf codegen from .proto files").
+							WithSourceMap(dag.SourceMap("generated.go", 11, 1)).
+							WithGenerator()).
+					WithFunction(
+						dag.Function("GenerateSqlc",
+							dag.TypeDef().WithObject("Changeset")).
+							WithDescription("GenerateSqlc - generate sqlc codegen from .sql files").
+							WithSourceMap(dag.SourceMap("generated.go", 26, 1)).
+							WithGenerator()).
+					WithFunction(
+						dag.Function("GenerateTailwind",
+							dag.TypeDef().WithObject("Changeset")).
+							WithDescription("GenerateTailwind generates the maintw.css file using tailwindcss").
+							WithSourceMap(dag.SourceMap("generated_tailwind.go", 12, 1)).
+							WithGenerator()).
+					WithFunction(
+						dag.Function("GenerateTempl",
+							dag.TypeDef().WithObject("Changeset")).
+							WithDescription("GenerateTempl - generate templ codegen from .templ files").
+							WithSourceMap(dag.SourceMap("generated.go", 40, 1)).
+							WithGenerator()).
+					WithFunction(
+						dag.Function("MigrateCheck",
+							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
+							WithDescription("MigrateCheck - checks whether the previous schema on the master branch\ncan be successfully migrated to the new schema").
+							WithSourceMap(dag.SourceMap("migrate.go", 23, 1)).
+							WithCheck()).
+					WithFunction(
+						dag.Function("MigrateLocal",
+							dag.TypeDef().WithObject("File")).
+							WithDescription("MigrateLocal - migrates the passed in database and returns it").
+							WithSourceMap(dag.SourceMap("migrate.go", 14, 1)).
+							WithArg("localdb", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("migrate.go", 14, 53)})).
+					WithFunction(
+						dag.Function("Publish",
+							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
+							WithCachePolicy(dagger.FunctionCachePolicyNever).
+							WithSourceMap(dag.SourceMap("main.go", 42, 1)).
+							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 44, 2)}).
+							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 45, 2)})).
+					WithFunction(
+						dag.Function("TestMigrationToolsNODB",
+							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
+							WithDescription("TestMigrationToolsNODB - tests that the migration tools work if the DB doesn't exist").
+							WithSourceMap(dag.SourceMap("migration_tools.go", 46, 1)).
+							WithCheck()).
+					WithFunction(
+						dag.Function("TestMigrationToolsNODBEnv",
+							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
+							WithDescription("TestMigrationToolsNoDBEnv - tests that the migration tools correctly fail if the DATABASE_FILE var isn't present").
+							WithSourceMap(dag.SourceMap("migration_tools.go", 59, 1)).
+							WithCheck()).
+					WithFunction(
+						dag.Function("TestMigrationToolsWithDB",
+							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
+							WithDescription("TestMigrationToolsWithDB - tests that the migration tools work if the DB exists").
+							WithSourceMap(dag.SourceMap("migration_tools.go", 28, 1)).
+							WithCheck()).
+					WithConstructor(
+						dag.Function("New",
+							dag.TypeDef().WithObject("Backend")).
+							WithSourceMap(dag.SourceMap("main.go", 32, 1)).
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 33, 2)}))), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}
