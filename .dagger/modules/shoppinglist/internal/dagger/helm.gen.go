@@ -10,7 +10,7 @@ import (
 )
 
 // Retrieve the binding value, as type Helm
-func (r *Binding) AsHelm() *Helm { // helm (../../../.dagger/helm/main.go:17:6)
+func (r *Binding) AsHelm() *Helm { // helm (../../../../../.dagger/modules/helm/main.go:17:6)
 	q := r.query.Select("asHelm")
 
 	return &Helm{
@@ -19,7 +19,7 @@ func (r *Binding) AsHelm() *Helm { // helm (../../../.dagger/helm/main.go:17:6)
 }
 
 // Retrieve the binding value, as type HelmChart
-func (r *Binding) AsHelmChart() *HelmChart { // helm (../../../.dagger/helm/chart.go:20:6)
+func (r *Binding) AsHelmChart() *HelmChart { // helm (../../../../../.dagger/modules/helm/chart.go:20:6)
 	q := r.query.Select("asHelmChart")
 
 	return &HelmChart{
@@ -28,7 +28,7 @@ func (r *Binding) AsHelmChart() *HelmChart { // helm (../../../.dagger/helm/char
 }
 
 // Retrieve the binding value, as type HelmPackage
-func (r *Binding) AsHelmPackage() *HelmPackage { // helm (../../../.dagger/helm/chart.go:33:6)
+func (r *Binding) AsHelmPackage() *HelmPackage { // helm (../../../../../.dagger/modules/helm/chart.go:33:6)
 	q := r.query.Select("asHelmPackage")
 
 	return &HelmPackage{
@@ -37,7 +37,7 @@ func (r *Binding) AsHelmPackage() *HelmPackage { // helm (../../../.dagger/helm/
 }
 
 // Retrieve the binding value, as type HelmRelease
-func (r *Binding) AsHelmRelease() *HelmRelease { // helm (../../../.dagger/helm/release.go:637:6)
+func (r *Binding) AsHelmRelease() *HelmRelease { // helm (../../../../../.dagger/modules/helm/release.go:637:6)
 	q := r.query.Select("asHelmRelease")
 
 	return &HelmRelease{
@@ -46,7 +46,7 @@ func (r *Binding) AsHelmRelease() *HelmRelease { // helm (../../../.dagger/helm/
 }
 
 // Create or update a binding of type HelmChart in the environment
-func (r *Env) WithHelmChartInput(name string, value *HelmChart, description string) *Env { // helm (../../../.dagger/helm/chart.go:20:6)
+func (r *Env) WithHelmChartInput(name string, value *HelmChart, description string) *Env { // helm (../../../../../.dagger/modules/helm/chart.go:20:6)
 	assertNotNil("value", value)
 	q := r.query.Select("withHelmChartInput")
 	q = q.Arg("name", name)
@@ -59,7 +59,7 @@ func (r *Env) WithHelmChartInput(name string, value *HelmChart, description stri
 }
 
 // Declare a desired HelmChart output to be assigned in the environment
-func (r *Env) WithHelmChartOutput(name string, description string) *Env { // helm (../../../.dagger/helm/chart.go:20:6)
+func (r *Env) WithHelmChartOutput(name string, description string) *Env { // helm (../../../../../.dagger/modules/helm/chart.go:20:6)
 	q := r.query.Select("withHelmChartOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
@@ -70,7 +70,7 @@ func (r *Env) WithHelmChartOutput(name string, description string) *Env { // hel
 }
 
 // Create or update a binding of type Helm in the environment
-func (r *Env) WithHelmInput(name string, value *Helm, description string) *Env { // helm (../../../.dagger/helm/main.go:17:6)
+func (r *Env) WithHelmInput(name string, value *Helm, description string) *Env { // helm (../../../../../.dagger/modules/helm/main.go:17:6)
 	assertNotNil("value", value)
 	q := r.query.Select("withHelmInput")
 	q = q.Arg("name", name)
@@ -83,7 +83,7 @@ func (r *Env) WithHelmInput(name string, value *Helm, description string) *Env {
 }
 
 // Declare a desired Helm output to be assigned in the environment
-func (r *Env) WithHelmOutput(name string, description string) *Env { // helm (../../../.dagger/helm/main.go:17:6)
+func (r *Env) WithHelmOutput(name string, description string) *Env { // helm (../../../../../.dagger/modules/helm/main.go:17:6)
 	q := r.query.Select("withHelmOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
@@ -94,7 +94,7 @@ func (r *Env) WithHelmOutput(name string, description string) *Env { // helm (..
 }
 
 // Create or update a binding of type HelmPackage in the environment
-func (r *Env) WithHelmPackageInput(name string, value *HelmPackage, description string) *Env { // helm (../../../.dagger/helm/chart.go:33:6)
+func (r *Env) WithHelmPackageInput(name string, value *HelmPackage, description string) *Env { // helm (../../../../../.dagger/modules/helm/chart.go:33:6)
 	assertNotNil("value", value)
 	q := r.query.Select("withHelmPackageInput")
 	q = q.Arg("name", name)
@@ -107,7 +107,7 @@ func (r *Env) WithHelmPackageInput(name string, value *HelmPackage, description 
 }
 
 // Declare a desired HelmPackage output to be assigned in the environment
-func (r *Env) WithHelmPackageOutput(name string, description string) *Env { // helm (../../../.dagger/helm/chart.go:33:6)
+func (r *Env) WithHelmPackageOutput(name string, description string) *Env { // helm (../../../../../.dagger/modules/helm/chart.go:33:6)
 	q := r.query.Select("withHelmPackageOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
@@ -118,7 +118,7 @@ func (r *Env) WithHelmPackageOutput(name string, description string) *Env { // h
 }
 
 // Create or update a binding of type HelmRelease in the environment
-func (r *Env) WithHelmReleaseInput(name string, value *HelmRelease, description string) *Env { // helm (../../../.dagger/helm/release.go:637:6)
+func (r *Env) WithHelmReleaseInput(name string, value *HelmRelease, description string) *Env { // helm (../../../../../.dagger/modules/helm/release.go:637:6)
 	assertNotNil("value", value)
 	q := r.query.Select("withHelmReleaseInput")
 	q = q.Arg("name", name)
@@ -131,7 +131,7 @@ func (r *Env) WithHelmReleaseInput(name string, value *HelmRelease, description 
 }
 
 // Declare a desired HelmRelease output to be assigned in the environment
-func (r *Env) WithHelmReleaseOutput(name string, description string) *Env { // helm (../../../.dagger/helm/release.go:637:6)
+func (r *Env) WithHelmReleaseOutput(name string, description string) *Env { // helm (../../../../../.dagger/modules/helm/release.go:637:6)
 	q := r.query.Select("withHelmReleaseOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
@@ -141,7 +141,7 @@ func (r *Env) WithHelmReleaseOutput(name string, description string) *Env { // h
 	}
 }
 
-type Helm struct { // helm (../../../.dagger/helm/main.go:17:6)
+type Helm struct { // helm (../../../../../.dagger/modules/helm/main.go:17:6)
 	query *querybuilder.Selection
 
 	id   *ID
@@ -163,7 +163,7 @@ func (r *Helm) WithGraphQLQuery(q *querybuilder.Selection) *Helm {
 }
 
 // Returns a Helm chart from a source directory.
-func (r *Helm) Chart(source *Directory) *HelmChart { // helm (../../../.dagger/helm/chart.go:9:1)
+func (r *Helm) Chart(source *Directory) *HelmChart { // helm (../../../../../.dagger/modules/helm/chart.go:9:1)
 	assertNotNil("source", source)
 	q := r.query.Select("chart")
 	q = q.Arg("source", source)
@@ -173,7 +173,7 @@ func (r *Helm) Chart(source *Directory) *HelmChart { // helm (../../../.dagger/h
 	}
 }
 
-func (r *Helm) Container() *Container { // helm (../../../.dagger/helm/main.go:18:2)
+func (r *Helm) Container() *Container { // helm (../../../../../.dagger/modules/helm/main.go:18:2)
 	q := r.query.Select("container")
 
 	return &Container{
@@ -182,7 +182,7 @@ func (r *Helm) Container() *Container { // helm (../../../.dagger/helm/main.go:1
 }
 
 // Create a new chart directory along with the common files and directories used in a chart.
-func (r *Helm) Create(name string) *HelmChart { // helm (../../../.dagger/helm/main.go:108:1)
+func (r *Helm) Create(name string) *HelmChart { // helm (../../../../../.dagger/modules/helm/main.go:108:1)
 	q := r.query.Select("create")
 	q = q.Arg("name", name)
 
@@ -241,7 +241,7 @@ func (r *Helm) UnmarshalJSON(bs []byte) error {
 }
 
 // Lint a Helm chart directory.
-func (r *Helm) Lint(chart *Directory) *Container { // helm (../../../.dagger/helm/main.go:122:1)
+func (r *Helm) Lint(chart *Directory) *Container { // helm (../../../../../.dagger/modules/helm/main.go:122:1)
 	assertNotNil("chart", chart)
 	q := r.query.Select("lint")
 	q = q.Arg("chart", chart)
@@ -256,13 +256,13 @@ type HelmLoginOpts struct {
 	//
 	// Allow connections to TLS registry without certs.
 	//
-	Insecure bool // helm (../../../.dagger/helm/main.go:229:2)
+	Insecure bool // helm (../../../../../.dagger/modules/helm/main.go:229:2)
 }
 
 // Authenticate to an OCI registry.
 //
 // Note: Login stores credentials in the filesystem in plain text. Use WithRegistryAuth as a safer alternative.
-func (r *Helm) Login(host string, username string, password *Secret, opts ...HelmLoginOpts) *Helm { // helm (../../../.dagger/helm/main.go:214:1)
+func (r *Helm) Login(host string, username string, password *Secret, opts ...HelmLoginOpts) *Helm { // helm (../../../../../.dagger/modules/helm/main.go:214:1)
 	assertNotNil("password", password)
 	q := r.query.Select("login")
 	for i := len(opts) - 1; i >= 0; i-- {
@@ -281,7 +281,7 @@ func (r *Helm) Login(host string, username string, password *Secret, opts ...Hel
 }
 
 // Remove credentials stored for an OCI registry.
-func (r *Helm) Logout(host string) *Helm { // helm (../../../.dagger/helm/main.go:253:1)
+func (r *Helm) Logout(host string) *Helm { // helm (../../../../../.dagger/modules/helm/main.go:253:1)
 	q := r.query.Select("logout")
 	q = q.Arg("host", host)
 
@@ -295,19 +295,19 @@ type HelmPackageOpts struct {
 	//
 	// Set the appVersion on the chart to this version.
 	//
-	AppVersion string // helm (../../../.dagger/helm/main.go:159:2)
+	AppVersion string // helm (../../../../../.dagger/modules/helm/main.go:159:2)
 	//
 	// Set the version on the chart to this semver version.
 	//
-	Version string // helm (../../../.dagger/helm/main.go:164:2)
+	Version string // helm (../../../../../.dagger/modules/helm/main.go:164:2)
 	//
 	// Update dependencies from "Chart.yaml" to dir "charts/" before packaging.
 	//
-	DependencyUpdate bool // helm (../../../.dagger/helm/main.go:169:2)
+	DependencyUpdate bool // helm (../../../../../.dagger/modules/helm/main.go:169:2)
 }
 
 // Build a Helm chart package.
-func (r *Helm) Package(chart *Directory, opts ...HelmPackageOpts) *File { // helm (../../../.dagger/helm/main.go:150:1)
+func (r *Helm) Package(chart *Directory, opts ...HelmPackageOpts) *File { // helm (../../../../../.dagger/modules/helm/main.go:150:1)
 	assertNotNil("chart", chart)
 	q := r.query.Select("package")
 	for i := len(opts) - 1; i >= 0; i-- {
@@ -336,27 +336,27 @@ type HelmPushOpts struct {
 	//
 	// Use insecure HTTP connections for the chart upload.
 	//
-	PlainHTTP bool // helm (../../../.dagger/helm/main.go:279:2)
+	PlainHTTP bool // helm (../../../../../.dagger/modules/helm/main.go:279:2)
 	//
 	// Skip tls certificate checks for the chart upload.
 	//
-	InsecureSkipTLSVerify bool // helm (../../../.dagger/helm/main.go:284:2)
+	InsecureSkipTLSVerify bool // helm (../../../../../.dagger/modules/helm/main.go:284:2)
 	//
 	// Verify certificates of HTTPS-enabled servers using this CA bundle.
 	//
-	CaFile *File // helm (../../../.dagger/helm/main.go:289:2)
+	CaFile *File // helm (../../../../../.dagger/modules/helm/main.go:289:2)
 	//
 	// Identify registry client using this SSL certificate file.
 	//
-	CertFile *File // helm (../../../.dagger/helm/main.go:294:2)
+	CertFile *File // helm (../../../../../.dagger/modules/helm/main.go:294:2)
 	//
 	// Identify registry client using this SSL key file.
 	//
-	KeyFile *Secret // helm (../../../.dagger/helm/main.go:299:2)
+	KeyFile *Secret // helm (../../../../../.dagger/modules/helm/main.go:299:2)
 }
 
 // Push a Helm chart package to an OCI registry.
-func (r *Helm) Push(ctx context.Context, pkg *File, registry string, opts ...HelmPushOpts) error { // helm (../../../.dagger/helm/main.go:267:1)
+func (r *Helm) Push(ctx context.Context, pkg *File, registry string, opts ...HelmPushOpts) error { // helm (../../../../../.dagger/modules/helm/main.go:267:1)
 	assertNotNil("pkg", pkg)
 	if r.push != nil {
 		return nil
@@ -391,7 +391,7 @@ func (r *Helm) Push(ctx context.Context, pkg *File, registry string, opts ...Hel
 }
 
 // Mount a file as the kubeconfig file.
-func (r *Helm) WithKubeconfigFile(file *File) *Helm { // helm (../../../.dagger/helm/main.go:90:1)
+func (r *Helm) WithKubeconfigFile(file *File) *Helm { // helm (../../../../../.dagger/modules/helm/main.go:90:1)
 	assertNotNil("file", file)
 	q := r.query.Select("withKubeconfigFile")
 	q = q.Arg("file", file)
@@ -402,7 +402,7 @@ func (r *Helm) WithKubeconfigFile(file *File) *Helm { // helm (../../../.dagger/
 }
 
 // Mount a secret as the kubeconfig file.
-func (r *Helm) WithKubeconfigSecret(secret *Secret) *Helm { // helm (../../../.dagger/helm/main.go:99:1)
+func (r *Helm) WithKubeconfigSecret(secret *Secret) *Helm { // helm (../../../../../.dagger/modules/helm/main.go:99:1)
 	assertNotNil("secret", secret)
 	q := r.query.Select("withKubeconfigSecret")
 	q = q.Arg("secret", secret)
@@ -415,7 +415,7 @@ func (r *Helm) WithKubeconfigSecret(secret *Secret) *Helm { // helm (../../../.d
 // Add credentials for a registry.
 //
 // Note: WithRegistryAuth overrides any previous or subsequent calls to Login/Logout.
-func (r *Helm) WithRegistryAuth(address string, username string, secret *Secret) *Helm { // helm (../../../.dagger/helm/main.go:76:1)
+func (r *Helm) WithRegistryAuth(address string, username string, secret *Secret) *Helm { // helm (../../../../../.dagger/modules/helm/main.go:76:1)
 	assertNotNil("secret", secret)
 	q := r.query.Select("withRegistryAuth")
 	q = q.Arg("address", address)
@@ -428,7 +428,7 @@ func (r *Helm) WithRegistryAuth(address string, username string, secret *Secret)
 }
 
 // Removes credentials for a registry.
-func (r *Helm) WithoutRegistryAuth(address string) *Helm { // helm (../../../.dagger/helm/main.go:83:1)
+func (r *Helm) WithoutRegistryAuth(address string) *Helm { // helm (../../../../../.dagger/modules/helm/main.go:83:1)
 	q := r.query.Select("withoutRegistryAuth")
 	q = q.Arg("address", address)
 
@@ -446,7 +446,7 @@ func (r *Helm) AsNode() Node {
 }
 
 // A Helm chart.
-type HelmChart struct { // helm (../../../.dagger/helm/chart.go:20:6)
+type HelmChart struct { // helm (../../../../../.dagger/modules/helm/chart.go:20:6)
 	query *querybuilder.Selection
 
 	id *ID
@@ -458,7 +458,7 @@ func (r *HelmChart) WithGraphQLQuery(q *querybuilder.Selection) *HelmChart {
 	}
 }
 
-func (r *HelmChart) Directory() *Directory { // helm (../../../.dagger/helm/chart.go:21:2)
+func (r *HelmChart) Directory() *Directory { // helm (../../../../../.dagger/modules/helm/chart.go:21:2)
 	q := r.query.Select("directory")
 
 	return &Directory{
@@ -520,115 +520,115 @@ type HelmChartInstallOpts struct {
 	//
 	// If set, the installation process deletes the installation on failure. Wait flag will be set automatically if atomic is used.
 	//
-	Atomic bool // helm (../../../.dagger/helm/release.go:22:2)
+	Atomic bool // helm (../../../../../.dagger/modules/helm/release.go:22:2)
 	//
 	// Verify certificates of HTTPS-enabled servers using this CA bundle.
 	//
-	CaFile *File // helm (../../../.dagger/helm/release.go:27:2)
+	CaFile *File // helm (../../../../../.dagger/modules/helm/release.go:27:2)
 	//
 	// Identify HTTPS client using this SSL certificate file.
 	//
-	CertFile *File // helm (../../../.dagger/helm/release.go:32:2)
+	CertFile *File // helm (../../../../../.dagger/modules/helm/release.go:32:2)
 	//
 	// Create the release namespace if not present.
 	//
-	CreateNamespace bool // helm (../../../.dagger/helm/release.go:37:2)
+	CreateNamespace bool // helm (../../../../../.dagger/modules/helm/release.go:37:2)
 	//
 	// Update dependencies if they are missing before installing the chart.
 	//
-	DependencyUpdate bool // helm (../../../.dagger/helm/release.go:42:2)
+	DependencyUpdate bool // helm (../../../../../.dagger/modules/helm/release.go:42:2)
 	//
 	// Add a custom description.
 	//
-	Description string // helm (../../../.dagger/helm/release.go:47:2)
+	Description string // helm (../../../../../.dagger/modules/helm/release.go:47:2)
 	//
 	// If set, the installation process will not validate rendered templates against the Kubernetes OpenAPI Schema.
 	//
-	DisableOpenapiValidation bool // helm (../../../.dagger/helm/release.go:52:2)
+	DisableOpenapiValidation bool // helm (../../../../../.dagger/modules/helm/release.go:52:2)
 	//
 	// Enable DNS lookups when rendering templates.
 	//
-	EnableDNS bool // helm (../../../.dagger/helm/release.go:62:2)
+	EnableDNS bool // helm (../../../../../.dagger/modules/helm/release.go:62:2)
 	//
 	// Force resource updates through a replacement strategy.
 	//
-	Force bool // helm (../../../.dagger/helm/release.go:67:2)
+	Force bool // helm (../../../../../.dagger/modules/helm/release.go:67:2)
 	//
 	// Generate the name.
 	//
-	GenerateName bool // helm (../../../.dagger/helm/release.go:72:2)
+	GenerateName bool // helm (../../../../../.dagger/modules/helm/release.go:72:2)
 	//
 	// Skip tls certificate checks for the chart download.
 	//
-	InsecureSkipTLSVerify bool // helm (../../../.dagger/helm/release.go:82:2)
+	InsecureSkipTLSVerify bool // helm (../../../../../.dagger/modules/helm/release.go:82:2)
 	//
 	// Identify HTTPS client using this SSL key file.
 	//
-	KeyFile *Secret // helm (../../../.dagger/helm/release.go:87:2)
+	KeyFile *Secret // helm (../../../../../.dagger/modules/helm/release.go:87:2)
 	//
 	// Labels that would be added to release metadata.
 	//
-	Labels []string // helm (../../../.dagger/helm/release.go:92:2)
+	Labels []string // helm (../../../../../.dagger/modules/helm/release.go:92:2)
 	//
 	// Specify template used to name the release.
 	//
-	NameTemplate string // helm (../../../.dagger/helm/release.go:97:2)
+	NameTemplate string // helm (../../../../../.dagger/modules/helm/release.go:97:2)
 	//
 	// Prevent hooks from running during install.
 	//
-	NoHooks bool // helm (../../../.dagger/helm/release.go:102:2)
+	NoHooks bool // helm (../../../../../.dagger/modules/helm/release.go:102:2)
 	//
 	// Use insecure HTTP connections for the chart download.
 	//
-	PlainHTTP bool // helm (../../../.dagger/helm/release.go:111:2)
+	PlainHTTP bool // helm (../../../../../.dagger/modules/helm/release.go:111:2)
 	//
 	// The path to an executable to be used for post rendering. If it exists in $PATH, the binary will be used, otherwise it will try to look for the executable at the given path.
 	//
-	PostRenderer string // helm (../../../.dagger/helm/release.go:116:2)
+	PostRenderer string // helm (../../../../../.dagger/modules/helm/release.go:116:2)
 	//
 	// Arguments to the post-renderer.
 	//
-	PostRendererArgs []string // helm (../../../.dagger/helm/release.go:121:2)
+	PostRendererArgs []string // helm (../../../../../.dagger/modules/helm/release.go:121:2)
 	//
 	// If set, render subchart notes along with the parent.
 	//
-	RenderSubchartNotes bool // helm (../../../.dagger/helm/release.go:126:2)
+	RenderSubchartNotes bool // helm (../../../../../.dagger/modules/helm/release.go:126:2)
 	//
 	// Re-use the given name, only if that name is a deleted release which remains in the history. This is unsafe in production.
 	//
-	Replace bool // helm (../../../.dagger/helm/release.go:131:2)
+	Replace bool // helm (../../../../../.dagger/modules/helm/release.go:131:2)
 	//
 	// If set, no CRDs will be installed. By default, CRDs are installed if not already present.
 	//
-	SkipCrds bool // helm (../../../.dagger/helm/release.go:144:2)
+	SkipCrds bool // helm (../../../../../.dagger/modules/helm/release.go:144:2)
 	//
 	// Time to wait for any individual Kubernetes operation (like Jobs for hooks).
 	//
-	Timeout string // helm (../../../.dagger/helm/release.go:149:2)
+	Timeout string // helm (../../../../../.dagger/modules/helm/release.go:149:2)
 	//
 	// Specify values in a YAML file.
 	//
-	Values []*File // helm (../../../.dagger/helm/release.go:156:2)
+	Values []*File // helm (../../../../../.dagger/modules/helm/release.go:156:2)
 	//
 	// Verify the package before using it.
 	//
-	Verify bool // helm (../../../.dagger/helm/release.go:161:2)
+	Verify bool // helm (../../../../../.dagger/modules/helm/release.go:161:2)
 	//
 	// If set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment, StatefulSet, or ReplicaSet are in a ready state before marking the release as successful. It will wait for as long as timeout.
 	//
-	Wait bool // helm (../../../.dagger/helm/release.go:166:2)
+	Wait bool // helm (../../../../../.dagger/modules/helm/release.go:166:2)
 	//
 	// If set and wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as timeout.
 	//
-	WaitForJobs bool // helm (../../../.dagger/helm/release.go:171:2)
+	WaitForJobs bool // helm (../../../../../.dagger/modules/helm/release.go:171:2)
 	//
 	// Namespace scope for this request.
 	//
-	Namespace string // helm (../../../.dagger/helm/release.go:178:2)
+	Namespace string // helm (../../../../../.dagger/modules/helm/release.go:178:2)
 }
 
 // Install a Helm chart.
-func (r *HelmChart) Install(name string, opts ...HelmChartInstallOpts) *HelmRelease { // helm (../../../.dagger/helm/release.go:13:1)
+func (r *HelmChart) Install(name string, opts ...HelmChartInstallOpts) *HelmRelease { // helm (../../../../../.dagger/modules/helm/release.go:13:1)
 	q := r.query.Select("install")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `atomic` optional argument
@@ -748,7 +748,7 @@ func (r *HelmChart) Install(name string, opts ...HelmChartInstallOpts) *HelmRele
 }
 
 // Lint a Helm chart.
-func (r *HelmChart) Lint() *Container { // helm (../../../.dagger/helm/chart.go:28:1)
+func (r *HelmChart) Lint() *Container { // helm (../../../../../.dagger/modules/helm/chart.go:28:1)
 	q := r.query.Select("lint")
 
 	return &Container{
@@ -761,19 +761,19 @@ type HelmChartPackageOpts struct {
 	//
 	// Set the appVersion on the chart to this version.
 	//
-	AppVersion string // helm (../../../.dagger/helm/chart.go:50:2)
+	AppVersion string // helm (../../../../../.dagger/modules/helm/chart.go:50:2)
 	//
 	// Set the version on the chart to this semver version.
 	//
-	Version string // helm (../../../.dagger/helm/chart.go:55:2)
+	Version string // helm (../../../../../.dagger/modules/helm/chart.go:55:2)
 	//
 	// Update dependencies from "Chart.yaml" to dir "charts/" before packaging.
 	//
-	DependencyUpdate bool // helm (../../../.dagger/helm/chart.go:60:2)
+	DependencyUpdate bool // helm (../../../../../.dagger/modules/helm/chart.go:60:2)
 }
 
 // Build a Helm chart package.
-func (r *HelmChart) Package(opts ...HelmChartPackageOpts) *HelmPackage { // helm (../../../.dagger/helm/chart.go:44:1)
+func (r *HelmChart) Package(opts ...HelmChartPackageOpts) *HelmPackage { // helm (../../../../../.dagger/modules/helm/chart.go:44:1)
 	q := r.query.Select("package")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `appVersion` optional argument
@@ -804,7 +804,7 @@ func (r *HelmChart) AsNode() Node {
 }
 
 // A Helm chart package.
-type HelmPackage struct { // helm (../../../.dagger/helm/chart.go:33:6)
+type HelmPackage struct { // helm (../../../../../.dagger/modules/helm/chart.go:33:6)
 	query *querybuilder.Selection
 
 	id      *ID
@@ -825,7 +825,7 @@ func (r *HelmPackage) WithGraphQLQuery(q *querybuilder.Selection) *HelmPackage {
 	}
 }
 
-func (r *HelmPackage) File() *File { // helm (../../../.dagger/helm/chart.go:34:2)
+func (r *HelmPackage) File() *File { // helm (../../../../../.dagger/modules/helm/chart.go:34:2)
 	q := r.query.Select("file")
 
 	return &File{
@@ -887,115 +887,115 @@ type HelmPackageInstallOpts struct {
 	//
 	// If set, the installation process deletes the installation on failure. Wait flag will be set automatically if atomic is used.
 	//
-	Atomic bool // helm (../../../.dagger/helm/release.go:241:2)
+	Atomic bool // helm (../../../../../.dagger/modules/helm/release.go:241:2)
 	//
 	// Verify certificates of HTTPS-enabled servers using this CA bundle.
 	//
-	CaFile *File // helm (../../../.dagger/helm/release.go:246:2)
+	CaFile *File // helm (../../../../../.dagger/modules/helm/release.go:246:2)
 	//
 	// Identify HTTPS client using this SSL certificate file.
 	//
-	CertFile *File // helm (../../../.dagger/helm/release.go:251:2)
+	CertFile *File // helm (../../../../../.dagger/modules/helm/release.go:251:2)
 	//
 	// Create the release namespace if not present.
 	//
-	CreateNamespace bool // helm (../../../.dagger/helm/release.go:256:2)
+	CreateNamespace bool // helm (../../../../../.dagger/modules/helm/release.go:256:2)
 	//
 	// Update dependencies if they are missing before installing the chart.
 	//
-	DependencyUpdate bool // helm (../../../.dagger/helm/release.go:261:2)
+	DependencyUpdate bool // helm (../../../../../.dagger/modules/helm/release.go:261:2)
 	//
 	// Add a custom description.
 	//
-	Description string // helm (../../../.dagger/helm/release.go:266:2)
+	Description string // helm (../../../../../.dagger/modules/helm/release.go:266:2)
 	//
 	// If set, the installation process will not validate rendered templates against the Kubernetes OpenAPI Schema.
 	//
-	DisableOpenapiValidation bool // helm (../../../.dagger/helm/release.go:271:2)
+	DisableOpenapiValidation bool // helm (../../../../../.dagger/modules/helm/release.go:271:2)
 	//
 	// Enable DNS lookups when rendering templates.
 	//
-	EnableDNS bool // helm (../../../.dagger/helm/release.go:281:2)
+	EnableDNS bool // helm (../../../../../.dagger/modules/helm/release.go:281:2)
 	//
 	// Force resource updates through a replacement strategy.
 	//
-	Force bool // helm (../../../.dagger/helm/release.go:286:2)
+	Force bool // helm (../../../../../.dagger/modules/helm/release.go:286:2)
 	//
 	// Generate the name.
 	//
-	GenerateName bool // helm (../../../.dagger/helm/release.go:291:2)
+	GenerateName bool // helm (../../../../../.dagger/modules/helm/release.go:291:2)
 	//
 	// Skip tls certificate checks for the chart download.
 	//
-	InsecureSkipTLSVerify bool // helm (../../../.dagger/helm/release.go:301:2)
+	InsecureSkipTLSVerify bool // helm (../../../../../.dagger/modules/helm/release.go:301:2)
 	//
 	// Identify HTTPS client using this SSL key file.
 	//
-	KeyFile *Secret // helm (../../../.dagger/helm/release.go:306:2)
+	KeyFile *Secret // helm (../../../../../.dagger/modules/helm/release.go:306:2)
 	//
 	// Labels that would be added to release metadata.
 	//
-	Labels []string // helm (../../../.dagger/helm/release.go:311:2)
+	Labels []string // helm (../../../../../.dagger/modules/helm/release.go:311:2)
 	//
 	// Specify template used to name the release.
 	//
-	NameTemplate string // helm (../../../.dagger/helm/release.go:316:2)
+	NameTemplate string // helm (../../../../../.dagger/modules/helm/release.go:316:2)
 	//
 	// Prevent hooks from running during install.
 	//
-	NoHooks bool // helm (../../../.dagger/helm/release.go:321:2)
+	NoHooks bool // helm (../../../../../.dagger/modules/helm/release.go:321:2)
 	//
 	// Use insecure HTTP connections for the chart download.
 	//
-	PlainHTTP bool // helm (../../../.dagger/helm/release.go:330:2)
+	PlainHTTP bool // helm (../../../../../.dagger/modules/helm/release.go:330:2)
 	//
 	// The path to an executable to be used for post rendering. If it exists in $PATH, the binary will be used, otherwise it will try to look for the executable at the given path.
 	//
-	PostRenderer string // helm (../../../.dagger/helm/release.go:335:2)
+	PostRenderer string // helm (../../../../../.dagger/modules/helm/release.go:335:2)
 	//
 	// Arguments to the post-renderer.
 	//
-	PostRendererArgs []string // helm (../../../.dagger/helm/release.go:340:2)
+	PostRendererArgs []string // helm (../../../../../.dagger/modules/helm/release.go:340:2)
 	//
 	// If set, render subchart notes along with the parent.
 	//
-	RenderSubchartNotes bool // helm (../../../.dagger/helm/release.go:345:2)
+	RenderSubchartNotes bool // helm (../../../../../.dagger/modules/helm/release.go:345:2)
 	//
 	// Re-use the given name, only if that name is a deleted release which remains in the history. This is unsafe in production.
 	//
-	Replace bool // helm (../../../.dagger/helm/release.go:350:2)
+	Replace bool // helm (../../../../../.dagger/modules/helm/release.go:350:2)
 	//
 	// If set, no CRDs will be installed. By default, CRDs are installed if not already present.
 	//
-	SkipCrds bool // helm (../../../.dagger/helm/release.go:363:2)
+	SkipCrds bool // helm (../../../../../.dagger/modules/helm/release.go:363:2)
 	//
 	// Time to wait for any individual Kubernetes operation (like Jobs for hooks).
 	//
-	Timeout string // helm (../../../.dagger/helm/release.go:368:2)
+	Timeout string // helm (../../../../../.dagger/modules/helm/release.go:368:2)
 	//
 	// Specify values in a YAML file.
 	//
-	Values []*File // helm (../../../.dagger/helm/release.go:375:2)
+	Values []*File // helm (../../../../../.dagger/modules/helm/release.go:375:2)
 	//
 	// Verify the package before using it.
 	//
-	Verify bool // helm (../../../.dagger/helm/release.go:380:2)
+	Verify bool // helm (../../../../../.dagger/modules/helm/release.go:380:2)
 	//
 	// If set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment, StatefulSet, or ReplicaSet are in a ready state before marking the release as successful. It will wait for as long as timeout.
 	//
-	Wait bool // helm (../../../.dagger/helm/release.go:385:2)
+	Wait bool // helm (../../../../../.dagger/modules/helm/release.go:385:2)
 	//
 	// If set and wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as timeout.
 	//
-	WaitForJobs bool // helm (../../../.dagger/helm/release.go:390:2)
+	WaitForJobs bool // helm (../../../../../.dagger/modules/helm/release.go:390:2)
 	//
 	// Namespace scope for this request.
 	//
-	Namespace string // helm (../../../.dagger/helm/release.go:397:2)
+	Namespace string // helm (../../../../../.dagger/modules/helm/release.go:397:2)
 }
 
 // Install a Helm chart.
-func (r *HelmPackage) Install(name string, opts ...HelmPackageInstallOpts) *HelmRelease { // helm (../../../.dagger/helm/release.go:232:1)
+func (r *HelmPackage) Install(name string, opts ...HelmPackageInstallOpts) *HelmRelease { // helm (../../../../../.dagger/modules/helm/release.go:232:1)
 	q := r.query.Select("install")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `atomic` optional argument
@@ -1119,27 +1119,27 @@ type HelmPackagePublishOpts struct {
 	//
 	// Use insecure HTTP connections for the chart upload.
 	//
-	PlainHTTP bool // helm (../../../.dagger/helm/chart.go:112:2)
+	PlainHTTP bool // helm (../../../../../.dagger/modules/helm/chart.go:112:2)
 	//
 	// Skip tls certificate checks for the chart upload.
 	//
-	InsecureSkipTLSVerify bool // helm (../../../.dagger/helm/chart.go:117:2)
+	InsecureSkipTLSVerify bool // helm (../../../../../.dagger/modules/helm/chart.go:117:2)
 	//
 	// Verify certificates of HTTPS-enabled servers using this CA bundle.
 	//
-	CaFile *File // helm (../../../.dagger/helm/chart.go:122:2)
+	CaFile *File // helm (../../../../../.dagger/modules/helm/chart.go:122:2)
 	//
 	// Identify registry client using this SSL certificate file.
 	//
-	CertFile *File // helm (../../../.dagger/helm/chart.go:127:2)
+	CertFile *File // helm (../../../../../.dagger/modules/helm/chart.go:127:2)
 	//
 	// Identify registry client using this SSL key file.
 	//
-	KeyFile *Secret // helm (../../../.dagger/helm/chart.go:132:2)
+	KeyFile *Secret // helm (../../../../../.dagger/modules/helm/chart.go:132:2)
 }
 
 // Publishes this Helm chart package to an OCI registry.
-func (r *HelmPackage) Publish(ctx context.Context, registry string, opts ...HelmPackagePublishOpts) error { // helm (../../../.dagger/helm/chart.go:103:1)
+func (r *HelmPackage) Publish(ctx context.Context, registry string, opts ...HelmPackagePublishOpts) error { // helm (../../../../../.dagger/modules/helm/chart.go:103:1)
 	if r.publish != nil {
 		return nil
 	}
@@ -1172,7 +1172,7 @@ func (r *HelmPackage) Publish(ctx context.Context, registry string, opts ...Helm
 }
 
 // Mount a file as the kubeconfig file.
-func (r *HelmPackage) WithKubeconfigFile(file *File) *HelmPackage { // helm (../../../.dagger/helm/chart.go:89:1)
+func (r *HelmPackage) WithKubeconfigFile(file *File) *HelmPackage { // helm (../../../../../.dagger/modules/helm/chart.go:89:1)
 	assertNotNil("file", file)
 	q := r.query.Select("withKubeconfigFile")
 	q = q.Arg("file", file)
@@ -1183,7 +1183,7 @@ func (r *HelmPackage) WithKubeconfigFile(file *File) *HelmPackage { // helm (../
 }
 
 // Mount a secret as the kubeconfig file.
-func (r *HelmPackage) WithKubeconfigSecret(secret *Secret) *HelmPackage { // helm (../../../.dagger/helm/chart.go:96:1)
+func (r *HelmPackage) WithKubeconfigSecret(secret *Secret) *HelmPackage { // helm (../../../../../.dagger/modules/helm/chart.go:96:1)
 	assertNotNil("secret", secret)
 	q := r.query.Select("withKubeconfigSecret")
 	q = q.Arg("secret", secret)
@@ -1194,7 +1194,7 @@ func (r *HelmPackage) WithKubeconfigSecret(secret *Secret) *HelmPackage { // hel
 }
 
 // Add credentials for a registry.
-func (r *HelmPackage) WithRegistryAuth(address string, username string, secret *Secret) *HelmPackage { // helm (../../../.dagger/helm/chart.go:75:1)
+func (r *HelmPackage) WithRegistryAuth(address string, username string, secret *Secret) *HelmPackage { // helm (../../../../../.dagger/modules/helm/chart.go:75:1)
 	assertNotNil("secret", secret)
 	q := r.query.Select("withRegistryAuth")
 	q = q.Arg("address", address)
@@ -1207,7 +1207,7 @@ func (r *HelmPackage) WithRegistryAuth(address string, username string, secret *
 }
 
 // Removes credentials for a registry.
-func (r *HelmPackage) WithoutRegistryAuth(address string) *HelmPackage { // helm (../../../.dagger/helm/chart.go:82:1)
+func (r *HelmPackage) WithoutRegistryAuth(address string) *HelmPackage { // helm (../../../../../.dagger/modules/helm/chart.go:82:1)
 	q := r.query.Select("withoutRegistryAuth")
 	q = q.Arg("address", address)
 
@@ -1224,7 +1224,7 @@ func (r *HelmPackage) AsNode() Node {
 	}
 }
 
-type HelmRelease struct { // helm (../../../.dagger/helm/release.go:637:6)
+type HelmRelease struct { // helm (../../../../../.dagger/modules/helm/release.go:637:6)
 	query *querybuilder.Selection
 
 	id        *ID
@@ -1288,7 +1288,7 @@ func (r *HelmRelease) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-func (r *HelmRelease) Name(ctx context.Context) (string, error) { // helm (../../../.dagger/helm/release.go:638:2)
+func (r *HelmRelease) Name(ctx context.Context) (string, error) { // helm (../../../../../.dagger/modules/helm/release.go:638:2)
 	if r.name != nil {
 		return *r.name, nil
 	}
@@ -1300,7 +1300,7 @@ func (r *HelmRelease) Name(ctx context.Context) (string, error) { // helm (../..
 	return response, q.Execute(ctx)
 }
 
-func (r *HelmRelease) Namespace(ctx context.Context) (string, error) { // helm (../../../.dagger/helm/release.go:639:2)
+func (r *HelmRelease) Namespace(ctx context.Context) (string, error) { // helm (../../../../../.dagger/modules/helm/release.go:639:2)
 	if r.namespace != nil {
 		return *r.namespace, nil
 	}
@@ -1317,19 +1317,19 @@ type HelmReleaseTestOpts struct {
 	//
 	// Specify tests by attribute (currently "name") using attribute=value syntax or '!attribute=value' to exclude a test.
 	//
-	Filter []string // helm (../../../.dagger/helm/release.go:652:2)
+	Filter []string // helm (../../../../../.dagger/modules/helm/release.go:652:2)
 	//
 	// Dump the logs from test pods (this runs after all tests are complete, but before any cleanup).
 	//
-	Logs bool // helm (../../../.dagger/helm/release.go:657:2)
+	Logs bool // helm (../../../../../.dagger/modules/helm/release.go:657:2)
 	//
 	// Time to wait for any individual Kubernetes operation (like Jobs for hooks) (default 5m0s).
 	//
-	Timeout string // helm (../../../.dagger/helm/release.go:662:2)
+	Timeout string // helm (../../../../../.dagger/modules/helm/release.go:662:2)
 }
 
 // Run Helm tests.
-func (r *HelmRelease) Test(ctx context.Context, opts ...HelmReleaseTestOpts) (string, error) { // helm (../../../.dagger/helm/release.go:646:1)
+func (r *HelmRelease) Test(ctx context.Context, opts ...HelmReleaseTestOpts) (string, error) { // helm (../../../../../.dagger/modules/helm/release.go:646:1)
 	if r.test != nil {
 		return *r.test, nil
 	}
@@ -1368,15 +1368,15 @@ type HelmOpts struct {
 	//
 	// Version (image tag) to use from the official image repository as a base container.
 	//
-	Version string // helm (../../../.dagger/helm/main.go:27:2)
+	Version string // helm (../../../../../.dagger/modules/helm/main.go:27:2)
 	//
 	// Custom container to use as a base container.
 	//
-	Container *Container // helm (../../../.dagger/helm/main.go:31:2)
+	Container *Container // helm (../../../../../.dagger/modules/helm/main.go:31:2)
 }
 
 // The package manager for Kubernetes.
-func (r *Query) Helm(opts ...HelmOpts) *Helm { // helm (../../../.dagger/helm/main.go:24:1)
+func (r *Query) Helm(opts ...HelmOpts) *Helm { // helm (../../../../../.dagger/modules/helm/main.go:24:1)
 	q := r.query.Select("helm")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `version` optional argument

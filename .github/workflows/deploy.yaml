@@ -23,7 +23,7 @@ jobs:
 
       - name: Deploy
         run: |
-          dagger --x-release=v1.0.0-beta.6 \
+          dagger --x-release=v1.0.0-beta.7 \
           --progress=logs \
           api call build-and-deploy \
           --registry-password=env://GH_API_KEY \

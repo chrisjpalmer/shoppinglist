@@ -10,7 +10,7 @@ import (
 )
 
 // Retrieve the binding value, as type Frontend
-func (r *Binding) AsFrontend() *Frontend { // frontend (../../../frontend/.dagger/main.go:30:6)
+func (r *Binding) AsFrontend() *Frontend { // frontend (../../../../../frontend/.dagger/main.go:30:6)
 	q := r.query.Select("asFrontend")
 
 	return &Frontend{
@@ -19,7 +19,7 @@ func (r *Binding) AsFrontend() *Frontend { // frontend (../../../frontend/.dagge
 }
 
 // Create or update a binding of type Frontend in the environment
-func (r *Env) WithFrontendInput(name string, value *Frontend, description string) *Env { // frontend (../../../frontend/.dagger/main.go:30:6)
+func (r *Env) WithFrontendInput(name string, value *Frontend, description string) *Env { // frontend (../../../../../frontend/.dagger/main.go:30:6)
 	assertNotNil("value", value)
 	q := r.query.Select("withFrontendInput")
 	q = q.Arg("name", name)
@@ -32,7 +32,7 @@ func (r *Env) WithFrontendInput(name string, value *Frontend, description string
 }
 
 // Declare a desired Frontend output to be assigned in the environment
-func (r *Env) WithFrontendOutput(name string, description string) *Env { // frontend (../../../frontend/.dagger/main.go:30:6)
+func (r *Env) WithFrontendOutput(name string, description string) *Env { // frontend (../../../../../frontend/.dagger/main.go:30:6)
 	q := r.query.Select("withFrontendOutput")
 	q = q.Arg("name", name)
 	q = q.Arg("description", description)
@@ -42,7 +42,7 @@ func (r *Env) WithFrontendOutput(name string, description string) *Env { // fron
 	}
 }
 
-type Frontend struct { // frontend (../../../frontend/.dagger/main.go:30:6)
+type Frontend struct { // frontend (../../../../../frontend/.dagger/main.go:30:6)
 	query *querybuilder.Selection
 
 	id      *ID
@@ -55,7 +55,7 @@ func (r *Frontend) WithGraphQLQuery(q *querybuilder.Selection) *Frontend {
 	}
 }
 
-func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dagger/main.go:46:1)
+func (r *Frontend) BuildCheck() *Container { // frontend (../../../../../frontend/.dagger/main.go:46:1)
 	q := r.query.Select("buildCheck")
 
 	return &Container{
@@ -64,7 +64,7 @@ func (r *Frontend) BuildCheck() *Container { // frontend (../../../frontend/.dag
 }
 
 // FrontendService - runs the frontend service inside a container
-func (r *Frontend) FrontendService() *Service { // frontend (../../../frontend/.dagger/service.go:25:1)
+func (r *Frontend) FrontendService() *Service { // frontend (../../../../../frontend/.dagger/service.go:25:1)
 	q := r.query.Select("frontendService")
 
 	return &Service{
@@ -73,7 +73,7 @@ func (r *Frontend) FrontendService() *Service { // frontend (../../../frontend/.
 }
 
 // GenerateProtos - generate protobuf codegen from .proto files
-func (r *Frontend) GenerateProtos() *Changeset { // frontend (../../../frontend/.dagger/generated.go:9:1)
+func (r *Frontend) GenerateProtos() *Changeset { // frontend (../../../../../frontend/.dagger/generated.go:9:1)
 	q := r.query.Select("generateProtos")
 
 	return &Changeset{
@@ -130,7 +130,7 @@ func (r *Frontend) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../frontend/.dagger/main.go:89:1)
+func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // frontend (../../../../../frontend/.dagger/main.go:89:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -142,7 +142,7 @@ func (r *Frontend) Publish(ctx context.Context, tag string, registryPassword *Se
 	return q.Execute(ctx)
 }
 
-func (r *Frontend) Src() *Directory { // frontend (../../../frontend/.dagger/main.go:33:2)
+func (r *Frontend) Src() *Directory { // frontend (../../../../../frontend/.dagger/main.go:33:2)
 	q := r.query.Select("src")
 
 	return &Directory{
@@ -160,7 +160,7 @@ func (r *Frontend) AsNode() Node {
 
 // FrontendOpts contains options for Query.Frontend
 type FrontendOpts struct {
-	Ws *Workspace // frontend (../../../frontend/.dagger/main.go:37:2)
+	Ws *Workspace // frontend (../../../../../frontend/.dagger/main.go:37:2)
 }
 
 // A generated module for Frontend functions
@@ -176,7 +176,7 @@ type FrontendOpts struct {
 // The first line in this comment block is a short description line and the
 // rest is a long description with more detail on the module's purpose or usage,
 // if appropriate. All modules should have a short description.
-func (r *Query) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../../frontend/.dagger/main.go:36:1)
+func (r *Query) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../../../../frontend/.dagger/main.go:36:1)
 	q := r.query.Select("frontend")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `ws` optional argument
