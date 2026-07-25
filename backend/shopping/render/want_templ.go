@@ -421,9 +421,9 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 									}
 									ctx = templ.InitializeContext(ctx)
 									var templ_7745c5c3_Var21 string
-									templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(w.Required)
+									templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(w.Planned)
 									if templ_7745c5c3_Err != nil {
-										return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 51, Col: 36}
+										return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 51, Col: 35}
 									}
 									_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 									if templ_7745c5c3_Err != nil {
@@ -542,7 +542,7 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 									return templ_7745c5c3_Err
 								}
 								var totalTd components.TdOpts
-								if w.Total != w.Required {
+								if w.Required != w.Planned {
 									totalTd.Classes = []string{"text-red-500"}
 								}
 								templ_7745c5c3_Var25 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -558,9 +558,9 @@ func WantPage(pageContext page.Context, wantItems []page.WantItem) templ.Compone
 									}
 									ctx = templ.InitializeContext(ctx)
 									var templ_7745c5c3_Var26 string
-									templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(w.Total)
+									templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(w.Required)
 									if templ_7745c5c3_Err != nil {
-										return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 97, Col: 40}
+										return templ.Error{Err: templ_7745c5c3_Err, FileName: `shopping/render/want.templ`, Line: 97, Col: 43}
 									}
 									_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 									if templ_7745c5c3_Err != nil {

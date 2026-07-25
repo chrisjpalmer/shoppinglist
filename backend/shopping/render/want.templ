@@ -48,7 +48,7 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 					} else {
 						@components.Tr() {
 							@components.Td(){ {w.Ingredient} }
-							@components.Td(){ {w.Required} }
+							@components.Td(){ {w.Planned} }
 							@components.Td(){ 
 								{{ 
 									var bg string
@@ -90,11 +90,11 @@ templ WantPage(pageContext page.Context, wantItems []page.WantItem) {
 							}
 							{{ 
 								var totalTd components.TdOpts
-								if w.Total != w.Required {
+								if w.Required != w.Planned {
 								totalTd.Classes = []string{"text-red-500"}
 								}
 							}}
-							@components.Td(totalTd){ {w.Total} }
+							@components.Td(totalTd){ {w.Required} }
 						}
 					}
 				}

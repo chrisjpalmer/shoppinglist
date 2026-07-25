@@ -27,9 +27,9 @@ type WantItem struct {
 	Ingredient    string
 	MinCount      int
 	MaxCount      int
-	Required      int
+	Planned       int
 	OverrideCount int
-	Total         int
+	Required      int
 }
 
 // GotItem - an item to display on the got page
