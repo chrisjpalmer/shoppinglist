@@ -12,10 +12,6 @@ import (
 type Backend struct { // backend (../../../../:0:0)
 	query *querybuilder.Selection
 
-	checkProtos               *Void
-	checkSqlc                 *Void
-	checkTailwind             *Void
-	checkTempl                *Void
 	id                        *ID
 	migrateCheck              *Void
 	publish                   *Void
@@ -47,46 +43,6 @@ func (r *Backend) BuildCheck() *Container {
 	return &Container{
 		query: q,
 	}
-}
-
-// CheckProtos - check that the working tree's proto generated files are in sync.
-func (r *Backend) CheckProtos(ctx context.Context) error {
-	if r.checkProtos != nil {
-		return nil
-	}
-	q := r.query.Select("checkProtos")
-
-	return q.Execute(ctx)
-}
-
-// CheckSqlc - check that the working tree's sqlc generated files are in sync.
-func (r *Backend) CheckSqlc(ctx context.Context) error {
-	if r.checkSqlc != nil {
-		return nil
-	}
-	q := r.query.Select("checkSqlc")
-
-	return q.Execute(ctx)
-}
-
-// CheckTailwind checks that maintw.css file is in sync
-func (r *Backend) CheckTailwind(ctx context.Context) error {
-	if r.checkTailwind != nil {
-		return nil
-	}
-	q := r.query.Select("checkTailwind")
-
-	return q.Execute(ctx)
-}
-
-// CheckTempl - check that the working tree's templ generated files are in sync.
-func (r *Backend) CheckTempl(ctx context.Context) error {
-	if r.checkTempl != nil {
-		return nil
-	}
-	q := r.query.Select("checkTempl")
-
-	return q.Execute(ctx)
 }
 
 // GenerateProtos - generate protobuf codegen from .proto files
