@@ -16,47 +16,15 @@ Use this when you need to make code changes to dagger functions.
 Dagger is a framework for CI/CD. Dagger modules are go projects that call the dagger API.
 
 Dagger modules have two parts:
-  - dagger codegen - lives in `dagger.gen.go` and `internal/dagger.gen.go`
+  - dagger codegen - `*.gen.go` files
   - user defined functions - lives in all other go files.
   
 Do not read/edit dagger codegen files.
 
-## Dagger modules
+## Dagger workspace/modules
 
-A `dagger.json` file defines a dagger module. Module source is located
-in the "dagger module directory".
-
-When examining `dagger.json` the "dagger module directory" is:
-
-- The value of `.source`
-- If `.source` doesn't exist, the directory containing `dagger.json`
-
-### With `.source` example
-
-`my-project/dagger.json`:
-
-```json
-{
-  "name": "my-project",
-  "engineVersion": "v0.20.3",
-  "source": ".dagger"
-}
-```
-
-The "dagger module directory" is: `my-project/.dagger`.
-
-### Without `.source` example:
-
-`my-project/dagger.json`:
-
-```json
-{
-  "name": "my-project",
-  "engineVersion": "v0.20.3"
-}
-```
-
-The "dagger module directory" is: `my-project`.
+- A `dagger.toml` defines a dagger workspace which installs several modules.
+- A `dagger-module.toml` defines a dagger module.
 
 ## Dagger functions
 
@@ -71,13 +39,13 @@ func (m *MainModule) GreetPerson(name string) error {
 Functions are called on the command line like so
 
 ```bash
-dagger call greet-person --name=chris
+dagger api call main-module greet-person --name=chris
 ```
 
 Generalised as:
 
 ```bash
-dagger call <function-name> --<param1>=value ... --<param-n>=value
+dagger api call main-module <function-name> --<param1>=value ... --<param-n>=value
 ```
 
 Function names and parameters must be specified in kebab case when using them over the command line.
@@ -144,16 +112,10 @@ func (m *MainModule) CheckConfigFile(ctx context.Context) error {
 }
 ```
 
-To run all dagger checks, use this command:
+To run all dagger checks, use this command from the root of the project:
 
 ```bash
-dagger checks
-```
-
-To list dagger checks, use this command:
-
-```bash
-dagger checks -l
+dagger check
 ```
 
 ## Dagger generate functions
@@ -175,24 +137,16 @@ func (m *MainModule) GenerateTestData(ctx context.Context) (*dagger.Changeset, e
 }
 ```
 
-To run all dagger generate functions, use the this command:
+To run all dagger generate functions, use the this command from the root of the project:
 
 ```bash
 dagger generate -y
-```
-
-To list generate functions, use the this command:
-
-```bash
-dagger generate -l
 ```
 
 ## Code changes workflow
 
 Follow this workflow when making changes:
 
-1. Determine the "dagger module directory" from the `dagger.json`.
-2. Make changes to files in the "dagger module directory".
-3. Run `dagger develop` from the "dagger module directory" to regenerate dagger codegen.
-3. Run `go vet ./...` in the "dagger module directory", to verify there are no errors.
-4. If `go vet ./...` passes, call `dagger checks`.
+1. Make changes to files in the dagger module.
+2. Run `go vet ./...` in the dagger module directory, to verify there are no errors.
+4. If `go vet ./...` passes, call `dagger check` from the root of the project.
