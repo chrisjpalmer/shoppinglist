@@ -185,11 +185,11 @@ func (s *Server) wantItems(ctx context.Context) ([]page.WantItem, error) {
 			ww = append(ww, page.WantItem{
 				ID:            ing.ID,
 				Ingredient:    ing.Name,
-				Required:      int(ing.PlannedCount),
+				Planned:       int(ing.PlannedCount),
 				MinCount:      int(ing.MinCount),
 				MaxCount:      int(ing.MaxCount),
 				OverrideCount: int(ing.WantOverrideCount),
-				Total:         int(ing.RequiredCount),
+				Required:      int(ing.RequiredCount),
 			})
 		}
 	}
