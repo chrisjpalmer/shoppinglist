@@ -26,6 +26,7 @@ import (
 )
 
 type Shoppinglist struct {
+	// +private
 	Backend  *dagger.Directory
 	Frontend *dagger.Directory
 }
@@ -111,7 +112,7 @@ func (m *Shoppinglist) publishBackend(ctx context.Context, ws *dagger.Workspace,
 	ctx, span := Tracer().Start(ctx, "publish-backend")
 	defer telemetry.EndWithCause(span, &rerr)
 
-	return dag.Backend(dagger.BackendOpts{Ws: ws}).Publish(ctx, tag, registryPassword)
+	return dag.Backend("", dagger.BackendOpts{Ws: ws}).Publish(ctx, tag, registryPassword)
 }
 
 func (m *Shoppinglist) publishFrontend(ctx context.Context, ws *dagger.Workspace, tag string, registryPassword *dagger.Secret) (rerr error) {

@@ -34,14 +34,6 @@ func (r *Shoppinglist) WithGraphQLQuery(q *querybuilder.Selection) *Shoppinglist
 	}
 }
 
-func (r *Shoppinglist) Backend() *Directory {
-	q := r.query.Select("backend")
-
-	return &Directory{
-		query: q,
-	}
-}
-
 func (r *Shoppinglist) Build(ctx context.Context, ws *Workspace, tag string, registryPassword *Secret) error {
 	assertNotNil("ws", ws)
 	assertNotNil("registryPassword", registryPassword)

@@ -5,6 +5,9 @@ entrypoint = true
 [modules.backend]
 source = "backend/.dagger"
 
+[modules.backend.settings]
+person = "chris"
+
 [modules.dagger-go-sdk]
 source = "github.com/dagger/go-sdk"
 

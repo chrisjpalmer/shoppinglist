@@ -63,9 +63,11 @@ func (r Backend) MarshalJSON() ([]byte, error) {
 	var concrete struct {
 		RootSrc *dagger.Directory
 		Src     *dagger.Directory
+		Person  string
 	}
 	concrete.RootSrc = r.RootSrc
 	concrete.Src = r.Src
+	concrete.Person = r.Person
 	return json.Marshal(&concrete)
 }
 
@@ -73,6 +75,7 @@ func (r *Backend) UnmarshalJSON(bs []byte) error {
 	var concrete struct {
 		RootSrc *dagger.Directory
 		Src     *dagger.Directory
+		Person  string
 	}
 	err := json.Unmarshal(bs, &concrete)
 	if err != nil {
@@ -80,6 +83,7 @@ func (r *Backend) UnmarshalJSON(bs []byte) error {
 	}
 	r.RootSrc = concrete.RootSrc
 	r.Src = concrete.Src
+	r.Person = concrete.Person
 	return nil
 }
 
@@ -251,6 +255,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			return (*Backend).GenerateTempl(&parent, ctx)
+		case "Greet":
+			var parent Backend
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Backend).Greet(&parent), nil
 		case "MigrateCheck":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
@@ -327,7 +338,14 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ws", err))
 				}
 			}
-			return New(ws), nil
+			var person string
+			if inputArgs["person"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["person"]), &person)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg person", err))
+				}
+			}
+			return New(ws, person), nil
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
@@ -373,6 +391,10 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 							WithSourceMap(dag.SourceMap("generated.go", 40, 1)).
 							WithGenerator()).
 					WithFunction(
+						dag.Function("Greet",
+							dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)).
+							WithSourceMap(dag.SourceMap("main.go", 44, 1))).
+					WithFunction(
 						dag.Function("MigrateCheck",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
 							WithDescription("MigrateCheck - checks whether the previous schema on the master branch\ncan be successfully migrated to the new schema").
@@ -388,9 +410,9 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 						dag.Function("Publish",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
 							WithCachePolicy(dagger.FunctionCachePolicyNever).
-							WithSourceMap(dag.SourceMap("main.go", 42, 1)).
-							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 44, 2)}).
-							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 45, 2)})).
+							WithSourceMap(dag.SourceMap("main.go", 49, 1)).
+							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 51, 2)}).
+							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 52, 2)})).
 					WithFunction(
 						dag.Function("TestMigrationToolsNODB",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
@@ -412,8 +434,9 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					WithConstructor(
 						dag.Function("New",
 							dag.TypeDef().WithObject("Backend")).
-							WithSourceMap(dag.SourceMap("main.go", 32, 1)).
-							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 33, 2)}))), nil
+							WithSourceMap(dag.SourceMap("main.go", 34, 1)).
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 35, 2)}).
+							WithArg("person", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 36, 2)}))), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}

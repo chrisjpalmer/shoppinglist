@@ -27,15 +27,23 @@ type Backend struct {
 	RootSrc *dagger.Directory
 	// +private
 	Src *dagger.Directory
+	// +private
+	Person string
 }
 
 func New(
 	ws *dagger.Workspace,
+	person string,
 ) *Backend {
 	return &Backend{
+		Person:  person,
 		RootSrc: ws.Directory("/", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
 		Src:     ws.Directory("/backend", dagger.WorkspaceDirectoryOpts{Gitignore: true}),
 	}
+}
+
+func (m *Backend) Greet() string {
+	return "hello " + m.Person
 }
 
 // +cache="never"

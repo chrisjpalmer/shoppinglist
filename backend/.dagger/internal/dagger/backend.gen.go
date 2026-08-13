@@ -12,6 +12,7 @@ import (
 type Backend struct { // backend (../../../../:0:0)
 	query *querybuilder.Selection
 
+	greet                     *string
 	id                        *ID
 	migrateCheck              *Void
 	publish                   *Void
@@ -79,6 +80,18 @@ func (r *Backend) GenerateTempl() *Changeset {
 	return &Changeset{
 		query: q,
 	}
+}
+
+func (r *Backend) Greet(ctx context.Context) (string, error) {
+	if r.greet != nil {
+		return *r.greet, nil
+	}
+	q := r.query.Select("greet")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
 }
 
 // A unique identifier for this Backend.
@@ -194,10 +207,11 @@ func (r *Backend) TestMigrationToolsWithDb(ctx context.Context) error {
 	return q.Execute(ctx)
 }
 
-func (r *Query) Backend(ws *Workspace) *Backend { // backend (../../../../:0:0)
+func (r *Query) Backend(ws *Workspace, person string) *Backend { // backend (../../../../:0:0)
 	assertNotNil("ws", ws)
 	q := r.query.Select("backend")
 	q = q.Arg("ws", ws)
+	q = q.Arg("person", person)
 
 	return &Backend{
 		query: q,
