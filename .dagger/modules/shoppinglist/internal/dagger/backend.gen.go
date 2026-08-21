@@ -26,20 +26,11 @@ func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
 	}
 }
 
-// BackendBackendServiceOpts contains options for Backend.BackendService
-type BackendBackendServiceOpts struct {
-	Ws *Workspace // backend (../../../../../backend/.dagger/service.go:17:55)
-}
-
 // BackendService - runs the backend service inside a container
-func (r *Backend) BackendService(opts ...BackendBackendServiceOpts) *Service { // backend (../../../../../backend/.dagger/service.go:17:1)
+func (r *Backend) BackendService(ws *Workspace) *Service { // backend (../../../../../backend/.dagger/service.go:17:1)
+	assertNotNil("ws", ws)
 	q := r.query.Select("backendService")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `ws` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Ws) {
-			q = q.Arg("ws", opts[i].Ws)
-		}
-	}
+	q = q.Arg("ws", ws)
 
 	return &Service{
 		query: q,
@@ -211,44 +202,6 @@ func (r *Backend) AsNode() Node {
 	}
 }
 
-// Retrieve the binding value, as type Backend
-func (r *Binding) AsBackend() *Backend { // backend (../../../../../backend/.dagger/main.go:25:6)
-	q := r.query.Select("asBackend")
-
-	return &Backend{
-		query: q,
-	}
-}
-
-// Create or update a binding of type Backend in the environment
-func (r *Env) WithBackendInput(name string, value *Backend, description string) *Env { // backend (../../../../../backend/.dagger/main.go:25:6)
-	assertNotNil("value", value)
-	q := r.query.Select("withBackendInput")
-	q = q.Arg("name", name)
-	q = q.Arg("value", value)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// Declare a desired Backend output to be assigned in the environment
-func (r *Env) WithBackendOutput(name string, description string) *Env { // backend (../../../../../backend/.dagger/main.go:25:6)
-	q := r.query.Select("withBackendOutput")
-	q = q.Arg("name", name)
-	q = q.Arg("description", description)
-
-	return &Env{
-		query: q,
-	}
-}
-
-// BackendOpts contains options for Query.Backend
-type BackendOpts struct {
-	Ws *Workspace // backend (../../../../../backend/.dagger/main.go:33:2)
-}
-
 // A generated module for Backend functions
 //
 // This module has been generated via dagger init and serves as a reference to
@@ -262,14 +215,10 @@ type BackendOpts struct {
 // The first line in this comment block is a short description line and the
 // rest is a long description with more detail on the module's purpose or usage,
 // if appropriate. All modules should have a short description.
-func (r *Query) Backend(opts ...BackendOpts) *Backend { // backend (../../../../../backend/.dagger/main.go:32:1)
+func (r *Query) Backend(ws *Workspace) *Backend { // backend (../../../../../backend/.dagger/main.go:32:1)
+	assertNotNil("ws", ws)
 	q := r.query.Select("backend")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `ws` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Ws) {
-			q = q.Arg("ws", opts[i].Ws)
-		}
-	}
+	q = q.Arg("ws", ws)
 
 	return &Backend{
 		query: q,
