@@ -82,7 +82,7 @@ func (r *Backend) GenerateTempl() *Changeset { // backend (../../../../../backen
 	}
 }
 
-func (r *Backend) Greet(ctx context.Context) (string, error) { // backend (../../../../../backend/.dagger/main.go:45:1)
+func (r *Backend) Greet(ctx context.Context) (string, error) { // backend (../../../../../backend/.dagger/main.go:46:1)
 	if r.greet != nil {
 		return *r.greet, nil
 	}
@@ -165,7 +165,7 @@ func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../../..
 	}
 }
 
-func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../../../backend/.dagger/main.go:50:1)
+func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../../../backend/.dagger/main.go:51:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil

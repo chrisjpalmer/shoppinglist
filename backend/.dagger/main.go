@@ -42,6 +42,7 @@ func New(
 	}
 }
 
+// +check
 func (m *Backend) Greet() string {
 	return "hello " + m.Person
 }

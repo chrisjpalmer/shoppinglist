@@ -393,7 +393,8 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					WithFunction(
 						dag.Function("Greet",
 							dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)).
-							WithSourceMap(dag.SourceMap("main.go", 45, 1))).
+							WithSourceMap(dag.SourceMap("main.go", 46, 1)).
+							WithCheck()).
 					WithFunction(
 						dag.Function("MigrateCheck",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
@@ -410,9 +411,9 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 						dag.Function("Publish",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
 							WithCachePolicy(dagger.FunctionCachePolicyNever).
-							WithSourceMap(dag.SourceMap("main.go", 50, 1)).
-							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 52, 2)}).
-							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 53, 2)})).
+							WithSourceMap(dag.SourceMap("main.go", 51, 1)).
+							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 53, 2)}).
+							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 54, 2)})).
 					WithFunction(
 						dag.Function("TestMigrationToolsNODB",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
