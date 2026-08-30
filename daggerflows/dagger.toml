@@ -1,8 +1,8 @@
 [modules.backend]
-source = "github.com/chrisjpalmer/shoppinglist/backend/.dagger@feature/workspaces-test"
+source = "../backend/.dagger"
 
 [modules.backend.settings]
 person = "luke"
 
 [modules.frontend]
-source = "github.com/chrisjpalmer/shoppinglist/frontend/.dagger@feature/workspaces-test"
+source = "../frontend/.dagger"

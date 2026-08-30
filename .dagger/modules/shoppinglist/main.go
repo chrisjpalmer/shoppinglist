@@ -112,14 +112,14 @@ func (m *Shoppinglist) publishBackend(ctx context.Context, ws *dagger.Workspace,
 	ctx, span := Tracer().Start(ctx, "publish-backend")
 	defer telemetry.EndWithCause(span, &rerr)
 
-	return dag.Backend("", dagger.BackendOpts{Ws: ws}).Publish(ctx, tag, registryPassword)
+	return dag.Backend(ws, "garry").Publish(ctx, tag, registryPassword)
 }
 
 func (m *Shoppinglist) publishFrontend(ctx context.Context, ws *dagger.Workspace, tag string, registryPassword *dagger.Secret) (rerr error) {
 	ctx, span := Tracer().Start(ctx, "publish-frontend")
 	defer telemetry.EndWithCause(span, &rerr)
 
-	return dag.Frontend(dagger.FrontendOpts{Ws: ws}).Publish(ctx, tag, registryPassword)
+	return dag.Frontend(ws).Publish(ctx, tag, registryPassword)
 }
 
 func (m *Shoppinglist) deployBackend(

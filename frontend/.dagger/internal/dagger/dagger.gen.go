@@ -7629,15 +7629,6 @@ func (r *GitRepository) UnmarshalJSON(bs []byte) error {
 	return nil
 }
 
-// Returns details for the latest semver tag.
-func (r *GitRepository) LatestVersion() *GitRef {
-	q := r.query.Select("latestVersion")
-
-	return &GitRef{
-		query: q,
-	}
-}
-
 // Returns details of a ref.
 func (r *GitRepository) Ref(name string) *GitRef {
 	q := r.query.Select("ref")
@@ -8480,13 +8471,12 @@ func (r *JSONValue) AsNode() Node {
 type LLM struct {
 	query *querybuilder.Selection
 
-	hasPending *bool
-	id         *ID
-	lastReply  *string
-	model      *string
-	provider   *string
-	sync       *ID
-	tools      *string
+	id        *ID
+	lastReply *string
+	model     *string
+	provider  *string
+	sync      *ID
+	tools     *string
 }
 type WithLLMFunc func(r *LLM) *LLM
 
@@ -8511,19 +8501,6 @@ func (r *LLM) Attempt(number int) *LLM {
 	return &LLM{
 		query: q,
 	}
-}
-
-// Report whether anything is queued to send to the model: an unsent prompt or unevaluated tool results. When true, another step will do work; when false, the turn is complete.
-func (r *LLM) HasPending(ctx context.Context) (bool, error) {
-	if r.hasPending != nil {
-		return *r.hasPending, nil
-	}
-	q := r.query.Select("hasPending")
-
-	var response bool
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
 }
 
 // A unique identifier for this LLM.

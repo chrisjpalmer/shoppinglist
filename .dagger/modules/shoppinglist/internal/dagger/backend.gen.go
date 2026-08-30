@@ -27,20 +27,11 @@ func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
 	}
 }
 
-// BackendBackendServiceOpts contains options for Backend.BackendService
-type BackendBackendServiceOpts struct {
-	Ws *Workspace // backend (../../../../../backend/.dagger/service.go:17:55)
-}
-
 // BackendService - runs the backend service inside a container
-func (r *Backend) BackendService(opts ...BackendBackendServiceOpts) *Service { // backend (../../../../../backend/.dagger/service.go:17:1)
+func (r *Backend) BackendService(ws *Workspace) *Service { // backend (../../../../../backend/.dagger/service.go:17:1)
+	assertNotNil("ws", ws)
 	q := r.query.Select("backendService")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `ws` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Ws) {
-			q = q.Arg("ws", opts[i].Ws)
-		}
-	}
+	q = q.Arg("ws", ws)
 
 	return &Service{
 		query: q,
@@ -91,7 +82,7 @@ func (r *Backend) GenerateTempl() *Changeset { // backend (../../../../../backen
 	}
 }
 
-func (r *Backend) Greet(ctx context.Context) (string, error) { // backend (../../../../../backend/.dagger/main.go:44:1)
+func (r *Backend) Greet(ctx context.Context) (string, error) { // backend (../../../../../backend/.dagger/main.go:45:1)
 	if r.greet != nil {
 		return *r.greet, nil
 	}
@@ -174,7 +165,7 @@ func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../../..
 	}
 }
 
-func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../../../backend/.dagger/main.go:49:1)
+func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../../../backend/.dagger/main.go:50:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -224,11 +215,6 @@ func (r *Backend) AsNode() Node {
 	}
 }
 
-// BackendOpts contains options for Query.Backend
-type BackendOpts struct {
-	Ws *Workspace // backend (../../../../../backend/.dagger/main.go:35:2)
-}
-
 // A generated module for Backend functions
 //
 // This module has been generated via dagger init and serves as a reference to
@@ -242,14 +228,10 @@ type BackendOpts struct {
 // The first line in this comment block is a short description line and the
 // rest is a long description with more detail on the module's purpose or usage,
 // if appropriate. All modules should have a short description.
-func (r *Query) Backend(person string, opts ...BackendOpts) *Backend { // backend (../../../../../backend/.dagger/main.go:34:1)
+func (r *Query) Backend(ws *Workspace, person string) *Backend { // backend (../../../../../backend/.dagger/main.go:34:1)
+	assertNotNil("ws", ws)
 	q := r.query.Select("backend")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `ws` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Ws) {
-			q = q.Arg("ws", opts[i].Ws)
-		}
-	}
+	q = q.Arg("ws", ws)
 	q = q.Arg("person", person)
 
 	return &Backend{

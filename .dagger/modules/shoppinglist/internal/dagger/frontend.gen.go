@@ -125,11 +125,6 @@ func (r *Frontend) AsNode() Node {
 	}
 }
 
-// FrontendOpts contains options for Query.Frontend
-type FrontendOpts struct {
-	Ws *Workspace // frontend (../../../../../frontend/.dagger/main.go:37:2)
-}
-
 // A generated module for Frontend functions
 //
 // This module has been generated via dagger init and serves as a reference to
@@ -143,14 +138,10 @@ type FrontendOpts struct {
 // The first line in this comment block is a short description line and the
 // rest is a long description with more detail on the module's purpose or usage,
 // if appropriate. All modules should have a short description.
-func (r *Query) Frontend(opts ...FrontendOpts) *Frontend { // frontend (../../../../../frontend/.dagger/main.go:36:1)
+func (r *Query) Frontend(ws *Workspace) *Frontend { // frontend (../../../../../frontend/.dagger/main.go:36:1)
+	assertNotNil("ws", ws)
 	q := r.query.Select("frontend")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `ws` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Ws) {
-			q = q.Arg("ws", opts[i].Ws)
-		}
-	}
+	q = q.Arg("ws", ws)
 
 	return &Frontend{
 		query: q,
