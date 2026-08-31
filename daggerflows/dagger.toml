@@ -2,7 +2,7 @@
 source = "../backend/.dagger"
 
 [modules.backend.settings]
-person = "luke"
+person = "chris"
 
 [modules.frontend]
 source = "../frontend/.dagger"

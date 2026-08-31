@@ -17,6 +17,7 @@ package main
 import (
 	"context"
 	"dagger/backend/internal/dagger"
+	"errors"
 	"fmt"
 
 	"golang.org/x/sync/errgroup"
@@ -43,8 +44,11 @@ func New(
 }
 
 // +check
-func (m *Backend) Greet() string {
-	return "hello " + m.Person
+func (m *Backend) Greet() (string, error) {
+	if m.Person == "chris" {
+		return "", errors.New("I dont greet chris")
+	}
+	return "hello " + m.Person, nil
 }
 
 // +cache="never"

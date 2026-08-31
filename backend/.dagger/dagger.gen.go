@@ -261,7 +261,7 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			return (*Backend).Greet(&parent), nil
+			return (*Backend).Greet(&parent)
 		case "MigrateCheck":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
@@ -353,7 +353,7 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 		return dag.Module().
 			WithDescription("A generated module for Backend functions\n\nThis module has been generated via dagger init and serves as a reference to\nbasic module structure as you get started with Dagger.\n\nTwo functions have been pre-created. You can modify, delete, or add to them,\nas needed. They demonstrate usage of arguments and return types using simple\necho and grep commands. The functions can be called from the dagger CLI or\nfrom one of the SDKs.\n\nThe first line in this comment block is a short description line and the\nrest is a long description with more detail on the module's purpose or usage,\nif appropriate. All modules should have a short description.\n").
 			WithObject(
-				dag.TypeDef().WithObject("Backend", dagger.TypeDefWithObjectOpts{SourceMap: dag.SourceMap("main.go", 25, 6)}).
+				dag.TypeDef().WithObject("Backend", dagger.TypeDefWithObjectOpts{SourceMap: dag.SourceMap("main.go", 26, 6)}).
 					WithFunction(
 						dag.Function("BackendService",
 							dag.TypeDef().WithObject("Service")).
@@ -393,7 +393,7 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					WithFunction(
 						dag.Function("Greet",
 							dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)).
-							WithSourceMap(dag.SourceMap("main.go", 46, 1)).
+							WithSourceMap(dag.SourceMap("main.go", 47, 1)).
 							WithCheck()).
 					WithFunction(
 						dag.Function("MigrateCheck",
@@ -411,9 +411,9 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 						dag.Function("Publish",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
 							WithCachePolicy(dagger.FunctionCachePolicyNever).
-							WithSourceMap(dag.SourceMap("main.go", 51, 1)).
-							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 53, 2)}).
-							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 54, 2)})).
+							WithSourceMap(dag.SourceMap("main.go", 55, 1)).
+							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 57, 2)}).
+							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 58, 2)})).
 					WithFunction(
 						dag.Function("TestMigrationToolsNODB",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
@@ -435,9 +435,9 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					WithConstructor(
 						dag.Function("New",
 							dag.TypeDef().WithObject("Backend")).
-							WithSourceMap(dag.SourceMap("main.go", 34, 1)).
-							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 35, 2)}).
-							WithArg("person", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 36, 2)}))), nil
+							WithSourceMap(dag.SourceMap("main.go", 35, 1)).
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 36, 2)}).
+							WithArg("person", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 37, 2)}))), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}

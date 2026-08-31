@@ -9,7 +9,7 @@ import (
 	"github.com/dagger/querybuilder"
 )
 
-type Backend struct { // backend (../../../../../backend/.dagger/main.go:25:6)
+type Backend struct { // backend (../../../../../backend/.dagger/main.go:26:6)
 	query *querybuilder.Selection
 
 	greet                     *string
@@ -82,7 +82,7 @@ func (r *Backend) GenerateTempl() *Changeset { // backend (../../../../../backen
 	}
 }
 
-func (r *Backend) Greet(ctx context.Context) (string, error) { // backend (../../../../../backend/.dagger/main.go:46:1)
+func (r *Backend) Greet(ctx context.Context) (string, error) { // backend (../../../../../backend/.dagger/main.go:47:1)
 	if r.greet != nil {
 		return *r.greet, nil
 	}
@@ -165,7 +165,7 @@ func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../../..
 	}
 }
 
-func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../../../backend/.dagger/main.go:51:1)
+func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../../../backend/.dagger/main.go:55:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -228,7 +228,7 @@ func (r *Backend) AsNode() Node {
 // The first line in this comment block is a short description line and the
 // rest is a long description with more detail on the module's purpose or usage,
 // if appropriate. All modules should have a short description.
-func (r *Query) Backend(ws *Workspace, person string) *Backend { // backend (../../../../../backend/.dagger/main.go:34:1)
+func (r *Query) Backend(ws *Workspace, person string) *Backend { // backend (../../../../../backend/.dagger/main.go:35:1)
 	assertNotNil("ws", ws)
 	q := r.query.Select("backend")
 	q = q.Arg("ws", ws)
