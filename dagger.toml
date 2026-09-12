@@ -2,6 +2,10 @@
 source = ".dagger/modules/shoppinglist"
 entrypoint = true
 
+[modules.shoppinglist.settings]
+registryPassword="file://./local/GH_API_KEY"
+kubeEnv="file://./local/kubecfg_rpi.yaml"
+
 [modules.backend]
 source = "backend/.dagger"
 
@@ -32,3 +36,10 @@ name = "backend"
 [sdks.go.scopes."frontend/.dagger"]
 is-module = true
 name = "frontend"
+
+[env.ci]
+
+[env.ci.modules.shoppinglist.settings]
+registryPassword = "env://GH_API_KEY"
+kubeEnv = "env://KUBECTL_FILE"
+
