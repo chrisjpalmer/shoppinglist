@@ -6,8 +6,7 @@ engineVersion = "v0.21.7"
 
 [[dependencies]]
   name = "registry-config"
-  source = "github.com/dagger/dagger/toolchains/release/registry-config@v0.19.11"
-  pin = "d8811256e5e901e6760f7011431080fedd61fc47"
+  source = "github.com/dagger/dagger/toolchains/release/registry-config@d8811256e5e901e6760f7011431080fedd61fc47"
 
 [codegen]
   automaticGitignore = false

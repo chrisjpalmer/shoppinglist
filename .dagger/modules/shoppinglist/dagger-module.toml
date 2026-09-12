@@ -5,16 +5,16 @@ engineVersion = "v0.21.7"
   source = "go"
 
 [[dependencies]]
-  name = "helm"
-  source = "../helm"
-
-[[dependencies]]
   name = "backend"
   source = "../../../backend/.dagger"
 
 [[dependencies]]
   name = "frontend"
   source = "../../../frontend/.dagger"
+
+[[dependencies]]
+  name = "helm"
+  source = "../helm"
 
 [codegen]
   automaticGitignore = false

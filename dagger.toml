@@ -11,17 +11,24 @@ source = "github.com/dagger/go-sdk"
 [modules.frontend]
 source = "frontend/.dagger"
 
-[modules.dagger-go-sdk.as-sdk]
-name = "go"
 
-[[modules.dagger-go-sdk.as-sdk.modules]]
-path = ".dagger/modules/shoppinglist"
+[sdks.go]
+module = "dagger-go-sdk"
 
-[[modules.dagger-go-sdk.as-sdk.modules]]
-path = ".dagger/modules/helm"
+[sdks.go.scopes.".dagger/modules/helm"]
+is-module = true
+clients = ["github.com/dagger/dagger/toolchains/release/registry-config@d8811256e5e901e6760f7011431080fedd61fc47"]
+name = "helm"
 
-[[modules.dagger-go-sdk.as-sdk.modules]]
-path = "backend/.dagger"
+[sdks.go.scopes.".dagger/modules/shoppinglist"]
+is-module = true
+clients = ["./.dagger/modules/helm", "./backend/.dagger", "./frontend/.dagger"]
+name = "shoppinglist"
 
-[[modules.dagger-go-sdk.as-sdk.modules]]
-path = "frontend/.dagger"
+[sdks.go.scopes."backend/.dagger"]
+is-module = true
+name = "backend"
+
+[sdks.go.scopes."frontend/.dagger"]
+is-module = true
+name = "frontend"
