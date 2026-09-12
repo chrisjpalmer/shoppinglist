@@ -61,18 +61,24 @@ func convertSlice[I any, O any](in []I, f func(I) O) []O {
 
 func (r Shoppinglist) MarshalJSON() ([]byte, error) {
 	var concrete struct {
-		Backend  *dagger.Directory
-		Frontend *dagger.Directory
+		Backend          *dagger.Directory
+		Frontend         *dagger.Directory
+		RegistryPassword *dagger.Secret
+		KubeEnv          *dagger.Secret
 	}
 	concrete.Backend = r.Backend
 	concrete.Frontend = r.Frontend
+	concrete.RegistryPassword = r.RegistryPassword
+	concrete.KubeEnv = r.KubeEnv
 	return json.Marshal(&concrete)
 }
 
 func (r *Shoppinglist) UnmarshalJSON(bs []byte) error {
 	var concrete struct {
-		Backend  *dagger.Directory
-		Frontend *dagger.Directory
+		Backend          *dagger.Directory
+		Frontend         *dagger.Directory
+		RegistryPassword *dagger.Secret
+		KubeEnv          *dagger.Secret
 	}
 	err := json.Unmarshal(bs, &concrete)
 	if err != nil {
@@ -80,6 +86,8 @@ func (r *Shoppinglist) UnmarshalJSON(bs []byte) error {
 	}
 	r.Backend = concrete.Backend
 	r.Frontend = concrete.Frontend
+	r.RegistryPassword = concrete.RegistryPassword
+	r.KubeEnv = concrete.KubeEnv
 	return nil
 }
 
@@ -243,28 +251,7 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ws", err))
 				}
 			}
-			var registryPassword *dagger.Secret
-			if inputArgs["registryPassword"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["registryPassword"]), &registryPassword)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
-				}
-			}
-			var kubeEnv1 *dagger.Secret
-			if inputArgs["kubeEnv1"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["kubeEnv1"]), &kubeEnv1)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubeEnv1", err))
-				}
-			}
-			var kubeEnv2 *dagger.Secret
-			if inputArgs["kubeEnv2"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["kubeEnv2"]), &kubeEnv2)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubeEnv2", err))
-				}
-			}
-			return nil, (*Shoppinglist).BuildAndDeploy(&parent, ctx, ws, registryPassword, kubeEnv1, kubeEnv2)
+			return nil, (*Shoppinglist).BuildAndDeploy(&parent, ctx, ws)
 		case "Deploy":
 			var parent Shoppinglist
 			err = json.Unmarshal(parentJSON, &parent)
@@ -327,7 +314,21 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ws", err))
 				}
 			}
-			return New(ws), nil
+			var registryPassword *dagger.Secret
+			if inputArgs["registryPassword"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["registryPassword"]), &registryPassword)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registryPassword", err))
+				}
+			}
+			var kubeEnv *dagger.Secret
+			if inputArgs["kubeEnv"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["kubeEnv"]), &kubeEnv)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg kubeEnv", err))
+				}
+			}
+			return New(ws, registryPassword, kubeEnv), nil
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
@@ -340,37 +341,38 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 						dag.Function("Build",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
 							WithCachePolicy(dagger.FunctionCachePolicyNever).
-							WithSourceMap(dag.SourceMap("main.go", 88, 1)).
-							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 90, 2)}).
-							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 91, 2)}).
-							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 92, 2)})).
+							WithSourceMap(dag.SourceMap("main.go", 91, 1)).
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 93, 2)}).
+							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 94, 2)}).
+							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 95, 2)})).
 					WithFunction(
 						dag.Function("BuildAndDeploy",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
 							WithCachePolicy(dagger.FunctionCachePolicyNever).
-							WithSourceMap(dag.SourceMap("main.go", 43, 1)).
-							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 45, 2)}).
-							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 46, 2)}).
-							WithArg("kubeEnv1", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 47, 2)}).
-							WithArg("kubeEnv2", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 48, 2)})).
+							WithSourceMap(dag.SourceMap("main.go", 49, 1)).
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 51, 2)})).
 					WithFunction(
 						dag.Function("Deploy",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
 							WithCachePolicy(dagger.FunctionCachePolicyNever).
-							WithSourceMap(dag.SourceMap("main.go", 64, 1)).
-							WithArg("env", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 66, 2)}).
-							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 67, 2)}).
-							WithArg("kubectlFile", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 68, 2)}).
-							WithArg("planningSiteURL", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 69, 2)}).
-							WithArg("backendURL", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 70, 2)}).
-							WithArg("shoppingSiteURL", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 71, 2)})).
+							WithSourceMap(dag.SourceMap("main.go", 67, 1)).
+							WithArg("env", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 69, 2)}).
+							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 70, 2)}).
+							WithArg("kubectlFile", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 71, 2)}).
+							WithArg("planningSiteURL", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 72, 2)}).
+							WithArg("backendURL", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 73, 2)}).
+							WithArg("shoppingSiteURL", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 74, 2)})).
 					WithField("Backend", dag.TypeDef().WithObject("Directory"), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("main.go", 29, 2)}).
 					WithField("Frontend", dag.TypeDef().WithObject("Directory"), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("main.go", 30, 2)}).
+					WithField("RegistryPassword", dag.TypeDef().WithObject("Secret"), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("main.go", 31, 2)}).
+					WithField("KubeEnv", dag.TypeDef().WithObject("Secret"), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("main.go", 32, 2)}).
 					WithConstructor(
 						dag.Function("New",
 							dag.TypeDef().WithObject("Shoppinglist")).
-							WithSourceMap(dag.SourceMap("main.go", 33, 1)).
-							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 33, 10)}))), nil
+							WithSourceMap(dag.SourceMap("main.go", 35, 1)).
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 35, 10)}).
+							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 36, 2)}).
+							WithArg("kubeEnv", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 37, 2)}))), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}

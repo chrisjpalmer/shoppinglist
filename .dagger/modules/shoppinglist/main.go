@@ -26,16 +26,24 @@ import (
 )
 
 type Shoppinglist struct {
-	Backend  *dagger.Directory
-	Frontend *dagger.Directory
+	Backend          *dagger.Directory
+	Frontend         *dagger.Directory
+	RegistryPassword *dagger.Secret
+	KubeEnv          *dagger.Secret
 }
 
-func New(ws *dagger.Workspace) *Shoppinglist {
+func New(
+	ws *dagger.Workspace,
+	registryPassword *dagger.Secret,
+	kubeEnv *dagger.Secret,
+) *Shoppinglist {
 	src := ws.Directory("/", dagger.WorkspaceDirectoryOpts{Gitignore: true})
 
 	return &Shoppinglist{
-		Backend:  src.Directory("backend"),
-		Frontend: src.Directory("frontend"),
+		Backend:          src.Directory("backend"),
+		Frontend:         src.Directory("frontend"),
+		RegistryPassword: registryPassword,
+		KubeEnv:          kubeEnv,
 	}
 }
 
@@ -43,17 +51,14 @@ func New(ws *dagger.Workspace) *Shoppinglist {
 func (m *Shoppinglist) BuildAndDeploy(
 	ctx context.Context,
 	ws *dagger.Workspace,
-	registryPassword *dagger.Secret,
-	kubeEnv1 *dagger.Secret,
-	kubeEnv2 *dagger.Secret,
 ) error {
 	tag := time.Now().Format("20060102-150405")
 
-	if err := m.Build(ctx, ws, tag, registryPassword); err != nil {
+	if err := m.Build(ctx, ws, tag, m.RegistryPassword); err != nil {
 		return fmt.Errorf("error while building: %w", err)
 	}
 
-	if err := m.Deploy(ctx, "env1", tag, kubeEnv1, "http://pipi:30000/", "http://pipi:30001/api", "http://pipi:30001/shopping"); err != nil {
+	if err := m.Deploy(ctx, "env1", tag, m.KubeEnv, "http://pipi:30000/", "http://pipi:30001/api", "http://pipi:30001/shopping"); err != nil {
 		return fmt.Errorf("error while deploying to kubeEnv1: %w", err)
 	}
 

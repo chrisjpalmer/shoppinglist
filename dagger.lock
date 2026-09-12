@@ -8,6 +8,7 @@
 ["","git-sha",["github.com/dagger/dagger","refs/tags/v0.19.11"],"d8811256e5e901e6760f7011431080fedd61fc47"]
 ["","git-sha",["github.com/dagger/go-sdk","refs/tags/v1.1.0"],"2fa6a872760d2e2a33b612f1737ca5099d71ad0d"]
 ["","git-sha",["github.com/dagger/sdk-helpers","refs/tags/v1.0.4"],"6c883f657933ecb06ae86d56d9cd1f8785346bb1"]
+["","oci-sha",["docker.io/alpine/helm:latest"],"sha256:a6cf54599ccb99d90cf0712b30f03fdb3cab062e6b94e0418cc4db7e8a1464b2"]
 ["","oci-sha",["docker.io/alpine/sqlite:3.51.2"],"sha256:76d06e00e4085857bcdfecf1cdec6c06891108f7f6d10286e4fc9ec2f0086212"]
 ["","oci-sha",["docker.io/arigaio/atlas:1.1.6-extended-alpine"],"sha256:aac91a76d602802e16146f7db8e5a001bdf064e37da1c1524e4df9efec489de0"]
 ["","oci-sha",["docker.io/bufbuild/buf:1.65.0"],"sha256:8237e37d15d73e9d3a536332d352c6a4fae2d37ed041cf17a5066ffa4403ea40"]

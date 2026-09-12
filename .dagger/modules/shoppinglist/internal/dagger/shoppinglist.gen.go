@@ -9,10 +9,14 @@ import (
 	"github.com/dagger/querybuilder"
 )
 
-func (r *Query) Shoppinglist(ws *Workspace) *Shoppinglist { // shoppinglist (../../../../../:0:0)
+func (r *Query) Shoppinglist(ws *Workspace, registryPassword *Secret, kubeEnv *Secret) *Shoppinglist { // shoppinglist (../../../../../:0:0)
 	assertNotNil("ws", ws)
+	assertNotNil("registryPassword", registryPassword)
+	assertNotNil("kubeEnv", kubeEnv)
 	q := r.query.Select("shoppinglist")
 	q = q.Arg("ws", ws)
+	q = q.Arg("registryPassword", registryPassword)
+	q = q.Arg("kubeEnv", kubeEnv)
 
 	return &Shoppinglist{
 		query: q,
@@ -56,19 +60,13 @@ func (r *Shoppinglist) Build(ctx context.Context, ws *Workspace, tag string, reg
 	return q.Execute(ctx)
 }
 
-func (r *Shoppinglist) BuildAndDeploy(ctx context.Context, ws *Workspace, registryPassword *Secret, kubeEnv1 *Secret, kubeEnv2 *Secret) error {
+func (r *Shoppinglist) BuildAndDeploy(ctx context.Context, ws *Workspace) error {
 	assertNotNil("ws", ws)
-	assertNotNil("registryPassword", registryPassword)
-	assertNotNil("kubeEnv1", kubeEnv1)
-	assertNotNil("kubeEnv2", kubeEnv2)
 	if r.buildAndDeploy != nil {
 		return nil
 	}
 	q := r.query.Select("buildAndDeploy")
 	q = q.Arg("ws", ws)
-	q = q.Arg("registryPassword", registryPassword)
-	q = q.Arg("kubeEnv1", kubeEnv1)
-	q = q.Arg("kubeEnv2", kubeEnv2)
 
 	return q.Execute(ctx)
 }
@@ -144,4 +142,20 @@ func (r *Shoppinglist) UnmarshalJSON(bs []byte) error {
 	}
 	*r = Shoppinglist{query: selectNode(dag.query, id, "Shoppinglist")}
 	return nil
+}
+
+func (r *Shoppinglist) KubeEnv() *Secret {
+	q := r.query.Select("kubeEnv")
+
+	return &Secret{
+		query: q,
+	}
+}
+
+func (r *Shoppinglist) RegistryPassword() *Secret {
+	q := r.query.Select("registryPassword")
+
+	return &Secret{
+		query: q,
+	}
 }
