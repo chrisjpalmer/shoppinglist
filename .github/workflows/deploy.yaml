@@ -23,11 +23,11 @@ jobs:
 
       - name: Deploy
         run: |
-          dagger --x-release=v1.0.0-beta.13 \
+          dagger --x-release=v1.0.0-beta.14 \
           --progress=logs \
-          api call build-and-deploy \
-          --registry-password=env://GH_API_KEY \
-          --kube-env=env://KUBECTL_FILE
+          --env ci \
+          api call \
+          build-and-deploy
         env:
           GH_API_KEY: ${{ secrets.GH_API_KEY }}
           KUBECTL_FILE: ${{ secrets.KUBECTL_FILE }}
