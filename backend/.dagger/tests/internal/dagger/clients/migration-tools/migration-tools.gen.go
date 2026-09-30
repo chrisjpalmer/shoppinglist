@@ -9,7 +9,7 @@ import (
 	"github.com/dagger/querybuilder"
 )
 
-type MigrationTools struct { // migration-tools (../../../../../../:0:0)
+type MigrationTools struct { // migration-tools (../../backend/.dagger/modules/migration-tools/main.go:11:6)
 	query *querybuilder.Selection
 
 	checkMigrationValid *Void
@@ -23,7 +23,7 @@ func (r *MigrationTools) WithGraphQLQuery(q *querybuilder.Selection) *MigrationT
 }
 
 // CheckMigrationValid - checks whether a migration from the previous schema to the new schema succeeds.
-func (r *MigrationTools) CheckMigrationValid(ctx context.Context, prevSchemaSql *File, newSchemaSql *File) error {
+func (r *MigrationTools) CheckMigrationValid(ctx context.Context, prevSchemaSql *File, newSchemaSql *File) error { // migration-tools (../../backend/.dagger/modules/migration-tools/main.go:20:1)
 	assertNotNil("prevSchemaSql", prevSchemaSql)
 	assertNotNil("newSchemaSql", newSchemaSql)
 	if r.checkMigrationValid != nil {
@@ -75,18 +75,9 @@ func (r *MigrationTools) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(id)
 }
-func (r *MigrationTools) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = MigrationTools{query: selectNode(dag.query, id, "MigrationTools")}
-	return nil
-}
 
 // InstallMigrationTools - installs the migration tools into the specified container
-func (r *MigrationTools) InstallMigrationTools(ctr *Container) *Container {
+func (r *MigrationTools) InstallMigrationTools(ctr *Container) *Container { // migration-tools (../../backend/.dagger/modules/migration-tools/main.go:48:1)
 	assertNotNil("ctr", ctr)
 	q := r.query.Select("installMigrationTools")
 	q = q.Arg("ctr", ctr)
@@ -97,7 +88,7 @@ func (r *MigrationTools) InstallMigrationTools(ctr *Container) *Container {
 }
 
 // MigrateDatabase - migrates the passed in database, to the provided schema and returns it
-func (r *MigrationTools) MigrateDatabase(db *File, schemaSql *File) *File {
+func (r *MigrationTools) MigrateDatabase(db *File, schemaSql *File) *File { // migration-tools (../../backend/.dagger/modules/migration-tools/main.go:15:1)
 	assertNotNil("db", db)
 	assertNotNil("schemaSql", schemaSql)
 	q := r.query.Select("migrateDatabase")
@@ -110,7 +101,7 @@ func (r *MigrationTools) MigrateDatabase(db *File, schemaSql *File) *File {
 }
 
 // MountSchemaSQL - installs the migration sql into the expected location
-func (r *MigrationTools) MountSchemaSQL(ctr *Container, schemaSql *File) *Container {
+func (r *MigrationTools) MountSchemaSQL(ctr *Container, schemaSql *File) *Container { // migration-tools (../../backend/.dagger/modules/migration-tools/main.go:60:1)
 	assertNotNil("ctr", ctr)
 	assertNotNil("schemaSql", schemaSql)
 	q := r.query.Select("mountSchemaSql")
@@ -122,7 +113,15 @@ func (r *MigrationTools) MountSchemaSQL(ctr *Container, schemaSql *File) *Contai
 	}
 }
 
-func (r *Query) MigrationTools() *MigrationTools { // migration-tools (../../../../../../:0:0)
+// AsNode returns this MigrationTools as a Node.
+// This is a local type conversion — no GraphQL call.
+func (r *MigrationTools) AsNode() Node {
+	return &NodeClient{
+		query: r.query,
+	}
+}
+
+func (r *Query) MigrationTools() *MigrationTools { // migration-tools (../../backend/.dagger/modules/migration-tools/main.go:11:6)
 	q := r.query.Select("migrationTools")
 
 	return &MigrationTools{

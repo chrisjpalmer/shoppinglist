@@ -18,6 +18,8 @@ source = "frontend/.dagger"
 [modules.migration-tools]
 source = "backend/.dagger/modules/migration-tools"
 
+[modules.unittests]
+source = ".dagger/modules/unittests"
 
 [sdks.go]
 module = "dagger-go-sdk"
@@ -48,10 +50,14 @@ name = "frontend"
 [sdks.go.scopes."backend/.dagger/modules/migration-tools".settings]
 dualClients = true
 
+[sdks.go.scopes."backend/.dagger/tests"]
+clients = ["./backend/.dagger/modules/migration-tools"]
+
+[sdks.go.scopes.".dagger/modules/unittests"]
+is-module = true
+
 [env.ci]
 
 [env.ci.modules.shoppinglist.settings]
 registryPassword = "env://GH_API_KEY"
 kubeEnv = "env://KUBECTL_FILE"
-
-

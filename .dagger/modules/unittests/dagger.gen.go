@@ -17,7 +17,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.40.0"
 	"go.opentelemetry.io/otel/trace"
 
-	"dagger/migration-tools/internal/dagger"
+	"dagger/unittests/internal/dagger"
 
 	"github.com/dagger/querybuilder"
 )
@@ -59,17 +59,43 @@ func convertSlice[I any, O any](in []I, f func(I) O) []O {
 	return out
 }
 
-func (r MigrationTools) MarshalJSON() ([]byte, error) {
-	var concrete struct{}
+func (r Unittests) MarshalJSON() ([]byte, error) {
+	var concrete struct {
+		Paths []string
+	}
+	concrete.Paths = r.Paths
 	return json.Marshal(&concrete)
 }
 
-func (r *MigrationTools) UnmarshalJSON(bs []byte) error {
-	var concrete struct{}
+func (r *Unittests) UnmarshalJSON(bs []byte) error {
+	var concrete struct {
+		Paths []string
+	}
 	err := json.Unmarshal(bs, &concrete)
 	if err != nil {
 		return err
 	}
+	r.Paths = concrete.Paths
+	return nil
+}
+
+func (r Package) MarshalJSON() ([]byte, error) {
+	var concrete struct {
+		Path string
+	}
+	concrete.Path = r.Path
+	return json.Marshal(&concrete)
+}
+
+func (r *Package) UnmarshalJSON(bs []byte) error {
+	var concrete struct {
+		Path string
+	}
+	err := json.Unmarshal(bs, &concrete)
+	if err != nil {
+		return err
+	}
+	r.Path = concrete.Path
 	return nil
 }
 
@@ -190,119 +216,85 @@ func dispatch(ctx context.Context) (rerr error) {
 func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName string, inputArgs map[string][]byte) (_ any, err error) {
 	_ = inputArgs
 	switch parentName {
-	case "MigrationTools":
+	case "Package":
 		switch fnName {
-		case "CheckMigrationValid":
-			var parent MigrationTools
+		case "Test":
+			var parent Package
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var prevSchemaSql *dagger.File
-			if inputArgs["prevSchemaSQL"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["prevSchemaSQL"]), &prevSchemaSql)
+			var ws *dagger.Workspace
+			if inputArgs["ws"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["ws"]), &ws)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg prevSchemaSQL", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ws", err))
 				}
 			}
-			var newSchemaSql *dagger.File
-			if inputArgs["newSchemaSQL"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["newSchemaSQL"]), &newSchemaSql)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg newSchemaSQL", err))
-				}
-			}
-			return nil, (*MigrationTools).CheckMigrationValid(&parent, ctx, prevSchemaSql, newSchemaSql)
-		case "InstallMigrationTools":
-			var parent MigrationTools
+			return nil, (*Package).Test(&parent, ctx, ws)
+		default:
+			return nil, fmt.Errorf("unknown function %s", fnName)
+		}
+	case "Unittests":
+		switch fnName {
+		case "Package":
+			var parent Unittests
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var ctr *dagger.Container
-			if inputArgs["ctr"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["ctr"]), &ctr)
+			var path string
+			if inputArgs["path"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["path"]), &path)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ctr", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg path", err))
 				}
 			}
-			return (*MigrationTools).InstallMigrationTools(&parent, ctr), nil
-		case "MigrateDatabase":
-			var parent MigrationTools
+			return (*Unittests).Package(&parent, path), nil
+		case "":
+			var parent Unittests
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var db *dagger.File
-			if inputArgs["db"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["db"]), &db)
+			var ws *dagger.Workspace
+			if inputArgs["ws"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["ws"]), &ws)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg db", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ws", err))
 				}
 			}
-			var schemaSql *dagger.File
-			if inputArgs["schemaSQL"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["schemaSQL"]), &schemaSql)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg schemaSQL", err))
-				}
-			}
-			return (*MigrationTools).MigrateDatabase(&parent, ctx, db, schemaSql), nil
-		case "MountSchemaSQL":
-			var parent MigrationTools
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			var ctr *dagger.Container
-			if inputArgs["ctr"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["ctr"]), &ctr)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ctr", err))
-				}
-			}
-			var schemaSql *dagger.File
-			if inputArgs["schemaSQL"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["schemaSQL"]), &schemaSql)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg schemaSQL", err))
-				}
-			}
-			return (*MigrationTools).MountSchemaSQL(&parent, ctr, schemaSql), nil
+			return New(ctx, ws)
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
 	case "":
 		return dag.Module().
 			WithObject(
-				dag.TypeDef().WithObject("MigrationTools", dagger.TypeDefWithObjectOpts{SourceMap: dag.SourceMap("main.go", 11, 6)}).
+				dag.TypeDef().WithObject("Unittests", dagger.TypeDefWithObjectOpts{SourceMap: dag.SourceMap("main.go", 13, 6)}).
+					WithCollection().
 					WithFunction(
-						dag.Function("CheckMigrationValid",
+						dag.Function("Package",
+							dag.TypeDef().WithObject("Package")).
+							WithSourceMap(dag.SourceMap("main.go", 32, 1)).
+							WithArg("path", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 32, 29)})).
+					WithCollectionGet("Package").
+					WithField("Paths", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(dagger.TypeDefKindStringKind)), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("main.go", 15, 2)}).
+					WithCollectionKeys("Paths").
+					WithConstructor(
+						dag.Function("New",
+							dag.TypeDef().WithObject("Unittests")).
+							WithSourceMap(dag.SourceMap("main.go", 18, 1)).
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 20, 2)}))).
+			WithObject(
+				dag.TypeDef().WithObject("Package", dagger.TypeDefWithObjectOpts{SourceMap: dag.SourceMap("main.go", 36, 6)}).
+					WithFunction(
+						dag.Function("Test",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
-							WithDescription("CheckMigrationValid - checks whether a migration from the previous schema to the new schema succeeds.").
-							WithSourceMap(dag.SourceMap("main.go", 20, 1)).
-							WithArg("prevSchemaSQL", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 20, 67)}).
-							WithArg("newSchemaSQL", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 20, 95)})).
-					WithFunction(
-						dag.Function("InstallMigrationTools",
-							dag.TypeDef().WithObject("Container")).
-							WithDescription("InstallMigrationTools - installs the migration tools into the specified container").
-							WithSourceMap(dag.SourceMap("main.go", 48, 1)).
-							WithArg("ctr", dag.TypeDef().WithObject("Container"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 48, 48)})).
-					WithFunction(
-						dag.Function("MigrateDatabase",
-							dag.TypeDef().WithObject("File")).
-							WithDescription("MigrateDatabase - migrates the passed in database, to the provided schema and returns it").
-							WithSourceMap(dag.SourceMap("main.go", 15, 1)).
-							WithArg("db", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 15, 63)}).
-							WithArg("schemaSQL", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 15, 80)})).
-					WithFunction(
-						dag.Function("MountSchemaSQL",
-							dag.TypeDef().WithObject("Container")).
-							WithDescription("MountSchemaSQL - installs the migration sql into the expected location").
-							WithSourceMap(dag.SourceMap("main.go", 60, 1)).
-							WithArg("ctr", dag.TypeDef().WithObject("Container"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 60, 41)}).
-							WithArg("schemaSQL", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 60, 64)}))), nil
+							WithSourceMap(dag.SourceMap("main.go", 41, 1)).
+							WithCheck().
+							WithArg("ws", dag.TypeDef().WithObject("Workspace"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 41, 45)})).
+					WithField("Path", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.TypeDefWithFieldOpts{SourceMap: dag.SourceMap("main.go", 37, 2)})), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}
