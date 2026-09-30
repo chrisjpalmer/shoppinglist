@@ -23,7 +23,7 @@ jobs:
 
       - name: Deploy
         run: |
-          dagger --x-release=v1.0.0-beta.14 \
+          dagger --x-release=v1.0.0-beta.15 \
           --progress=logs \
           --env ci \
           api call \
