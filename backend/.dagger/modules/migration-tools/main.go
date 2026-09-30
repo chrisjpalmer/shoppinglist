@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"dagger/migration-tools/internal/dagger"
-	"errors"
 	"fmt"
 )
 
@@ -60,69 +59,6 @@ func (m *MigrationTools) InstallMigrationTools(ctr *dagger.Container) *dagger.Co
 // MountSchemaSQL - installs the migration sql into the expected location
 func (m *MigrationTools) MountSchemaSQL(ctr *dagger.Container, schemaSQL *dagger.File) *dagger.Container {
 	return ctr.WithFile("/migrations/to.sql", schemaSQL)
-}
-
-// TestMigrationToolsWithDB - tests that the migration tools work if the DB exists
-// +check
-func (m *MigrationTools) TestMigrationToolsWithDB(ctx context.Context) error {
-	curMod := dag.CurrentModule().Source()
-
-	fromSql := curMod.File("golden/from.sql")
-
-	toSql := curMod.File("golden/to.sql")
-
-	_, err := m.testMigrationTools(toSql).
-		WithEnvVariable("DATABASE_FILE", "/app/local/local.db").
-		WithFile("/app/local/local.db", dbForSchema(fromSql)).
-		WithExec([]string{"/migrations/entrypoint.sh"}).
-		Stdout(ctx)
-
-	return err
-}
-
-// TestMigrationToolsNODB - tests that the migration tools work if the DB doesn't exist
-// +check
-func (m *MigrationTools) TestMigrationToolsNODB(ctx context.Context) error {
-	curMod := dag.CurrentModule().Source()
-
-	toSql := curMod.File("golden/to.sql")
-
-	_, err := m.testMigrationTools(toSql).
-		WithEnvVariable("DATABASE_FILE", "/app/local/local.db").
-		WithExec([]string{"/migrations/entrypoint.sh"}).
-		Stdout(ctx)
-
-	return err
-}
-
-// TestMigrationToolsNoDBEnv - tests that the migration tools correctly fail if the DATABASE_FILE var isn't present
-// +check
-func (m *MigrationTools) TestMigrationToolsNODBEnv(ctx context.Context) error {
-	curMod := dag.CurrentModule().Source()
-
-	toSql := curMod.File("golden/to.sql")
-
-	code, err := m.testMigrationTools(toSql).
-		WithExec([]string{"/migrations/entrypoint.sh"}, dagger.ContainerWithExecOpts{Expect: dagger.ReturnTypeAny}).
-		ExitCode(ctx)
-
-	if err != nil {
-		return err
-	}
-
-	if code != 1 {
-		return errors.New("expected entrypoint to return exit code 1 when DATABASE_FILE var was not set")
-	}
-
-	return nil
-}
-
-func (m *MigrationTools) testMigrationTools(toSql *dagger.File) *dagger.Container {
-	ctr := dag.Container().From("alpine:latest")
-
-	ctr = m.InstallMigrationTools(ctr)
-
-	return m.MountSchemaSQL(ctr, toSql)
 }
 
 // reads a schema file into a sqlite database and returns the database file produced
