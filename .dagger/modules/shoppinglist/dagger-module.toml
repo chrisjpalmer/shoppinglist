@@ -6,7 +6,7 @@ engineVersion = "v0.21.7"
 
 [[dependencies]]
   name = "backend"
-  source = "../../../backend/.dagger"
+  source = "../../../backend/.dagger/modules/backend"
 
 [[dependencies]]
   name = "frontend"

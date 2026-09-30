@@ -4,5 +4,9 @@ engineVersion = "v0.21.7"
 [runtime]
   source = "go"
 
+[[dependencies]]
+  name = "migration-tools"
+  source = "../migration-tools"
+
 [codegen]
   automaticGitignore = false

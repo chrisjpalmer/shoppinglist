@@ -258,20 +258,6 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			return nil, (*Backend).MigrateCheck(&parent, ctx)
-		case "MigrateLocal":
-			var parent Backend
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			var localdb *dagger.File
-			if inputArgs["localdb"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["localdb"]), &localdb)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg localdb", err))
-				}
-			}
-			return (*Backend).MigrateLocal(&parent, ctx, localdb), nil
 		case "Publish":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
@@ -293,27 +279,6 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				}
 			}
 			return nil, (*Backend).Publish(&parent, ctx, tag, registryPassword)
-		case "TestMigrationToolsNODB":
-			var parent Backend
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			return nil, (*Backend).TestMigrationToolsNODB(&parent, ctx)
-		case "TestMigrationToolsNODBEnv":
-			var parent Backend
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			return nil, (*Backend).TestMigrationToolsNODBEnv(&parent, ctx)
-		case "TestMigrationToolsWithDB":
-			var parent Backend
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			return nil, (*Backend).TestMigrationToolsWithDB(&parent, ctx)
 		case "":
 			var parent Backend
 			err = json.Unmarshal(parentJSON, &parent)
@@ -376,14 +341,8 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 						dag.Function("MigrateCheck",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
 							WithDescription("MigrateCheck - checks whether the previous schema on the master branch\ncan be successfully migrated to the new schema").
-							WithSourceMap(dag.SourceMap("migrate.go", 23, 1)).
-							WithCheck()).
-					WithFunction(
-						dag.Function("MigrateLocal",
-							dag.TypeDef().WithObject("File")).
-							WithDescription("MigrateLocal - migrates the passed in database and returns it").
 							WithSourceMap(dag.SourceMap("migrate.go", 14, 1)).
-							WithArg("localdb", dag.TypeDef().WithObject("File"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("migrate.go", 14, 53)})).
+							WithCheck()).
 					WithFunction(
 						dag.Function("Publish",
 							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
@@ -391,24 +350,6 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 							WithSourceMap(dag.SourceMap("main.go", 42, 1)).
 							WithArg("tag", dag.TypeDef().WithKind(dagger.TypeDefKindStringKind), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 44, 2)}).
 							WithArg("registryPassword", dag.TypeDef().WithObject("Secret"), dagger.FunctionWithArgOpts{SourceMap: dag.SourceMap("main.go", 45, 2)})).
-					WithFunction(
-						dag.Function("TestMigrationToolsNODB",
-							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
-							WithDescription("TestMigrationToolsNODB - tests that the migration tools work if the DB doesn't exist").
-							WithSourceMap(dag.SourceMap("migration_tools.go", 46, 1)).
-							WithCheck()).
-					WithFunction(
-						dag.Function("TestMigrationToolsNODBEnv",
-							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
-							WithDescription("TestMigrationToolsNoDBEnv - tests that the migration tools correctly fail if the DATABASE_FILE var isn't present").
-							WithSourceMap(dag.SourceMap("migration_tools.go", 59, 1)).
-							WithCheck()).
-					WithFunction(
-						dag.Function("TestMigrationToolsWithDB",
-							dag.TypeDef().WithKind(dagger.TypeDefKindVoidKind).WithOptional(true)).
-							WithDescription("TestMigrationToolsWithDB - tests that the migration tools work if the DB exists").
-							WithSourceMap(dag.SourceMap("migration_tools.go", 28, 1)).
-							WithCheck()).
 					WithConstructor(
 						dag.Function("New",
 							dag.TypeDef().WithObject("Backend")).

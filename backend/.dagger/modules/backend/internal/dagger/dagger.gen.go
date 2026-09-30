@@ -257,6 +257,9 @@ type LabelID string
 type ListTypeDefID string
 
 // A unique identifier for an object.
+type MigrationToolsID string
+
+// A unique identifier for an object.
 type ModuleConfigClientID string
 
 // A unique identifier for an object.
@@ -10723,6 +10726,16 @@ func (r *Query) LoadListTypeDefFromID(id ListTypeDefID) *ListTypeDef {
 	q = q.Arg("id", id)
 
 	return &ListTypeDef{
+		query: q,
+	}
+}
+
+// Load a MigrationTools from its ID.
+func (r *Query) LoadMigrationToolsFromID(id MigrationToolsID) *MigrationTools {
+	q := r.query.Select("loadMigrationToolsFromID")
+	q = q.Arg("id", id)
+
+	return &MigrationTools{
 		query: q,
 	}
 }

@@ -39,13 +39,13 @@ func (m *Backend) build(ctx context.Context, platform dagger.Platform) (_ *dagge
 		Platform: platform,
 	}).From("alpine:latest")
 
-	appCtr = m.withMigrationTools(appCtr)
+	appCtr = dag.MigrationTools().InstallMigrationTools(appCtr)
 
 	appCtr = appCtr.WithWorkdir("/app").
 		WithFile("backend", backend).
 		WithEntrypoint([]string{"./backend"})
 
-	appCtr = m.withMigrationSQL(appCtr, m.RootSrc.File(schemaPath))
+	appCtr = dag.MigrationTools().MountSchemaSQL(appCtr, m.RootSrc.File(schemaPath))
 
 	return appCtr.Sync(ctx)
 }
