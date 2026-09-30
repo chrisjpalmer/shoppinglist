@@ -9,15 +9,12 @@ import (
 	"github.com/dagger/querybuilder"
 )
 
-type Backend struct { // backend (../../../../../backend/.dagger/main.go:25:6)
+type Backend struct { // backend (../../../../../backend/.dagger/modules/backend/main.go:25:6)
 	query *querybuilder.Selection
 
-	id                        *ID
-	migrateCheck              *Void
-	publish                   *Void
-	testMigrationToolsNodb    *Void
-	testMigrationToolsNodbenv *Void
-	testMigrationToolsWithDb  *Void
+	id           *ID
+	migrateCheck *Void
+	publish      *Void
 }
 
 func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
@@ -27,7 +24,7 @@ func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
 }
 
 // BackendService - runs the backend service inside a container
-func (r *Backend) BackendService(ws *Workspace) *Service { // backend (../../../../../backend/.dagger/service.go:17:1)
+func (r *Backend) BackendService(ws *Workspace) *Service { // backend (../../../../../backend/.dagger/modules/backend/service.go:17:1)
 	assertNotNil("ws", ws)
 	q := r.query.Select("backendService")
 	q = q.Arg("ws", ws)
@@ -37,7 +34,7 @@ func (r *Backend) BackendService(ws *Workspace) *Service { // backend (../../../
 	}
 }
 
-func (r *Backend) BuildCheck() *Container { // backend (../../../../../backend/.dagger/build.go:14:1)
+func (r *Backend) BuildCheck() *Container { // backend (../../../../../backend/.dagger/modules/backend/build.go:14:1)
 	q := r.query.Select("buildCheck")
 
 	return &Container{
@@ -46,7 +43,7 @@ func (r *Backend) BuildCheck() *Container { // backend (../../../../../backend/.
 }
 
 // GenerateProtos - generate protobuf codegen from .proto files
-func (r *Backend) GenerateProtos() *Changeset { // backend (../../../../../backend/.dagger/generated.go:11:1)
+func (r *Backend) GenerateProtos() *Changeset { // backend (../../../../../backend/.dagger/modules/backend/generated.go:11:1)
 	q := r.query.Select("generateProtos")
 
 	return &Changeset{
@@ -55,7 +52,7 @@ func (r *Backend) GenerateProtos() *Changeset { // backend (../../../../../backe
 }
 
 // GenerateSqlc - generate sqlc codegen from .sql files
-func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../../../backend/.dagger/generated.go:26:1)
+func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../../../backend/.dagger/modules/backend/generated.go:26:1)
 	q := r.query.Select("generateSqlc")
 
 	return &Changeset{
@@ -64,7 +61,7 @@ func (r *Backend) GenerateSqlc() *Changeset { // backend (../../../../../backend
 }
 
 // GenerateTailwind generates the maintw.css file using tailwindcss
-func (r *Backend) GenerateTailwind() *Changeset { // backend (../../../../../backend/.dagger/generated_tailwind.go:12:1)
+func (r *Backend) GenerateTailwind() *Changeset { // backend (../../../../../backend/.dagger/modules/backend/generated_tailwind.go:12:1)
 	q := r.query.Select("generateTailwind")
 
 	return &Changeset{
@@ -73,7 +70,7 @@ func (r *Backend) GenerateTailwind() *Changeset { // backend (../../../../../bac
 }
 
 // GenerateTempl - generate templ codegen from .templ files
-func (r *Backend) GenerateTempl() *Changeset { // backend (../../../../../backend/.dagger/generated.go:40:1)
+func (r *Backend) GenerateTempl() *Changeset { // backend (../../../../../backend/.dagger/modules/backend/generated.go:40:1)
 	q := r.query.Select("generateTempl")
 
 	return &Changeset{
@@ -132,7 +129,7 @@ func (r *Backend) UnmarshalJSON(bs []byte) error {
 
 // MigrateCheck - checks whether the previous schema on the master branch
 // can be successfully migrated to the new schema
-func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../../../../backend/.dagger/migrate.go:23:1)
+func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../../../../backend/.dagger/modules/backend/migrate.go:14:1)
 	if r.migrateCheck != nil {
 		return nil
 	}
@@ -141,18 +138,7 @@ func (r *Backend) MigrateCheck(ctx context.Context) error { // backend (../../..
 	return q.Execute(ctx)
 }
 
-// MigrateLocal - migrates the passed in database and returns it
-func (r *Backend) MigrateLocal(localdb *File) *File { // backend (../../../../../backend/.dagger/migrate.go:14:1)
-	assertNotNil("localdb", localdb)
-	q := r.query.Select("migrateLocal")
-	q = q.Arg("localdb", localdb)
-
-	return &File{
-		query: q,
-	}
-}
-
-func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../../../backend/.dagger/main.go:42:1)
+func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error { // backend (../../../../../backend/.dagger/modules/backend/main.go:42:1)
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
 		return nil
@@ -160,36 +146,6 @@ func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Sec
 	q := r.query.Select("publish")
 	q = q.Arg("tag", tag)
 	q = q.Arg("registryPassword", registryPassword)
-
-	return q.Execute(ctx)
-}
-
-// TestMigrationToolsNODB - tests that the migration tools work if the DB doesn't exist
-func (r *Backend) TestMigrationToolsNodb(ctx context.Context) error { // backend (../../../../../backend/.dagger/migration_tools.go:46:1)
-	if r.testMigrationToolsNodb != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrationToolsNodb")
-
-	return q.Execute(ctx)
-}
-
-// TestMigrationToolsNoDBEnv - tests that the migration tools correctly fail if the DATABASE_FILE var isn't present
-func (r *Backend) TestMigrationToolsNodbenv(ctx context.Context) error { // backend (../../../../../backend/.dagger/migration_tools.go:59:1)
-	if r.testMigrationToolsNodbenv != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrationToolsNodbenv")
-
-	return q.Execute(ctx)
-}
-
-// TestMigrationToolsWithDB - tests that the migration tools work if the DB exists
-func (r *Backend) TestMigrationToolsWithDb(ctx context.Context) error { // backend (../../../../../backend/.dagger/migration_tools.go:28:1)
-	if r.testMigrationToolsWithDb != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrationToolsWithDb")
 
 	return q.Execute(ctx)
 }
@@ -215,7 +171,7 @@ func (r *Backend) AsNode() Node {
 // The first line in this comment block is a short description line and the
 // rest is a long description with more detail on the module's purpose or usage,
 // if appropriate. All modules should have a short description.
-func (r *Query) Backend(ws *Workspace) *Backend { // backend (../../../../../backend/.dagger/main.go:32:1)
+func (r *Query) Backend(ws *Workspace) *Backend { // backend (../../../../../backend/.dagger/modules/backend/main.go:32:1)
 	assertNotNil("ws", ws)
 	q := r.query.Select("backend")
 	q = q.Arg("ws", ws)

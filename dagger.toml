@@ -7,13 +7,16 @@ registryPassword="file://./local/GH_API_KEY"
 kubeEnv="file://./local/kubecfg_rpi.yaml"
 
 [modules.backend]
-source = "backend/.dagger"
+source = "backend/.dagger/modules/backend"
 
 [modules.dagger-go-sdk]
 source = "github.com/dagger/go-sdk"
 
 [modules.frontend]
 source = "frontend/.dagger"
+
+[modules.migration-tools]
+source = "backend/.dagger/modules/migration-tools"
 
 
 [sdks.go]
@@ -26,20 +29,29 @@ name = "helm"
 
 [sdks.go.scopes.".dagger/modules/shoppinglist"]
 is-module = true
-clients = ["./.dagger/modules/helm", "./backend/.dagger", "./frontend/.dagger"]
+clients = ["./.dagger/modules/helm", "./backend/.dagger/modules/backend", "./frontend/.dagger"]
 name = "shoppinglist"
 
-[sdks.go.scopes."backend/.dagger"]
+[sdks.go.scopes."backend/.dagger/modules/backend"]
 is-module = true
+clients = ["./backend/.dagger/modules/migration-tools"]
 name = "backend"
+
+[sdks.go.scopes."backend/.dagger/modules/migration-tools"]
+is-module = true
+name = "migration-tools"
 
 [sdks.go.scopes."frontend/.dagger"]
 is-module = true
 name = "frontend"
+
+[sdks.go.scopes."backend/.dagger/modules/migration-tools".settings]
+dualClients = true
 
 [env.ci]
 
 [env.ci.modules.shoppinglist.settings]
 registryPassword = "env://GH_API_KEY"
 kubeEnv = "env://KUBECTL_FILE"
+
 

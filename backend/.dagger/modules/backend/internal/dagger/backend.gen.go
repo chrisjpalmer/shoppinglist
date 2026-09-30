@@ -9,15 +9,12 @@ import (
 	"github.com/dagger/querybuilder"
 )
 
-type Backend struct { // backend (../../../../:0:0)
+type Backend struct { // backend (../../../../../../:0:0)
 	query *querybuilder.Selection
 
-	id                        *ID
-	migrateCheck              *Void
-	publish                   *Void
-	testMigrationToolsNodb    *Void
-	testMigrationToolsNodbenv *Void
-	testMigrationToolsWithDb  *Void
+	id           *ID
+	migrateCheck *Void
+	publish      *Void
 }
 
 func (r *Backend) WithGraphQLQuery(q *querybuilder.Selection) *Backend {
@@ -141,17 +138,6 @@ func (r *Backend) MigrateCheck(ctx context.Context) error {
 	return q.Execute(ctx)
 }
 
-// MigrateLocal - migrates the passed in database and returns it
-func (r *Backend) MigrateLocal(localdb *File) *File {
-	assertNotNil("localdb", localdb)
-	q := r.query.Select("migrateLocal")
-	q = q.Arg("localdb", localdb)
-
-	return &File{
-		query: q,
-	}
-}
-
 func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Secret) error {
 	assertNotNil("registryPassword", registryPassword)
 	if r.publish != nil {
@@ -164,37 +150,7 @@ func (r *Backend) Publish(ctx context.Context, tag string, registryPassword *Sec
 	return q.Execute(ctx)
 }
 
-// TestMigrationToolsNODB - tests that the migration tools work if the DB doesn't exist
-func (r *Backend) TestMigrationToolsNodb(ctx context.Context) error {
-	if r.testMigrationToolsNodb != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrationToolsNodb")
-
-	return q.Execute(ctx)
-}
-
-// TestMigrationToolsNoDBEnv - tests that the migration tools correctly fail if the DATABASE_FILE var isn't present
-func (r *Backend) TestMigrationToolsNodbenv(ctx context.Context) error {
-	if r.testMigrationToolsNodbenv != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrationToolsNodbenv")
-
-	return q.Execute(ctx)
-}
-
-// TestMigrationToolsWithDB - tests that the migration tools work if the DB exists
-func (r *Backend) TestMigrationToolsWithDb(ctx context.Context) error {
-	if r.testMigrationToolsWithDb != nil {
-		return nil
-	}
-	q := r.query.Select("testMigrationToolsWithDb")
-
-	return q.Execute(ctx)
-}
-
-func (r *Query) Backend(ws *Workspace) *Backend { // backend (../../../../:0:0)
+func (r *Query) Backend(ws *Workspace) *Backend { // backend (../../../../../../:0:0)
 	assertNotNil("ws", ws)
 	q := r.query.Select("backend")
 	q = q.Arg("ws", ws)
