@@ -30,7 +30,7 @@ func New(
 
 // +get
 func (m *Unittests) Package(path string) *Package {
-	return &Package{Path: path}
+	return &Package{Path: filepath.Join("/", path)}
 }
 
 type Package struct {
@@ -41,7 +41,7 @@ type Package struct {
 func (p *Package) Test(ctx context.Context, ws *dagger.Workspace) error {
 	ctr, err := p.testCtr(ctx, ws)
 	if err != nil {
-		return fmt.Errorf("error getting test container: %w")
+		return fmt.Errorf("error getting test container: %w", err)
 	}
 
 	_, err = ctr.WithExec([]string{"go", "test", "./..."}).Stdout(ctx)
