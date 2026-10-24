@@ -26,10 +26,14 @@ import (
 )
 
 type Shoppinglist struct {
-	Backend          *dagger.Directory
-	Frontend         *dagger.Directory
+	// +private
+	Backend *dagger.Directory
+	// +private
+	Frontend *dagger.Directory
+	// +private
 	RegistryPassword *dagger.Secret
-	KubeEnv          *dagger.Secret
+	// +private
+	KubeEnv *dagger.Secret
 }
 
 func New(

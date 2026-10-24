@@ -38,14 +38,6 @@ func (r *Shoppinglist) WithGraphQLQuery(q *querybuilder.Selection) *Shoppinglist
 	}
 }
 
-func (r *Shoppinglist) Backend() *Directory {
-	q := r.query.Select("backend")
-
-	return &Directory{
-		query: q,
-	}
-}
-
 func (r *Shoppinglist) Build(ctx context.Context, ws *Workspace, tag string, registryPassword *Secret) error {
 	assertNotNil("ws", ws)
 	assertNotNil("registryPassword", registryPassword)
@@ -85,14 +77,6 @@ func (r *Shoppinglist) Deploy(ctx context.Context, env string, tag string, kubec
 	q = q.Arg("shoppingSiteUrl", shoppingSiteUrl)
 
 	return q.Execute(ctx)
-}
-
-func (r *Shoppinglist) Frontend() *Directory {
-	q := r.query.Select("frontend")
-
-	return &Directory{
-		query: q,
-	}
 }
 
 // A unique identifier for this Shoppinglist.
@@ -142,20 +126,4 @@ func (r *Shoppinglist) UnmarshalJSON(bs []byte) error {
 	}
 	*r = Shoppinglist{query: selectNode(dag.query, id, "Shoppinglist")}
 	return nil
-}
-
-func (r *Shoppinglist) KubeEnv() *Secret {
-	q := r.query.Select("kubeEnv")
-
-	return &Secret{
-		query: q,
-	}
-}
-
-func (r *Shoppinglist) RegistryPassword() *Secret {
-	q := r.query.Select("registryPassword")
-
-	return &Secret{
-		query: q,
-	}
 }
