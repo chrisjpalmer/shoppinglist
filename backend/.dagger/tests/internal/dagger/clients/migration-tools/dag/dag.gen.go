@@ -167,6 +167,14 @@ func File(name string, contents string, opts ...dagger.FileOpts) *dagger.File {
 	return client.File(name, contents, opts...)
 }
 
+// Format many names at once, for codegen. Returns them in input order.
+//
+// Experimental: Identifier casing APIs are likely to change.
+func FormatIdentifiers(ctx context.Context, names []string, casing dagger.Casing, opts ...dagger.FormatIdentifiersOpts) ([]string, error) {
+	client := initClient()
+	return client.FormatIdentifiers(ctx, names, casing, opts...)
+}
+
 // Creates a function.
 func Function(name string, returnType *dagger.TypeDef) *dagger.Function {
 	client := initClient()
@@ -203,6 +211,16 @@ func ID(ctx context.Context) (dagger.ID, error) {
 	return client.ID(ctx)
 }
 
+// Parse a name in any casing into words.
+//
+// Known acronyms and terms come from the naming dictionary; everything else falls back to the case heuristic. Errors on non-ASCII input, input with no letters or digits, or input over 256 bytes.
+//
+// Experimental: Identifier casing APIs are likely to change.
+func Identifier(name string) *dagger.Identifier {
+	client := initClient()
+	return client.Identifier(name)
+}
+
 // Initialize a JSON value
 func JSON() *dagger.JSONValue {
 	client := initClient()
@@ -215,6 +233,16 @@ func JSON() *dagger.JSONValue {
 func LLM(opts ...dagger.LLMOpts) *dagger.LLM {
 	client := initClient()
 	return client.LLM(opts...)
+}
+
+// Start an empty run of text and media content, independent of any conversation.
+//
+// Add blocks with withText, withFile, and withData. A function exposed as an LLM tool can return the content to give the model text and media as the tool's result, e.g. a caption and a screenshot for the model to look at.
+//
+// Experimental: LLM support is not yet stabilized
+func LLMContent() *dagger.LLMContent {
+	client := initClient()
+	return client.LLMContent()
 }
 
 func MigrationTools() *dagger.MigrationTools {
@@ -232,6 +260,14 @@ func Module() *dagger.Module {
 func ModuleSource(refString string, opts ...dagger.ModuleSourceOpts) *dagger.ModuleSource {
 	client := initClient()
 	return client.ModuleSource(refString, opts...)
+}
+
+// The acronyms and terms used to parse and format identifiers.
+//
+// Experimental: Identifier casing APIs are likely to change.
+func NamingDictionary(ctx context.Context) ([]dagger.NamingTerm, error) {
+	client := initClient()
+	return client.NamingDictionary(ctx)
 }
 
 // Load any object by its ID.

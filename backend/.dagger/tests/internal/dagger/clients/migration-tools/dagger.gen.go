@@ -176,8 +176,8 @@ type LLMContentBlockInput struct {
 	// Ordered TEXT or media blocks returned by a tool.
 	Content []LLMContentBlockInput `json:"content,omitempty"`
 
-	// Base64-encoded media bytes. Supply exactly one of data or file for media.
-	Data string `json:"data,omitempty"`
+	// Media bytes. Supply exactly one of data or file for media.
+	Data Bytes `json:"data"`
 
 	// Whether the tool call resulted in an error (for TOOL_RESULT kind).
 	Errored bool `json:"errored,omitempty"`
@@ -253,9 +253,23 @@ func (r *Address) WithGraphQLQuery(q *querybuilder.Selection) *Address {
 	}
 }
 
+// AddressContainerOpts contains options for Address.Container
+type AddressContainerOpts struct {
+	// Resolve the address's image tag live, ignoring the workspace lockfile: neither read a pinned value nor record one.
+	//
+	// A DAG address is unaffected: its module evaluates as usual.
+	NoLock bool
+}
+
 // Load a container from the address.
-func (r *Address) Container() *Container {
+func (r *Address) Container(opts ...AddressContainerOpts) *Container {
 	q := r.query.Select("container")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
+		}
+	}
 
 	return &Container{
 		query: q,
@@ -271,6 +285,10 @@ type AddressDirectoryOpts struct {
 	Gitignore bool
 
 	NoCache bool
+	// Resolve the address's git ref live, ignoring the workspace lockfile: neither read a pinned value nor record one.
+	//
+	// A DAG address is unaffected: its module evaluates as usual.
+	NoLock bool
 }
 
 // Load a directory from the address.
@@ -293,6 +311,10 @@ func (r *Address) Directory(opts ...AddressDirectoryOpts) *Directory {
 		if !querybuilder.IsZeroValue(opts[i].NoCache) {
 			q = q.Arg("noCache", opts[i].NoCache)
 		}
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
+		}
 	}
 
 	return &Directory{
@@ -309,6 +331,10 @@ type AddressFileOpts struct {
 	Gitignore bool
 
 	NoCache bool
+	// Resolve the address's git ref live, ignoring the workspace lockfile: neither read a pinned value nor record one.
+	//
+	// A DAG address is unaffected: its module evaluates as usual.
+	NoLock bool
 }
 
 // Load a file from the address.
@@ -331,6 +357,10 @@ func (r *Address) File(opts ...AddressFileOpts) *File {
 		if !querybuilder.IsZeroValue(opts[i].NoCache) {
 			q = q.Arg("noCache", opts[i].NoCache)
 		}
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
+		}
 	}
 
 	return &File{
@@ -338,9 +368,23 @@ func (r *Address) File(opts ...AddressFileOpts) *File {
 	}
 }
 
+// AddressGitRefOpts contains options for Address.GitRef
+type AddressGitRefOpts struct {
+	// Resolve the address's git ref live, ignoring the workspace lockfile: neither read a pinned value nor record one.
+	//
+	// A DAG address is unaffected: its module evaluates as usual.
+	NoLock bool
+}
+
 // Load a git ref (branch, tag or commit) from the address.
-func (r *Address) GitRef() *GitRef {
+func (r *Address) GitRef(opts ...AddressGitRefOpts) *GitRef {
 	q := r.query.Select("gitRef")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
+		}
+	}
 
 	return &GitRef{
 		query: q,
@@ -632,6 +676,17 @@ func (r *Agent) Notify(ctx context.Context, subscriber *Agent, opts ...AgentNoti
 	}, nil
 }
 
+// The agent that spawned this agent, or null for a root agent.
+//
+// Experimental: Agent APIs are likely to change.
+func (r *Agent) Parent() *Agent {
+	q := r.query.Select("parent")
+
+	return &Agent{
+		query: q,
+	}
+}
+
 // AgentPauseOpts contains options for Agent.Pause
 type AgentPauseOpts struct {
 	// Preempt the in-flight step instead of letting it finish. All completed steps are kept and the interrupted turn stays open: messages it consumed remain pending, while unconsumed mailbox messages are discarded. Resume continues the turn from the last committed step. On an idle, never-started, or failed agent there is nothing to preempt, so this is a plain pause.
@@ -703,6 +758,21 @@ func (r *Agent) Resume(ctx context.Context) (*Agent, error) {
 	return &Agent{
 		query: selectNode(q.Root(), id, "Agent"),
 	}, nil
+}
+
+// The conversation the agent was spawned from: the tools, workspace and message history its loop started with.
+//
+// Fixed by the spawn; stepping does not move it (see snapshot for the latest committed step). Its workspace is the baseline the agent's own changes are measured from.
+//
+// For an agent restored under a handle, this is the conversation it was restored from.
+//
+// Experimental: Agent APIs are likely to change.
+func (r *Agent) Seed() *LLM {
+	q := r.query.Select("seed")
+
+	return &LLM{
+		query: q,
+	}
 }
 
 // AgentSendOpts contains options for Agent.Send
@@ -1122,7 +1192,7 @@ func (r *Artifact) ModuleName(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
-// Ordered, literal fields to follow. Entrypoint targets use their shorthand.
+// Ordered, literal fields to follow. Workspace main targets use their shorthand.
 func (r *Artifact) Path(ctx context.Context) ([]string, error) {
 	q := r.query.Select("path")
 
@@ -1134,7 +1204,7 @@ func (r *Artifact) Path(ctx context.Context) ([]string, error) {
 
 // ArtifactURIOpts contains options for Artifact.URI
 type ArtifactURIOpts struct {
-	// Prefix the workspace's Git address and commit: dag://<workspace>@<commit>:<path>. Fails if the workspace has no Git address.
+	// Prefix the workspace's Git address and commit: dag://<workspace>@<commit>:<path>. Fails if the artifact has no workspace, or its workspace has no Git address.
 	Absolute bool
 	// Include the dimension keys as a query. Without them, the address is a path selector.
 	//
@@ -1189,6 +1259,15 @@ func (r *Artifact) Value(opts ...ArtifactValueOpts) Node {
 		}
 	}
 	return &NodeClient{
+		query: q,
+	}
+}
+
+// The workspace this artifact was discovered in; its address is relative to it. Null for an artifact without a workspace, such as one of an LLM's bound tool objects (see LLM.artifacts).
+func (r *Artifact) Workspace() *Workspace {
+	q := r.query.Select("workspace")
+
+	return &Workspace{
 		query: q,
 	}
 }
@@ -1674,7 +1753,7 @@ func (r *ArtifactResult) AsNode() Node {
 	}
 }
 
-// An immutable selection of workspace artifacts. Listed types, dimensions, and keys use OR; chained filters use AND. Empty alternatives and unknown names match nothing. Filters never change addresses or dimension identifiers.
+// An immutable selection of workspace artifacts. Listed types, dimensions, and keys use OR; chained filters use AND. Empty alternatives match nothing; unknown names match nothing but module load failures. Filters never change addresses or dimension identifiers. Module keys match a module's configured or kebab-case name. A module that failed to load has no schema, so its load failure stands in for whatever it would hold: a filter keeps it when the module could hold something the filter selects, and an exclusion drops it only by its own address, such as <module>/** or ?module=<module>.
 type Artifacts struct {
 	query *querybuilder.Selection
 
@@ -1696,7 +1775,7 @@ func (r *Artifacts) WithGraphQLQuery(q *querybuilder.Selection) *Artifacts {
 	}
 }
 
-// Convert the selection to Changesets. Fail if any artifact is not a Changeset. Does not apply command filters.
+// Convert the selection to Changesets. Fail if any artifact is not a Changeset; a module load failure fails with its load error. Does not apply command filters.
 func (r *Artifacts) AsChangesets(ctx context.Context) ([]Changeset, error) {
 	q := r.query.Select("asChangesets")
 
@@ -1729,7 +1808,7 @@ func (r *Artifacts) AsChangesets(ctx context.Context) ([]Changeset, error) {
 	return convert(response), nil
 }
 
-// Convert the selection to Checks. Fail if any artifact is not a Check. Does not apply command filters or run the checks.
+// Convert the selection to Checks. Fail if any artifact is not a Check. A module load failure is a Check that fails with its load error. Does not apply command filters or run the checks.
 func (r *Artifacts) AsChecks(ctx context.Context) ([]Check, error) {
 	q := r.query.Select("asChecks")
 
@@ -1762,7 +1841,7 @@ func (r *Artifacts) AsChecks(ctx context.Context) ([]Check, error) {
 	return convert(response), nil
 }
 
-// Convert the selection to expertise without running the functions. Fail if any artifact is not a source of expertise.
+// Convert the selection to expertise without running the functions. Each must take one LLM! argument and return LLM!; any other arguments must be optional or auto-filled. Agent arguments receive the agent that owns the conversation. A module load failure fails with its load error.
 func (r *Artifacts) AsExpertise(ctx context.Context) ([]Expertise, error) {
 	q := r.query.Select("asExpertise")
 
@@ -1795,7 +1874,7 @@ func (r *Artifacts) AsExpertise(ctx context.Context) ([]Expertise, error) {
 	return convert(response), nil
 }
 
-// Convert the selection to Generators without running them. Fail if any artifact is not a Generator.
+// Convert the selection to Generators without running them. Fail if any artifact is not a Generator. Module load failures are skipped: generating can repair them.
 func (r *Artifacts) AsGenerators(ctx context.Context) ([]Generator, error) {
 	q := r.query.Select("asGenerators")
 
@@ -1828,7 +1907,7 @@ func (r *Artifacts) AsGenerators(ctx context.Context) ([]Generator, error) {
 	return convert(response), nil
 }
 
-// Convert the selection to Services. Fail if any artifact is not a Service. Does not apply command filters or start the services.
+// Convert the selection to Services. Fail if any artifact is not a Service; a module load failure fails with its load error. Does not apply command filters or start the services.
 func (r *Artifacts) AsServices(ctx context.Context) ([]Service, error) {
 	q := r.query.Select("asServices")
 
@@ -2046,7 +2125,7 @@ func (r *Artifacts) FilterPath(path []string) *Artifacts {
 	}
 }
 
-// Keep paths that match a glob pattern. A literal path matches exactly. Both module-qualified and entrypoint paths match.
+// Keep paths that match a glob pattern. A literal path matches exactly. Both module-qualified and workspace main paths match.
 func (r *Artifacts) FilterPathPattern(pattern string) *Artifacts {
 	q := r.query.Select("filterPathPattern")
 	q = q.Arg("pattern", pattern)
@@ -2081,6 +2160,8 @@ func (r *Artifacts) FilterTypes(types []string, opts ...ArtifactsFilterTypesOpts
 // Apply a DAG address as one filter: the chain of path, type, and dimension-key filters it encodes.
 //
 // The scheme is optional. The path may be a pattern; an empty path selects all artifacts.
+//
+// A module that failed to load keeps its load failure when the module could hold what the address selects, as with every filter (see Artifacts).
 func (r *Artifacts) FilterURI(uri string) *Artifacts {
 	q := r.query.Select("filterUri")
 	q = q.Arg("uri", uri)
@@ -2316,6 +2397,8 @@ type ArtifactsValuesOpts struct {
 	//
 	// Default: "{}"
 	Arguments JSON
+	// Evaluate at most this many artifacts at once on this engine; the rest wait. Checks that scale out to cloud engines are not counted. 0 means no limit.
+	MaxConcurrency int
 }
 
 // Evaluate the selection in parallel, retaining each result and error.
@@ -2329,6 +2412,10 @@ func (r *Artifacts) Values(ctx context.Context, opts ...ArtifactsValuesOpts) ([]
 		// `arguments` optional argument
 		if !querybuilder.IsZeroValue(opts[i].Arguments) {
 			q = q.Arg("arguments", opts[i].Arguments)
+		}
+		// `maxConcurrency` optional argument
+		if !querybuilder.IsZeroValue(opts[i].MaxConcurrency) {
+			q = q.Arg("maxConcurrency", opts[i].MaxConcurrency)
 		}
 	}
 
@@ -3385,6 +3472,12 @@ type ContainerAsServiceOpts struct {
 
 	// Deprecated: Commands can access Dagger by default. Use "disableDaggerInDagger" to opt out.
 	ExperimentalPrivilegedNesting bool
+	// Connect Dagger clients started by the command to the current engine as new sessions, instead of as clients of the current session. Each connection gets its own session, released when that client closes.
+	//
+	// The command reaches the engine through DAGGER_ENGINE, so SDKs run a Dagger CLI: set _EXPERIMENTAL_DAGGER_CLI_BIN to one in the container, or let the SDK download one.
+	//
+	// Cannot be combined with "disableDaggerInDagger".
+	DaggerInDaggerNewSession bool
 	// Execute the command with all root capabilities. This is similar to running a command with "sudo" or executing "docker run" with the "--privileged" flag. Containerization does not provide any security guarantees when using this option. It should only be used when absolutely necessary and only with trusted commands.
 	InsecureRootCapabilities bool
 	// Replace "${VAR}" or "$VAR" in the args according to the current environment variables defined in the container (e.g. "/$VAR/foo").
@@ -3416,6 +3509,10 @@ func (r *Container) AsService(opts ...ContainerAsServiceOpts) *Service {
 		// `experimentalPrivilegedNesting` optional argument
 		if !querybuilder.IsZeroValue(opts[i].ExperimentalPrivilegedNesting) {
 			q = q.Arg("experimentalPrivilegedNesting", opts[i].ExperimentalPrivilegedNesting)
+		}
+		// `daggerInDaggerNewSession` optional argument
+		if !querybuilder.IsZeroValue(opts[i].DaggerInDaggerNewSession) {
+			q = q.Arg("daggerInDaggerNewSession", opts[i].DaggerInDaggerNewSession)
 		}
 		// `insecureRootCapabilities` optional argument
 		if !querybuilder.IsZeroValue(opts[i].InsecureRootCapabilities) {
@@ -3842,6 +3939,8 @@ type ContainerFromOpts struct {
 	Protocol RegistryProtocol
 	// Allow HTTPS registry communication without verifying the server certificate.
 	InsecureSkipTLSVerify bool
+	// Ignore the workspace lockfile for this lookup.
+	NoLock bool
 }
 
 // Download a container image, and apply it to the container state. All previous state will be lost.
@@ -3863,6 +3962,10 @@ func (r *Container) From(address string, opts ...ContainerFromOpts) *Container {
 		// `insecureSkipTLSVerify` optional argument
 		if !querybuilder.IsZeroValue(opts[i].InsecureSkipTLSVerify) {
 			q = q.Arg("insecureSkipTLSVerify", opts[i].InsecureSkipTLSVerify)
+		}
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
 		}
 	}
 	q = q.Arg("address", address)
@@ -4307,6 +4410,12 @@ type ContainerUpOpts struct {
 
 	// Deprecated: Commands can access Dagger by default. Use "disableDaggerInDagger" to opt out.
 	ExperimentalPrivilegedNesting bool
+	// Connect Dagger clients started by the command to the current engine as new sessions, instead of as clients of the current session. Each connection gets its own session, released when that client closes.
+	//
+	// The command reaches the engine through DAGGER_ENGINE, so SDKs run a Dagger CLI: set _EXPERIMENTAL_DAGGER_CLI_BIN to one in the container, or let the SDK download one.
+	//
+	// Cannot be combined with "disableDaggerInDagger".
+	DaggerInDaggerNewSession bool
 	// Execute the command with all root capabilities. This is similar to running a command with "sudo" or executing "docker run" with the "--privileged" flag. Containerization does not provide any security guarantees when using this option. It should only be used when absolutely necessary and only with trusted commands.
 	InsecureRootCapabilities bool
 	// Replace "${VAR}" or "$VAR" in the args according to the current environment variables defined in the container (e.g. "/$VAR/foo").
@@ -4349,6 +4458,10 @@ func (r *Container) Up(ctx context.Context, opts ...ContainerUpOpts) error {
 		// `experimentalPrivilegedNesting` optional argument
 		if !querybuilder.IsZeroValue(opts[i].ExperimentalPrivilegedNesting) {
 			q = q.Arg("experimentalPrivilegedNesting", opts[i].ExperimentalPrivilegedNesting)
+		}
+		// `daggerInDaggerNewSession` optional argument
+		if !querybuilder.IsZeroValue(opts[i].DaggerInDaggerNewSession) {
+			q = q.Arg("daggerInDaggerNewSession", opts[i].DaggerInDaggerNewSession)
 		}
 		// `insecureRootCapabilities` optional argument
 		if !querybuilder.IsZeroValue(opts[i].InsecureRootCapabilities) {
@@ -4628,9 +4741,9 @@ type ContainerWithExecOpts struct {
 	Stdin string
 	// Redirect the command's standard input from a file in the container. Example: "./stdin.txt"
 	RedirectStdin string
-	// Redirect the command's standard output to a file in the container. Example: "./stdout.txt"
+	// Redirect the command's standard output to a file in the container. The redirected output is not logged. Example: "./stdout.txt"
 	RedirectStdout string
-	// Redirect the command's standard error to a file in the container. Example: "./stderr.txt"
+	// Redirect the command's standard error to a file in the container. The redirected output is not logged. Example: "./stderr.txt"
 	RedirectStderr string
 	// Exit codes this command is allowed to exit with without error
 	//
@@ -4641,6 +4754,12 @@ type ContainerWithExecOpts struct {
 
 	// Deprecated: Commands can access Dagger by default. Use "disableDaggerInDagger" to opt out.
 	ExperimentalPrivilegedNesting bool
+	// Connect Dagger clients started by the command to the current engine as new sessions, instead of as clients of the current session. Each connection gets its own session, released when that client closes.
+	//
+	// The command reaches the engine through DAGGER_ENGINE, so SDKs run a Dagger CLI: set _EXPERIMENTAL_DAGGER_CLI_BIN to one in the container, or let the SDK download one.
+	//
+	// Cannot be combined with "disableDaggerInDagger".
+	DaggerInDaggerNewSession bool
 	// Execute the command with all root capabilities. Like --privileged in Docker
 	//
 	// DANGER: this grants the command full access to the host system. Only use when 1) you trust the command being executed and 2) you specifically need this level of access.
@@ -4688,6 +4807,10 @@ func (r *Container) WithExec(args []string, opts ...ContainerWithExecOpts) *Cont
 		// `experimentalPrivilegedNesting` optional argument
 		if !querybuilder.IsZeroValue(opts[i].ExperimentalPrivilegedNesting) {
 			q = q.Arg("experimentalPrivilegedNesting", opts[i].ExperimentalPrivilegedNesting)
+		}
+		// `daggerInDaggerNewSession` optional argument
+		if !querybuilder.IsZeroValue(opts[i].DaggerInDaggerNewSession) {
+			q = q.Arg("daggerInDaggerNewSession", opts[i].DaggerInDaggerNewSession)
 		}
 		// `insecureRootCapabilities` optional argument
 		if !querybuilder.IsZeroValue(opts[i].InsecureRootCapabilities) {
@@ -4978,6 +5101,8 @@ type ContainerWithMountedFileOpts struct {
 	InheritOwner bool
 	// Replace "${VAR}" or "$VAR" in the value of path according to the current environment variables defined in the container (e.g. "/$VAR/foo.txt").
 	Expand bool
+	// Mount the file read-only.
+	ReadOnly bool
 }
 
 // Retrieves this container plus a file mounted at the given path.
@@ -4996,6 +5121,10 @@ func (r *Container) WithMountedFile(path string, source *File, opts ...Container
 		// `expand` optional argument
 		if !querybuilder.IsZeroValue(opts[i].Expand) {
 			q = q.Arg("expand", opts[i].Expand)
+		}
+		// `readOnly` optional argument
+		if !querybuilder.IsZeroValue(opts[i].ReadOnly) {
+			q = q.Arg("readOnly", opts[i].ReadOnly)
 		}
 	}
 	q = q.Arg("path", path)
@@ -5701,12 +5830,24 @@ func (r *Container) AsSyncer() Syncer {
 type CurrentModule struct {
 	query *querybuilder.Selection
 
-	id   *ID
-	name *string
+	id            *ID
+	name          *string
+	sourceSubpath *string
 }
 
 func (r *CurrentModule) WithGraphQLQuery(q *querybuilder.Selection) *CurrentModule {
 	return &CurrentModule{
+		query: q,
+	}
+}
+
+// The module's context directory loaded into the engine (plus any generated code that may have been created).
+//
+// It holds the module's source code and every other file the engine loaded for the module, at their paths relative to the context root. Use sourceSubpath to locate the source code in it.
+func (r *CurrentModule) ContextDirectory() *Directory {
+	q := r.query.Select("contextDirectory")
+
+	return &Directory{
 		query: q,
 	}
 }
@@ -5813,6 +5954,19 @@ func (r *CurrentModule) Source() *Directory {
 	return &Directory{
 		query: q,
 	}
+}
+
+// The path to the directory containing the module's source code, relative to the context directory.
+func (r *CurrentModule) SourceSubpath(ctx context.Context) (string, error) {
+	if r.sourceSubpath != nil {
+		return *r.sourceSubpath, nil
+	}
+	q := r.query.Select("sourceSubpath")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
 }
 
 // CurrentModuleWorkdirOpts contains options for CurrentModule.Workdir
@@ -8309,7 +8463,7 @@ func (r *ErrorValue) AsNode() Node {
 	}
 }
 
-// An agent function that can modify a conversation.
+// A function that can modify a conversation.
 type Expertise struct {
 	query *querybuilder.Selection
 
@@ -8324,7 +8478,16 @@ func (r *Expertise) WithGraphQLQuery(q *querybuilder.Selection) *Expertise {
 	}
 }
 
-// The agent function's description.
+// The artifact this expertise runs. Look it up again by URI to pick up module changes.
+func (r *Expertise) Artifact() *Artifact {
+	q := r.query.Select("artifact")
+
+	return &Artifact{
+		query: q,
+	}
+}
+
+// The function's description.
 func (r *Expertise) Description(ctx context.Context) (string, error) {
 	if r.description != nil {
 		return *r.description, nil
@@ -8377,7 +8540,7 @@ func (r *Expertise) MarshalJSON() ([]byte, error) {
 	return json.Marshal(id)
 }
 
-// The agent function's name.
+// The function's name.
 func (r *Expertise) Name(ctx context.Context) (string, error) {
 	if r.name != nil {
 		return *r.name, nil
@@ -8390,7 +8553,7 @@ func (r *Expertise) Name(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
-// The module that defines the agent function.
+// The module that defines the function.
 func (r *Expertise) OriginalModule() *Module {
 	q := r.query.Select("originalModule")
 
@@ -8399,7 +8562,7 @@ func (r *Expertise) OriginalModule() *Module {
 	}
 }
 
-// The agent function's path within its module.
+// The function's path within its module.
 func (r *Expertise) Path(ctx context.Context) ([]string, error) {
 	q := r.query.Select("path")
 
@@ -10212,6 +10375,7 @@ type GitCommit struct {
 	messageHeadline *string
 	sha             *string
 	shortSha        *string
+	treeSHA         *string
 }
 
 func (r *GitCommit) WithGraphQLQuery(q *querybuilder.Selection) *GitCommit {
@@ -10513,6 +10677,21 @@ func (r *GitCommit) Tree(opts ...GitCommitTreeOpts) *Directory {
 	}
 }
 
+// The ID of the commit's Git tree object.
+//
+// Commits with identical trees have identical contents and file modes.
+func (r *GitCommit) TreeSHA(ctx context.Context) (string, error) {
+	if r.treeSHA != nil {
+		return *r.treeSHA, nil
+	}
+	q := r.query.Select("treeSHA")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
 // AsNode returns this GitCommit as a Node.
 // This is a local type conversion — no GraphQL call.
 func (r *GitCommit) AsNode() Node {
@@ -10644,6 +10823,7 @@ type GitRef struct {
 
 	commit    *string
 	commitSHA *string
+	contains  *bool
 	id        *ID
 	name      *string
 	ref       *string
@@ -10734,6 +10914,23 @@ func (r *GitRef) CommonAncestor(other *GitRef) *GitRef {
 	return &GitRef{
 		query: q,
 	}
+}
+
+// Return true when the other ref's commit equals this commit or is an ancestor of it.
+//
+// Compares commit history across branches, tags and detached refs. Incomplete or unavailable history is an error.
+func (r *GitRef) Contains(ctx context.Context, other *GitRef) (bool, error) {
+	assertNotNil("other", other)
+	if r.contains != nil {
+		return *r.contains, nil
+	}
+	q := r.query.Select("contains")
+	q = q.Arg("other", other)
+
+	var response bool
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
 }
 
 // A unique identifier for this GitRef.
@@ -11013,6 +11210,92 @@ func (r *GitRef) AsNode() Node {
 	}
 }
 
+// A named reference to a remote Git repository.
+type GitRemote struct {
+	query *querybuilder.Selection
+
+	id   *ID
+	name *string
+}
+
+func (r *GitRemote) WithGraphQLQuery(q *querybuilder.Selection) *GitRemote {
+	return &GitRemote{
+		query: q,
+	}
+}
+
+// A unique identifier for this GitRemote.
+func (r *GitRemote) ID(ctx context.Context) (ID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response ID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *GitRemote) XXX_GraphQLType() string {
+	return "GitRemote"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *GitRemote) XXX_GraphQLIDType() string {
+	return "ID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *GitRemote) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *GitRemote) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+
+// The remote's name.
+func (r *GitRemote) Name(ctx context.Context) (string, error) {
+	if r.name != nil {
+		return *r.name, nil
+	}
+	q := r.query.Select("name")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Access this remote's repository using its fetch URL and the caller's credentials, or the source's existing capability for this exact destination.
+//
+// HEAD is the remote's HEAD, independent of the workspace's selected commit. Remote registration alone does not grant credentials.
+func (r *GitRemote) Repository() *GitRepository {
+	q := r.query.Select("repository")
+
+	return &GitRepository{
+		query: q,
+	}
+}
+
+// AsNode returns this GitRemote as a Node.
+// This is a local type conversion — no GraphQL call.
+func (r *GitRemote) AsNode() Node {
+	return &NodeClient{
+		query: r.query,
+	}
+}
+
 // A git repository.
 type GitRepository struct {
 	query *querybuilder.Selection
@@ -11060,9 +11343,21 @@ func (r *GitRepository) AsWorkspace(opts ...GitRepositoryAsWorkspaceOpts) *Works
 	}
 }
 
+// GitRepositoryBranchOpts contains options for GitRepository.Branch
+type GitRepositoryBranchOpts struct {
+	// Ignore the workspace lockfile for this lookup.
+	NoLock bool
+}
+
 // Returns details of a branch.
-func (r *GitRepository) Branch(name string) *GitRef {
+func (r *GitRepository) Branch(name string, opts ...GitRepositoryBranchOpts) *GitRef {
 	q := r.query.Select("branch")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
+		}
+	}
 	q = q.Arg("name", name)
 
 	return &GitRef{
@@ -11124,9 +11419,32 @@ func (r *GitRepository) Commit(id string) *GitCommit {
 	}
 }
 
+// Return the sole remote, otherwise origin, otherwise the selected branch's upstream remote, otherwise null.
+//
+// Frozen workspaces retain their captured upstream selection. Does not contact remote servers.
+func (r *GitRepository) DefaultRemote() *GitRemote {
+	q := r.query.Select("defaultRemote")
+
+	return &GitRemote{
+		query: q,
+	}
+}
+
+// GitRepositoryHeadOpts contains options for GitRepository.Head
+type GitRepositoryHeadOpts struct {
+	// Ignore the workspace lockfile for this lookup.
+	NoLock bool
+}
+
 // Returns details for HEAD.
-func (r *GitRepository) Head() *GitRef {
+func (r *GitRepository) Head(opts ...GitRepositoryHeadOpts) *GitRef {
 	q := r.query.Select("head")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
+		}
+	}
 
 	return &GitRef{
 		query: q,
@@ -11177,17 +11495,23 @@ func (r *GitRepository) MarshalJSON() ([]byte, error) {
 type GitRepositoryLatestOpts struct {
 	// Version query used to select the greatest matching release ref.
 	Version string
+	// Ignore the workspace lockfile for this lookup.
+	NoLock bool
 }
 
 // Return the latest stable release tag, falling back to HEAD when no release exists.
 //
-// Release selection accepts an optional "v" prefix, incomplete versions, and zero-padded numeric components. This operation is pinned.
+// Release selection accepts an optional "v" prefix, incomplete versions, and zero-padded numeric components. This operation is pinned unless noLock is enabled.
 func (r *GitRepository) Latest(opts ...GitRepositoryLatestOpts) *GitRef {
 	q := r.query.Select("latest")
 	for i := len(opts) - 1; i >= 0; i-- {
 		// `version` optional argument
 		if !querybuilder.IsZeroValue(opts[i].Version) {
 			q = q.Arg("version", opts[i].Version)
+		}
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
 		}
 	}
 
@@ -11196,9 +11520,21 @@ func (r *GitRepository) Latest(opts ...GitRepositoryLatestOpts) *GitRef {
 	}
 }
 
+// GitRepositoryRefOpts contains options for GitRepository.Ref
+type GitRepositoryRefOpts struct {
+	// Ignore the workspace lockfile for this lookup.
+	NoLock bool
+}
+
 // Returns details of a ref.
-func (r *GitRepository) Ref(name string) *GitRef {
+func (r *GitRepository) Ref(name string, opts ...GitRepositoryRefOpts) *GitRef {
 	q := r.query.Select("ref")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
+		}
+	}
 	q = q.Arg("name", name)
 
 	return &GitRef{
@@ -11206,9 +11542,64 @@ func (r *GitRepository) Ref(name string) *GitRef {
 	}
 }
 
+// Look up a remote by name. Fails when the remote does not exist.
+func (r *GitRepository) Remote(name string) *GitRemote {
+	q := r.query.Select("remote")
+	q = q.Arg("name", name)
+
+	return &GitRemote{
+		query: q,
+	}
+}
+
+// List this repository's named remotes, with registered remotes overriding configured ones. Does not contact remote servers.
+func (r *GitRepository) Remotes(ctx context.Context) ([]GitRemote, error) {
+	q := r.query.Select("remotes")
+
+	q = q.Select("id")
+
+	type remotes struct {
+		Id ID
+	}
+
+	convert := func(fields []remotes) []GitRemote {
+		out := []GitRemote{}
+
+		for i := range fields {
+			val := GitRemote{id: &fields[i].Id}
+			val.query = selectNode(q.Root(), fields[i].Id, "GitRemote")
+			out = append(out, val)
+		}
+
+		return out
+	}
+	var response []remotes
+
+	q = q.Bind(&response)
+
+	err := q.Execute(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return convert(response), nil
+}
+
+// GitRepositoryTagOpts contains options for GitRepository.Tag
+type GitRepositoryTagOpts struct {
+	// Ignore the workspace lockfile for this lookup.
+	NoLock bool
+}
+
 // Returns details of a tag.
-func (r *GitRepository) Tag(name string) *GitRef {
+func (r *GitRepository) Tag(name string, opts ...GitRepositoryTagOpts) *GitRef {
 	q := r.query.Select("tag")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `noLock` optional argument
+		if !querybuilder.IsZeroValue(opts[i].NoLock) {
+			q = q.Arg("noLock", opts[i].NoLock)
+		}
+	}
 	q = q.Arg("name", name)
 
 	return &GitRef{
@@ -11288,6 +11679,8 @@ func (r *GitRepository) WithBundle(bundle *GitBundle, opts ...GitRepositoryWithB
 // Accepts a whole checkout (including .git and pending file edits), .git contents, or a bare repository. Does not initialize a repository, merge histories, or modify either input.
 //
 // The receiver's logical routing wins over the supplied Git configuration; that configuration is not rewritten. Use Directory.asGit to open the supplied repository without retaining the receiver's routing.
+//
+// When the receiver is a remote repository (or was derived from one), that remote is retained with its authentication: refs the supplied storage does not contain resolve through it.
 func (r *GitRepository) WithContents(directory *Directory) *GitRepository {
 	assertNotNil("directory", directory)
 	q := r.query.Select("withContents")
@@ -11774,6 +12167,255 @@ func (r *Host) UnixSocket(path string) *Socket {
 // AsNode returns this Host as a Node.
 // This is a local type conversion — no GraphQL call.
 func (r *Host) AsNode() Node {
+	return &NodeClient{
+		query: r.query,
+	}
+}
+
+// A name parsed into words, which can be formatted in any casing.
+type Identifier struct {
+	query *querybuilder.Selection
+
+	format *string
+	id     *ID
+	name   *string
+}
+
+func (r *Identifier) WithGraphQLQuery(q *querybuilder.Selection) *Identifier {
+	return &Identifier{
+		query: q,
+	}
+}
+
+// IdentifierFormatOpts contains options for Identifier.Format
+type IdentifierFormatOpts struct {
+	// How to write acronyms and terms where a word starts with a capital.
+	//
+	// Default: UPPERCASE
+	Acronyms AcronymStyle
+}
+
+// Format the identifier in a casing.
+func (r *Identifier) Format(ctx context.Context, casing Casing, opts ...IdentifierFormatOpts) (string, error) {
+	if r.format != nil {
+		return *r.format, nil
+	}
+	q := r.query.Select("format")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `acronyms` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Acronyms) {
+			q = q.Arg("acronyms", opts[i].Acronyms)
+		}
+	}
+	q = q.Arg("casing", casing)
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// A unique identifier for this Identifier.
+func (r *Identifier) ID(ctx context.Context) (ID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response ID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *Identifier) XXX_GraphQLType() string {
+	return "Identifier"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *Identifier) XXX_GraphQLIDType() string {
+	return "ID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *Identifier) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *Identifier) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+
+// The name as given.
+func (r *Identifier) Name(ctx context.Context) (string, error) {
+	if r.name != nil {
+		return *r.name, nil
+	}
+	q := r.query.Select("name")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// The words that make up the name, in order.
+func (r *Identifier) Words(ctx context.Context) ([]IdentifierWord, error) {
+	q := r.query.Select("words")
+
+	q = q.Select("id")
+
+	type words struct {
+		Id ID
+	}
+
+	convert := func(fields []words) []IdentifierWord {
+		out := []IdentifierWord{}
+
+		for i := range fields {
+			val := IdentifierWord{id: &fields[i].Id}
+			val.query = selectNode(q.Root(), fields[i].Id, "IdentifierWord")
+			out = append(out, val)
+		}
+
+		return out
+	}
+	var response []words
+
+	q = q.Bind(&response)
+
+	err := q.Execute(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return convert(response), nil
+}
+
+// AsNode returns this Identifier as a Node.
+// This is a local type conversion — no GraphQL call.
+func (r *Identifier) AsNode() Node {
+	return &NodeClient{
+		query: r.query,
+	}
+}
+
+// One word of an identifier.
+type IdentifierWord struct {
+	query *querybuilder.Selection
+
+	id     *ID
+	kind   *IdentifierWordKind
+	suffix *string
+	text   *string
+}
+
+func (r *IdentifierWord) WithGraphQLQuery(q *querybuilder.Selection) *IdentifierWord {
+	return &IdentifierWord{
+		query: q,
+	}
+}
+
+// A unique identifier for this IdentifierWord.
+func (r *IdentifierWord) ID(ctx context.Context) (ID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response ID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *IdentifierWord) XXX_GraphQLType() string {
+	return "IdentifierWord"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *IdentifierWord) XXX_GraphQLIDType() string {
+	return "ID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *IdentifierWord) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *IdentifierWord) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+
+// The kind of word.
+func (r *IdentifierWord) Kind(ctx context.Context) (IdentifierWordKind, error) {
+	if r.kind != nil {
+		return *r.kind, nil
+	}
+	q := r.query.Select("kind")
+
+	var response IdentifierWordKind
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// Trailing digits and/or a plural "s", in that order: SHA+"s", OAuth+"2", HTTP+"2s".
+func (r *IdentifierWord) Suffix(ctx context.Context) (string, error) {
+	if r.suffix != nil {
+		return *r.suffix, nil
+	}
+	q := r.query.Select("suffix")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// The dictionary entry this word matched, if any.
+func (r *IdentifierWord) Term() *NamingTerm {
+	q := r.query.Select("term")
+
+	return &NamingTerm{
+		query: q,
+	}
+}
+
+// Standard spelling: "client" (WORD), "HTTP" (ACRONYM), "GitHub" (TERM).
+func (r *IdentifierWord) Text(ctx context.Context) (string, error) {
+	if r.text != nil {
+		return *r.text, nil
+	}
+	q := r.query.Select("text")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// AsNode returns this IdentifierWord as a Node.
+// This is a local type conversion — no GraphQL call.
+func (r *IdentifierWord) AsNode() Node {
 	return &NodeClient{
 		query: r.query,
 	}
@@ -12331,7 +12973,40 @@ func (r *LLM) Agent(handle string, name string) *Agent {
 	}
 }
 
-// Run expertise in list order, passing this conversation through each function. Retain existing contributions.
+// LLMArtifactsOpts contains options for LLM.Artifacts
+type LLMArtifactsOpts struct {
+	// Only include artifacts matching these path patterns, as with Workspace.artifacts. A path selects that path and its children.
+	Include []string
+}
+
+// Discover every artifact this conversation can address, as one selection, without evaluating their values.
+//
+// Tool objects bound with withTools contribute their modules' artifacts, rooted at their current values: evaluating one reads the live state of the bound tools, not a fresh construction. If a module's main object is bound, only its tree is included; otherwise each bound object of that module contributes its own tree. Addresses start with the module name. These artifacts have no workspace of their own: they evaluate in the LLM's bound workspace, if any, whoever evaluates them.
+//
+// The workspace part is the artifacts of the workspace bound with withWorkspace, as returned by Workspace.artifacts; an LLM with no bound workspace has none. A workspace module with the same name as a module with bound tool objects is omitted: the bound tools shadow it. Unless they are only a plain construction of the module, which has no state of its own: then the workspace module's artifacts are kept instead.
+//
+// Tool arguments that take an address resolve it here: a DAG address to one object, or, for Artifacts and Artifact arguments, a selection filtered like filterUri.
+//
+// Experimental: Agent APIs are likely to change.
+func (r *LLM) Artifacts(opts ...LLMArtifactsOpts) *Artifacts {
+	q := r.query.Select("artifacts")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `include` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Include) {
+			q = q.Arg("include", opts[i].Include)
+		}
+	}
+
+	return &Artifacts{
+		query: q,
+	}
+}
+
+// Run expertise on this conversation, passing it through each function in order, and record it in expertise.
+//
+// Composing an entry that is already recorded refreshes its module: the module's contributions are cleared, all of its recorded entries run again, and compatible tool state is kept. Other contributions are untouched.
+//
+// Agent arguments receive the agent that owns this conversation. Without one, entries requiring an Agent are skipped.
 func (r *LLM) Compose(expertise []*Expertise) *LLM {
 	q := r.query.Select("compose")
 	q = q.Arg("expertise", expertise)
@@ -12365,6 +13040,39 @@ func (r *LLM) ContextWindow(ctx context.Context) (int, error) {
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
+}
+
+// Expertise composed into this conversation, in order.
+func (r *LLM) Expertise(ctx context.Context) ([]Expertise, error) {
+	q := r.query.Select("expertise")
+
+	q = q.Select("id")
+
+	type expertise struct {
+		Id ID
+	}
+
+	convert := func(fields []expertise) []Expertise {
+		out := []Expertise{}
+
+		for i := range fields {
+			val := Expertise{id: &fields[i].Id}
+			val.query = selectNode(q.Root(), fields[i].Id, "Expertise")
+			out = append(out, val)
+		}
+
+		return out
+	}
+	var response []expertise
+
+	q = q.Bind(&response)
+
+	err := q.Execute(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return convert(response), nil
 }
 
 // Fork the conversation, so that otherwise-identical follow-ups evaluate independently instead of deduplicating to a single cached result.
@@ -12542,20 +13250,6 @@ func (r *LLM) ReasoningEffort(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
-// Run expertise in list order, replacing their modules' contributions and preserving compatible tool state.
-//
-// Clear each selected module's contributions once before execution. Retain unowned contributions and contributions from other modules. Keep this LLM's workspace.
-//
-// A change to a tool binding's version resets its state. Removed bindings, changed identities, and incompatible state are errors.
-func (r *LLM) Recompose(expertise []*Expertise) *LLM {
-	q := r.query.Select("recompose")
-	q = q.Arg("expertise", expertise)
-
-	return &LLM{
-		query: q,
-	}
-}
-
 // The skills visible to the model, exactly as the ListSkills tool serves them: engine-embedded skills, skills installed with withSkills, and skills discovered in the workspace.
 func (r *LLM) Skills(ctx context.Context) ([]LLMSkill, error) {
 	q := r.query.Select("skills")
@@ -12591,6 +13285,8 @@ func (r *LLM) Skills(ctx context.Context) ([]LLMSkill, error) {
 
 // LLMSpawnOpts contains options for LLM.Spawn
 type LLMSpawnOpts struct {
+	// Expertise to compose into the new agent's conversation. Agent arguments receive the new agent, which cannot be used until composition completes; if composition fails, the agent is left STOPPED.
+	Expertise []*Expertise
 	// Display label for the agent — telemetry and error messages; carries no identity. Defaults to a short name derived from the conversation.
 	Name string
 	// The runtime handle to restore the instance under, as published on its loop span as dagger.io/agent.id. Omit to mint a fresh instance.
@@ -12622,6 +13318,10 @@ func (r *LLM) Spawn(ctx context.Context, opts ...LLMSpawnOpts) (ID, error) {
 	}
 	q := r.query.Select("spawn")
 	for i := len(opts) - 1; i >= 0; i-- {
+		// `expertise` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Expertise) {
+			q = q.Arg("expertise", opts[i].Expertise)
+		}
 		// `name` optional argument
 		if !querybuilder.IsZeroValue(opts[i].Name) {
 			q = q.Arg("name", opts[i].Name)
@@ -13032,13 +13732,161 @@ func (r *LLM) AsSyncer() Syncer {
 	}
 }
 
+// An ordered run of text and media content for a model to read, built outside any conversation.
+type LLMContent struct {
+	query *querybuilder.Selection
+
+	id *ID
+}
+type WithLLMContentFunc func(r *LLMContent) *LLMContent
+
+// With calls the provided function with current LLMContent.
+//
+// This is useful for reusability and readability by not breaking the calling chain.
+func (r *LLMContent) With(f WithLLMContentFunc) *LLMContent {
+	return f(r)
+}
+
+func (r *LLMContent) WithGraphQLQuery(q *querybuilder.Selection) *LLMContent {
+	return &LLMContent{
+		query: q,
+	}
+}
+
+// The ordered text and media blocks.
+func (r *LLMContent) Blocks(ctx context.Context) ([]LLMContentBlock, error) {
+	q := r.query.Select("blocks")
+
+	q = q.Select("id")
+
+	type blocks struct {
+		Id ID
+	}
+
+	convert := func(fields []blocks) []LLMContentBlock {
+		out := []LLMContentBlock{}
+
+		for i := range fields {
+			val := LLMContentBlock{id: &fields[i].Id}
+			val.query = selectNode(q.Root(), fields[i].Id, "LLMContentBlock")
+			out = append(out, val)
+		}
+
+		return out
+	}
+	var response []blocks
+
+	q = q.Bind(&response)
+
+	err := q.Execute(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return convert(response), nil
+}
+
+// A unique identifier for this LLMContent.
+func (r *LLMContent) ID(ctx context.Context) (ID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response ID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *LLMContent) XXX_GraphQLType() string {
+	return "LLMContent"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *LLMContent) XXX_GraphQLIDType() string {
+	return "ID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *LLMContent) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *LLMContent) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+
+// Append image, audio, or PDF bytes as an inline media block. The media kind follows the MIME type.
+//
+// Prefer withFile for anything but small payloads: the bytes become part of the content's identity, so they travel with every reference to it.
+func (r *LLMContent) WithData(data Bytes, mimeType string) *LLMContent {
+	q := r.query.Select("withData")
+	q = q.Arg("data", data)
+	q = q.Arg("mimeType", mimeType)
+
+	return &LLMContent{
+		query: q,
+	}
+}
+
+// LLMContentWithFileOpts contains options for LLMContent.WithFile
+type LLMContentWithFileOpts struct {
+	// The media MIME type, e.g. "image/png". Inferred from the file's contents when omitted.
+	MimeType string
+}
+
+// Append an image, audio, or PDF file as an inline media block. The media kind follows the MIME type.
+func (r *LLMContent) WithFile(file *File, opts ...LLMContentWithFileOpts) *LLMContent {
+	assertNotNil("file", file)
+	q := r.query.Select("withFile")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `mimeType` optional argument
+		if !querybuilder.IsZeroValue(opts[i].MimeType) {
+			q = q.Arg("mimeType", opts[i].MimeType)
+		}
+	}
+	q = q.Arg("file", file)
+
+	return &LLMContent{
+		query: q,
+	}
+}
+
+// Append a block of text.
+func (r *LLMContent) WithText(text string) *LLMContent {
+	q := r.query.Select("withText")
+	q = q.Arg("text", text)
+
+	return &LLMContent{
+		query: q,
+	}
+}
+
+// AsNode returns this LLMContent as a Node.
+// This is a local type conversion — no GraphQL call.
+func (r *LLMContent) AsNode() Node {
+	return &NodeClient{
+		query: r.query,
+	}
+}
+
 // A single piece of content within an LLM message.
 type LLMContentBlock struct {
 	query *querybuilder.Selection
 
 	arguments *JSON
 	callId    *string
-	data      *string
+	data      *Bytes
 	errored   *bool
 	id        *ID
 	kind      *LLMContentBlockKind
@@ -13113,14 +13961,14 @@ func (r *LLMContentBlock) Content(ctx context.Context) ([]LLMContentBlock, error
 	return convert(response), nil
 }
 
-// Base64-encoded media bytes (for IMAGE, AUDIO, or DOCUMENT kinds).
-func (r *LLMContentBlock) Data(ctx context.Context) (string, error) {
+// The media bytes (for IMAGE, AUDIO, or DOCUMENT kinds).
+func (r *LLMContentBlock) Data(ctx context.Context) (Bytes, error) {
 	if r.data != nil {
 		return *r.data, nil
 	}
 	q := r.query.Select("data")
 
-	var response string
+	var response Bytes
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
@@ -14164,7 +15012,10 @@ func (r *Module) SDK() *SDKConfig {
 type ModuleServeOpts struct {
 	// Expose the dependencies of this module to the client
 	IncludeDependencies bool
-	// Install the module as the entrypoint, promoting its main-object methods onto the Query root
+	// Install the module as the workspace main, promoting its main-object methods onto the Query root
+	Main bool
+	// Compatibility alias for main.
+	// Deprecated: Use main.
 	Entrypoint bool
 }
 
@@ -14180,6 +15031,10 @@ func (r *Module) Serve(ctx context.Context, opts ...ModuleServeOpts) error {
 		// `includeDependencies` optional argument
 		if !querybuilder.IsZeroValue(opts[i].IncludeDependencies) {
 			q = q.Arg("includeDependencies", opts[i].IncludeDependencies)
+		}
+		// `main` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Main) {
+			q = q.Arg("main", opts[i].Main)
 		}
 		// `entrypoint` optional argument
 		if !querybuilder.IsZeroValue(opts[i].Entrypoint) {
@@ -15138,6 +15993,95 @@ func (r *ModuleSource) AsSyncer() Syncer {
 	}
 }
 
+// An entry in the naming dictionary.
+type NamingTerm struct {
+	query *querybuilder.Selection
+
+	capitalized *string
+	id          *ID
+	spelling    *string
+}
+
+func (r *NamingTerm) WithGraphQLQuery(q *querybuilder.Selection) *NamingTerm {
+	return &NamingTerm{
+		query: q,
+	}
+}
+
+// Spelling in the CAPITALIZED style: "Http", "Ipv6", "GitHub", "Ios".
+func (r *NamingTerm) Capitalized(ctx context.Context) (string, error) {
+	if r.capitalized != nil {
+		return *r.capitalized, nil
+	}
+	q := r.query.Select("capitalized")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// A unique identifier for this NamingTerm.
+func (r *NamingTerm) ID(ctx context.Context) (ID, error) {
+	if r.id != nil {
+		return *r.id, nil
+	}
+	q := r.query.Select("id")
+
+	var response ID
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *NamingTerm) XXX_GraphQLType() string {
+	return "NamingTerm"
+}
+
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *NamingTerm) XXX_GraphQLIDType() string {
+	return "ID"
+}
+
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *NamingTerm) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
+	}
+	return string(id), nil
+}
+
+func (r *NamingTerm) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(marshalCtx)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+
+// Standard spelling: "HTTP", "IPv6", "GitHub", "iOS".
+func (r *NamingTerm) Spelling(ctx context.Context) (string, error) {
+	if r.spelling != nil {
+		return *r.spelling, nil
+	}
+	q := r.query.Select("spelling")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
+}
+
+// AsNode returns this NamingTerm as a Node.
+// This is a local type conversion — no GraphQL call.
+func (r *NamingTerm) AsNode() Node {
+	return &NodeClient{
+		query: r.query,
+	}
+}
+
 // A definition of a custom object defined in a Module.
 type ObjectTypeDef struct {
 	query *querybuilder.Selection
@@ -15632,7 +16576,7 @@ func (r *Query) CurrentTimestamp(ctx context.Context) (string, error) {
 type CurrentTypeDefsOpts struct {
 	// Return the full referenced typedef closure instead of only top-level served typedefs.
 	ReturnAllTypes bool
-	// Strip core API functions from the Query type, leaving only module-sourced functions (constructors, entrypoint proxies, etc.).
+	// Strip core API functions from the Query type, leaving only module-sourced functions (constructors, workspace main proxies, etc.).
 	//
 	// Core types (Container, Directory, etc.) are kept so return types and method chaining still work.
 	HideCore bool
@@ -15797,6 +16741,40 @@ func (r *Query) File(name string, contents string, opts ...FileOpts) *File {
 	return &File{
 		query: q,
 	}
+}
+
+// FormatIdentifiersOpts contains options for Query.FormatIdentifiers
+type FormatIdentifiersOpts struct {
+	// How to write acronyms and terms where a word starts with a capital.
+	//
+	// Default: UPPERCASE
+	Acronyms AcronymStyle
+	// The engine version whose naming dictionary to parse the names with, e.g. the __schemaVersion of a schema being generated. Defaults to the caller's engine version.
+	Version string
+}
+
+// Format many names at once, for codegen. Returns them in input order.
+//
+// Experimental: Identifier casing APIs are likely to change.
+func (r *Query) FormatIdentifiers(ctx context.Context, names []string, casing Casing, opts ...FormatIdentifiersOpts) ([]string, error) {
+	q := r.query.Select("formatIdentifiers")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `acronyms` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Acronyms) {
+			q = q.Arg("acronyms", opts[i].Acronyms)
+		}
+		// `version` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Version) {
+			q = q.Arg("version", opts[i].Version)
+		}
+	}
+	q = q.Arg("names", names)
+	q = q.Arg("casing", casing)
+
+	var response []string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
 }
 
 // Creates a function.
@@ -15975,6 +16953,20 @@ func (r *Query) MarshalJSON() ([]byte, error) {
 	return json.Marshal(id)
 }
 
+// Parse a name in any casing into words.
+//
+// Known acronyms and terms come from the naming dictionary; everything else falls back to the case heuristic. Errors on non-ASCII input, input with no letters or digits, or input over 256 bytes.
+//
+// Experimental: Identifier casing APIs are likely to change.
+func (r *Query) Identifier(name string) *Identifier {
+	q := r.query.Select("identifier")
+	q = q.Arg("name", name)
+
+	return &Identifier{
+		query: q,
+	}
+}
+
 // Initialize a JSON value
 func (r *Query) JSON() *JSONValue {
 	q := r.query.Select("json")
@@ -16009,6 +17001,19 @@ func (r *Query) LLM(opts ...LLMOpts) *LLM {
 	}
 
 	return &LLM{
+		query: q,
+	}
+}
+
+// Start an empty run of text and media content, independent of any conversation.
+//
+// Add blocks with withText, withFile, and withData. A function exposed as an LLM tool can return the content to give the model text and media as the tool's result, e.g. a caption and a screenshot for the model to look at.
+//
+// Experimental: LLM support is not yet stabilized
+func (r *Query) LLMContent() *LLMContent {
+	q := r.query.Select("llmContent")
+
+	return &LLMContent{
 		query: q,
 	}
 }
@@ -16066,6 +17071,41 @@ func (r *Query) ModuleSource(refString string, opts ...ModuleSourceOpts) *Module
 	return &ModuleSource{
 		query: q,
 	}
+}
+
+// The acronyms and terms used to parse and format identifiers.
+//
+// Experimental: Identifier casing APIs are likely to change.
+func (r *Query) NamingDictionary(ctx context.Context) ([]NamingTerm, error) {
+	q := r.query.Select("namingDictionary")
+
+	q = q.Select("id")
+
+	type namingDictionary struct {
+		Id ID
+	}
+
+	convert := func(fields []namingDictionary) []NamingTerm {
+		out := []NamingTerm{}
+
+		for i := range fields {
+			val := NamingTerm{id: &fields[i].Id}
+			val.query = selectNode(q.Root(), fields[i].Id, "NamingTerm")
+			out = append(out, val)
+		}
+
+		return out
+	}
+	var response []namingDictionary
+
+	q = q.Bind(&response)
+
+	err := q.Execute(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return convert(response), nil
 }
 
 // Load any object by its ID.
@@ -18189,6 +19229,7 @@ type Workspace struct {
 	export      *Void
 	findUp      *string
 	id          *ID
+	main        *string
 }
 type WithWorkspaceFunc func(r *Workspace) *Workspace
 
@@ -18225,6 +19266,8 @@ type WorkspaceArtifactsOpts struct {
 }
 
 // Discover static object artifacts from workspace modules without evaluating their values.
+//
+// Omits the paths that the workspace's check.skip, generate.skip, and up.skip settings skip.
 func (r *Workspace) Artifacts(opts ...WorkspaceArtifactsOpts) *Artifacts {
 	q := r.query.Select("artifacts")
 	for i := len(opts) - 1; i >= 0; i-- {
@@ -18438,9 +19481,9 @@ func (r *Workspace) Directory(path string, opts ...WorkspaceDirectoryOpts) *Dire
 	}
 }
 
-// Installed name of the module selected as the workspace entrypoint, or an empty string when none is selected.
+// Compatibility alias for main.
 //
-// Reflects the selected env's effective view. Fails if several modules are selected.
+// Deprecated: Use main.
 func (r *Workspace) Entrypoint(ctx context.Context) (string, error) {
 	if r.entrypoint != nil {
 		return *r.entrypoint, nil
@@ -18638,6 +19681,21 @@ func (r *Workspace) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	return json.Marshal(id)
+}
+
+// Installed name of the module selected as the workspace main, or an empty string when none is selected.
+//
+// Reflects the selected env's effective view. Fails if several modules are selected.
+func (r *Workspace) Main(ctx context.Context) (string, error) {
+	if r.main != nil {
+		return *r.main, nil
+	}
+	q := r.query.Select("main")
+
+	var response string
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
 }
 
 // WorkspaceMigrateOpts contains options for Workspace.Migrate
@@ -19142,9 +20200,9 @@ func (r *Workspace) WithDirectory(path string, source *Directory) *Workspace {
 	}
 }
 
-// Return this workspace with an installed module selected as its entrypoint.
+// Compatibility alias for withMain.
 //
-// Every other entrypoint selection is cleared. Entrypoints live in the base workspace config.
+// Deprecated: Use withMain.
 func (r *Workspace) WithEntrypoint(name string) *Workspace {
 	q := r.query.Select("withEntrypoint")
 	q = q.Arg("name", name)
@@ -19186,7 +20244,10 @@ type WorkspaceWithInitModuleOpts struct {
 	Path string
 	// Install the module. When omitted, install only if path is omitted.
 	Install bool
-	// Select this module as the entrypoint and install it. False prevents automatic selection. When omitted, select only if both path and name are omitted and the module is installed.
+	// Select this module as the workspace main and install it. False prevents automatic selection. When omitted, select only if both path and name are omitted and the module is installed.
+	Main bool
+	// Compatibility alias for main.
+	// Deprecated: Use main.
 	Entrypoint bool
 	// Explicit SDK-module constructor setting overrides for this scope.
 	Settings JSON
@@ -19210,6 +20271,10 @@ func (r *Workspace) WithInitModule(sdk string, opts ...WorkspaceWithInitModuleOp
 		if !querybuilder.IsZeroValue(opts[i].Install) {
 			q = q.Arg("install", opts[i].Install)
 		}
+		// `main` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Main) {
+			q = q.Arg("main", opts[i].Main)
+		}
 		// `entrypoint` optional argument
 		if !querybuilder.IsZeroValue(opts[i].Entrypoint) {
 			q = q.Arg("entrypoint", opts[i].Entrypoint)
@@ -19231,6 +20296,18 @@ func (r *Workspace) WithInitModule(sdk string, opts ...WorkspaceWithInitModuleOp
 // Fail if legacy configuration needs workspace migration.
 func (r *Workspace) WithInitialized() *Workspace {
 	q := r.query.Select("withInitialized")
+
+	return &Workspace{
+		query: q,
+	}
+}
+
+// Return this workspace with an installed module selected as its main.
+//
+// Every other main selection is cleared. The main module lives in the base workspace config.
+func (r *Workspace) WithMain(name string) *Workspace {
+	q := r.query.Select("withMain")
+	q = q.Arg("name", name)
 
 	return &Workspace{
 		query: q,
@@ -19328,6 +20405,35 @@ func (r *Workspace) WithNewFile(path string, contents string, opts ...WorkspaceW
 	}
 	q = q.Arg("path", path)
 	q = q.Arg("contents", contents)
+
+	return &Workspace{
+		query: q,
+	}
+}
+
+// WorkspaceWithPatchFileOpts contains options for Workspace.WithPatchFile
+type WorkspaceWithPatchFileOpts struct {
+	// How to handle hunks that no longer apply to the target content: fail (default), or apply what fits and leave git-style conflict markers where it doesn't.
+	//
+	// Default: FAIL
+	OnConflict PatchConflict
+}
+
+// Return this workspace with the given Git-compatible patch file applied, without mutating the source.
+//
+// Paths in the patch are relative to the workspace root, whatever its cwd, as `git diff` writes them. Patching a path at or under a mount is an error.
+//
+// Experimental: This API is highly experimental and may be removed or replaced entirely.
+func (r *Workspace) WithPatchFile(patch *File, opts ...WorkspaceWithPatchFileOpts) *Workspace {
+	assertNotNil("patch", patch)
+	q := r.query.Select("withPatchFile")
+	for i := len(opts) - 1; i >= 0; i-- {
+		// `onConflict` optional argument
+		if !querybuilder.IsZeroValue(opts[i].OnConflict) {
+			q = q.Arg("onConflict", opts[i].OnConflict)
+		}
+	}
+	q = q.Arg("patch", patch)
 
 	return &Workspace{
 		query: q,
@@ -19462,9 +20568,11 @@ type WorkspaceWithUpdatedModulesOpts struct {
 	Names []string
 	// New version request for exactly one selected module. Cannot be combined with a version suffix.
 	Version string
+	// New source for exactly one selected module. Resolved like an install source. Cannot be combined with a version or a version suffix.
+	Source string
 }
 
-// Return this workspace with updated module versions and lockfile state.
+// Return this workspace with updated module sources, versions and lockfile state.
 //
 // An SDK client scope is regenerated when it targets an updated module.
 func (r *Workspace) WithUpdatedModules(opts ...WorkspaceWithUpdatedModulesOpts) *Workspace {
@@ -19478,7 +20586,24 @@ func (r *Workspace) WithUpdatedModules(opts ...WorkspaceWithUpdatedModulesOpts) 
 		if !querybuilder.IsZeroValue(opts[i].Version) {
 			q = q.Arg("version", opts[i].Version)
 		}
+		// `source` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Source) {
+			q = q.Arg("source", opts[i].Source)
+		}
 	}
+
+	return &Workspace{
+		query: q,
+	}
+}
+
+// Return this workspace with the calling client's user-level config re-read and applied.
+//
+// User-level config (the [workspaces.*] section of the Dagger config file) is read when a session loads its workspace, and snapshots keep that configuration. Call this to pick up edits made since, for example when an agent reloads its modules.
+//
+// The entry is matched by the workspace's git origin remote. A workspace without one, or without a matching entry, gets no user-level config.
+func (r *Workspace) WithUserConfig() *Workspace {
+	q := r.query.Select("withUserConfig")
 
 	return &Workspace{
 		query: q,
@@ -19579,7 +20704,9 @@ func (r *Workspace) WithoutDirectory(path string) *Workspace {
 	}
 }
 
-// Return this workspace with no module selected as its entrypoint.
+// Compatibility alias for withoutMain.
+//
+// Deprecated: Use withoutMain.
 func (r *Workspace) WithoutEntrypoint() *Workspace {
 	q := r.query.Select("withoutEntrypoint")
 
@@ -19592,6 +20719,25 @@ func (r *Workspace) WithoutEntrypoint() *Workspace {
 func (r *Workspace) WithoutFile(path string) *Workspace {
 	q := r.query.Select("withoutFile")
 	q = q.Arg("path", path)
+
+	return &Workspace{
+		query: q,
+	}
+}
+
+// Return this workspace with files removed, without mutating the source.
+func (r *Workspace) WithoutFiles(paths []string) *Workspace {
+	q := r.query.Select("withoutFiles")
+	q = q.Arg("paths", paths)
+
+	return &Workspace{
+		query: q,
+	}
+}
+
+// Return this workspace with no module selected as its main.
+func (r *Workspace) WithoutMain() *Workspace {
+	q := r.query.Select("withoutMain")
 
 	return &Workspace{
 		query: q,
@@ -20105,6 +21251,7 @@ type WorkspaceModule struct {
 
 	entrypoint *bool
 	id         *ID
+	main       *bool
 	name       *string
 	source     *string
 }
@@ -20115,7 +21262,9 @@ func (r *WorkspaceModule) WithGraphQLQuery(q *querybuilder.Selection) *Workspace
 	}
 }
 
-// Whether the module is the workspace entrypoint (functions aliased to Query root).
+// Compatibility alias for main.
+//
+// Deprecated: Use main.
 func (r *WorkspaceModule) Entrypoint(ctx context.Context) (bool, error) {
 	if r.entrypoint != nil {
 		return *r.entrypoint, nil
@@ -20176,6 +21325,19 @@ func (r *WorkspaceModule) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	return json.Marshal(id)
+}
+
+// Whether the module is the workspace main (functions aliased to Query root).
+func (r *WorkspaceModule) Main(ctx context.Context) (bool, error) {
+	if r.main != nil {
+		return *r.main, nil
+	}
+	q := r.query.Select("main")
+
+	var response bool
+
+	q = q.Bind(&response)
+	return response, q.Execute(ctx)
 }
 
 // The module name.
@@ -20852,6 +22014,63 @@ func (r *SyncerClient) Concrete(ctx context.Context) (Node, error) {
 	}
 }
 
+// How acronyms and terms are written where a word starts with a capital.
+type AcronymStyle string
+
+func (AcronymStyle) IsEnum() {}
+
+func (v AcronymStyle) Name() string {
+	switch v {
+	case AcronymStyleUppercase:
+		return "UPPERCASE"
+	case AcronymStyleCapitalized:
+		return "CAPITALIZED"
+	default:
+		return ""
+	}
+}
+
+func (v AcronymStyle) Value() string {
+	return string(v)
+}
+
+func (v *AcronymStyle) MarshalJSON() ([]byte, error) {
+	if *v == "" {
+		return []byte(`""`), nil
+	}
+	name := v.Name()
+	if name == "" {
+		return nil, fmt.Errorf("invalid enum value %q", *v)
+	}
+	return json.Marshal(name)
+}
+
+func (v *AcronymStyle) UnmarshalJSON(dt []byte) error {
+	var s string
+	if err := json.Unmarshal(dt, &s); err != nil {
+		return err
+	}
+	switch s {
+	case "":
+		*v = ""
+	case "CAPITALIZED":
+		*v = AcronymStyleCapitalized
+	case "UPPERCASE":
+		*v = AcronymStyleUppercase
+	default:
+		return fmt.Errorf("invalid enum value %q", s)
+	}
+	return nil
+}
+
+const (
+	// HTTPClient, IPv6Address, GitHubRepo
+	AcronymStyleUppercase AcronymStyle = "UPPERCASE"
+
+	// HttpClient, Ipv6Address, GitHubRepo
+	AcronymStyleCapitalized AcronymStyle = "CAPITALIZED"
+)
+
 // EXPERIMENTAL: Agent APIs are likely to change.
 //
 // How a message landed in an agent's evaluation.
@@ -21127,6 +22346,91 @@ const (
 
 	// Shares the cache volume amongst many build pipelines, but will serialize the writes
 	CacheSharingModeLocked CacheSharingMode = "LOCKED"
+)
+
+// A convention for joining words into an identifier.
+type Casing string
+
+func (Casing) IsEnum() {}
+
+func (v Casing) Name() string {
+	switch v {
+	case CasingPascal:
+		return "PASCAL"
+	case CasingCamel:
+		return "CAMEL"
+	case CasingSnake:
+		return "SNAKE"
+	case CasingScreamingSnake:
+		return "SCREAMING_SNAKE"
+	case CasingKebab:
+		return "KEBAB"
+	case CasingFlat:
+		return "FLAT"
+	default:
+		return ""
+	}
+}
+
+func (v Casing) Value() string {
+	return string(v)
+}
+
+func (v *Casing) MarshalJSON() ([]byte, error) {
+	if *v == "" {
+		return []byte(`""`), nil
+	}
+	name := v.Name()
+	if name == "" {
+		return nil, fmt.Errorf("invalid enum value %q", *v)
+	}
+	return json.Marshal(name)
+}
+
+func (v *Casing) UnmarshalJSON(dt []byte) error {
+	var s string
+	if err := json.Unmarshal(dt, &s); err != nil {
+		return err
+	}
+	switch s {
+	case "":
+		*v = ""
+	case "CAMEL":
+		*v = CasingCamel
+	case "FLAT":
+		*v = CasingFlat
+	case "KEBAB":
+		*v = CasingKebab
+	case "PASCAL":
+		*v = CasingPascal
+	case "SCREAMING_SNAKE":
+		*v = CasingScreamingSnake
+	case "SNAKE":
+		*v = CasingSnake
+	default:
+		return fmt.Errorf("invalid enum value %q", s)
+	}
+	return nil
+}
+
+const (
+	// HTTPClient
+	CasingPascal Casing = "PASCAL"
+
+	// httpClient
+	CasingCamel Casing = "CAMEL"
+
+	// http_client
+	CasingSnake Casing = "SNAKE"
+
+	// HTTP_CLIENT
+	CasingScreamingSnake Casing = "SCREAMING_SNAKE"
+
+	// http-client
+	CasingKebab Casing = "KEBAB"
+
+	// httpclient (output only: drops word boundaries)
+	CasingFlat Casing = "FLAT"
 )
 
 // Strategy to use when merging changesets with conflicting changes.
@@ -21612,6 +22916,70 @@ const (
 
 	// The remote ref already pointed to this commit.
 	GitPushDispositionUpToDate GitPushDisposition = "UP_TO_DATE"
+)
+
+// The kind of a word in an identifier.
+type IdentifierWordKind string
+
+func (IdentifierWordKind) IsEnum() {}
+
+func (v IdentifierWordKind) Name() string {
+	switch v {
+	case IdentifierWordKindWord:
+		return "WORD"
+	case IdentifierWordKindAcronym:
+		return "ACRONYM"
+	case IdentifierWordKindTerm:
+		return "TERM"
+	default:
+		return ""
+	}
+}
+
+func (v IdentifierWordKind) Value() string {
+	return string(v)
+}
+
+func (v *IdentifierWordKind) MarshalJSON() ([]byte, error) {
+	if *v == "" {
+		return []byte(`""`), nil
+	}
+	name := v.Name()
+	if name == "" {
+		return nil, fmt.Errorf("invalid enum value %q", *v)
+	}
+	return json.Marshal(name)
+}
+
+func (v *IdentifierWordKind) UnmarshalJSON(dt []byte) error {
+	var s string
+	if err := json.Unmarshal(dt, &s); err != nil {
+		return err
+	}
+	switch s {
+	case "":
+		*v = ""
+	case "ACRONYM":
+		*v = IdentifierWordKindAcronym
+	case "TERM":
+		*v = IdentifierWordKindTerm
+	case "WORD":
+		*v = IdentifierWordKindWord
+	default:
+		return fmt.Errorf("invalid enum value %q", s)
+	}
+	return nil
+}
+
+const (
+	// An ordinary word.
+	IdentifierWordKindWord IdentifierWordKind = "WORD"
+
+	// An acronym, from the dictionary or a run of capitals.
+	IdentifierWordKindAcronym IdentifierWordKind = "ACRONYM"
+
+	// A dictionary term with a fixed mixed-case spelling (GitHub, IPv6).
+	IdentifierWordKindTerm IdentifierWordKind = "TERM"
 )
 
 // Compression algorithm to use for image layers.

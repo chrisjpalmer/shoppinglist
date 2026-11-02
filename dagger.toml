@@ -1,6 +1,6 @@
 [modules.shoppinglist]
 source = ".dagger/modules/shoppinglist"
-entrypoint = true
+main = true
 
 [modules.shoppinglist.settings]
 registryPassword="file://./local/GH_API_KEY"
